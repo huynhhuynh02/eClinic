@@ -3,7 +3,6 @@ import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
 import { format } from 'date-fns';
 import {
-  Avatar,
   Box,
   Card,
   Checkbox,
@@ -13,12 +12,17 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography
+  Typography,
+  IconButton
 } from '@mui/material';
-import { getInitials } from '../../utils/get-initials';
+import DescriptionIcon from "@mui/icons-material/Description";
+import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
+import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteIcon from "@mui/icons-material/Delete";
 
-export const CustomerListResults = ({ customers, ...rest }) => {
-  const [selectedPatientIds, setselectedPatientIds] = useState([]);
+export const PatientListResults = ({ patients, ...rest }) => {
+  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 
@@ -26,7 +30,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
     let newSelectedCustomerIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
+      newSelectedCustomerIds = patients.map((patient) => patient.id);
     } else {
       newSelectedCustomerIds = [];
     }
@@ -63,6 +67,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
   };
 
   return (
+    <>
     <Card {...rest}>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
@@ -71,43 +76,55 @@ export const CustomerListResults = ({ customers, ...rest }) => {
               <TableRow>
                 <TableCell padding="checkbox">
                   <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
+                    checked={selectedCustomerIds.length === patients.length}
                     color="primary"
                     indeterminate={
                       selectedCustomerIds.length > 0
-                      && selectedCustomerIds.length < customers.length
+                      && selectedCustomerIds.length < patients.length
                     }
                     onChange={handleSelectAll}
                   />
                 </TableCell>
                 <TableCell>
-                  Name
+                  Mã BN
                 </TableCell>
                 <TableCell>
-                  Email
+                  Họ tên
                 </TableCell>
                 <TableCell>
-                  Location
+                  Địa chỉ
                 </TableCell>
                 <TableCell>
-                  Phone
+                  Tuổi
                 </TableCell>
                 <TableCell>
-                  Registration date
+                  Điện thoại
+                </TableCell>
+                <TableCell>
+                  Hồ sơ
+                </TableCell>
+                <TableCell>
+                  Kê đơn
+                </TableCell>
+                <TableCell>
+                  Chỉnh sửa
+                </TableCell>
+                <TableCell>
+                  Xoá
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+              {patients.slice(0, limit).map((patient) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  key={patient.id}
+                  selected={selectedCustomerIds.indexOf(patient.id) !== -1}
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
+                      checked={selectedCustomerIds.indexOf(patient.id) !== -1}
+                      onChange={(event) => handleSelectOne(event, patient.id)}
                       value="true"
                     />
                   </TableCell>
@@ -118,31 +135,45 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                         display: 'flex'
                       }}
                     >
-                      <Avatar
-                        src={customer.avatarUrl}
-                        sx={{ mr: 2 }}
-                      >
-                        {getInitials(customer.name)}
-                      </Avatar>
                       <Typography
                         color="textPrimary"
                         variant="body1"
                       >
-                        {customer.name}
+                        {patient.id}
                       </Typography>
                     </Box>
                   </TableCell>
                   <TableCell>
-                    {customer.email}
+                    {patient.name}
                   </TableCell>
                   <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                    {patient.address}
                   </TableCell>
                   <TableCell>
-                    {customer.phone}
+                    {patient.birthday}
                   </TableCell>
                   <TableCell>
-                    {format(customer.createdAt, 'dd/MM/yyyy')}
+                    {patient.phone}
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton href="#">
+                      <DescriptionIcon color="primary" />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton href="#">
+                      <AccountBoxIcon color="primary" />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton href="#">
+                      <AccessTimeFilledIcon color="primary" />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell align="center">
+                    <IconButton href="#">
+                      <DeleteIcon color="warning" />
+                    </IconButton>
                   </TableCell>
                 </TableRow>
               ))}
@@ -152,7 +183,7 @@ export const CustomerListResults = ({ customers, ...rest }) => {
       </PerfectScrollbar>
       <TablePagination
         component="div"
-        count={customers.length}
+        count={patients.length}
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleLimitChange}
         page={page}
@@ -160,9 +191,13 @@ export const CustomerListResults = ({ customers, ...rest }) => {
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
+    <CustomizedDialogs>
+
+    </CustomizedDialogs>
+    </>
   );
 };
 
-CustomerListResults.propTypes = {
-  customers: PropTypes.array.isRequired
+PatientListResults.propTypes = {
+  patients: PropTypes.array.isRequired
 };
