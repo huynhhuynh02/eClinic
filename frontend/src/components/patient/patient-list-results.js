@@ -19,7 +19,6 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 export const PatientListResults = ({ patients, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
@@ -191,9 +190,6 @@ export const PatientListResults = ({ patients, ...rest }) => {
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
-    <CustomizedDialogs>
-
-    </CustomizedDialogs>
     </>
   );
 };
