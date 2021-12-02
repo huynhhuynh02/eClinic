@@ -1,7 +1,6 @@
 import {
   Box,
   Button,
-  Card,
   Grid,
   Container,
   CardContent,
@@ -15,10 +14,9 @@ import {
   MenuItem
 } from '@mui/material';
 import { useState } from 'react';
-import { Search as SearchIcon } from '../../icons/search';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DateTimePicker from '@mui/lab/DateTimePicker';
+import DatePicker from '@mui/lab/DatePicker';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
