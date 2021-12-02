@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Box, Button, ListItem } from '@mui/material';
 
 export const NavItem = (props) => {
-  const { href, icon, title, ...others } = props;
+  const { href, icon, title, children, ...others } = props;
   const router = useRouter();
   const active = href ? (router.pathname === href) : false;
 
@@ -24,6 +24,7 @@ export const NavItem = (props) => {
         passHref
       >
         <Button
+          className="tapa-nav-item"
           component="a"
           startIcon={icon}
           disableRipple
@@ -37,6 +38,7 @@ export const NavItem = (props) => {
             textAlign: 'left',
             textTransform: 'none',
             width: '100%',
+            position: 'relative',
             '& .MuiButton-startIcon': {
               color: active ? 'secondary.main' : 'neutral.400'
             },
@@ -48,6 +50,7 @@ export const NavItem = (props) => {
           <Box sx={{ flexGrow: 1 }}>
             {title}
           </Box>
+          {children}
         </Button>
       </NextLink>
     </ListItem>

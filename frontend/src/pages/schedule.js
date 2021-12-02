@@ -1,15 +1,15 @@
 import Head from 'next/head';
 import { Box, Container } from '@mui/material';
-import { PatientListResults } from '../components/patient/patient-list-results';
-import { PatientListToolbar } from '../components/patient/patient-toolbar';
+import { ScheduleListResults } from '../components/schedule/schedule-list-results';
+import { ScheduleToolbar } from '../components/schedule/schedule-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
-import { patients } from '../__mocks__/patients';
+import { schedules } from '../__mocks__/schedules';
 
-const Patients = () => (
+const Schedule = () => (
   <>
     <Head>
       <title>
-        Danh sách khám bệnh | TAPA App
+        Schedule
       </title>
     </Head>
     <Box
@@ -20,18 +20,18 @@ const Patients = () => (
       }}
     >
       <Container>
-        <PatientListToolbar />
+        <ScheduleToolbar />
         <Box sx={{ mt: 3 }}>
-          <PatientListResults patients={patients} />
+          <ScheduleListResults schedules={schedules} />
         </Box>
       </Container>
     </Box>
   </>
 );
-Patients.getLayout = (page) => (
+Schedule.getLayout = (page) => (
   <DashboardLayout>
     {page}
   </DashboardLayout>
 );
 
-export default Patients;
+export default Schedule;
