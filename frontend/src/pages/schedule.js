@@ -1,9 +1,9 @@
 import Head from 'next/head';
 import { Box, Container } from '@mui/material';
-import { CustomerListResults } from '../../components/customer/customer-list-results';
-import { ScheduleToolbar } from '../../components/schedule/schedule-toolbar';
-import { DashboardLayout } from '../../components/dashboard-layout';
-import { customers } from '../../__mocks__/customers';
+import { ScheduleListResults } from '../components/schedule/schedule-list-results';
+import { ScheduleToolbar } from '../components/schedule/schedule-toolbar';
+import { DashboardLayout } from '../components/dashboard-layout';
+import { schedules } from '../__mocks__/schedules';
 
 const Schedule = () => (
   <>
@@ -19,10 +19,10 @@ const Schedule = () => (
         py: 8
       }}
     >
-      <Container maxWidth={false}>
+      <Container>
         <ScheduleToolbar />
         <Box sx={{ mt: 3 }}>
-          <CustomerListResults customers={customers} />
+          <ScheduleListResults schedules={schedules} />
         </Box>
       </Container>
     </Box>

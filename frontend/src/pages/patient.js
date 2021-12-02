@@ -9,7 +9,7 @@ const Patients = () => (
   <>
     <Head>
       <title>
-        Bệnh nhân | TAPA App
+        Danh sách khám bệnh | TAPA App
       </title>
     </Head>
     <Box
@@ -19,7 +19,7 @@ const Patients = () => (
         py: 8
       }}
     >
-      <Container maxWidth={false}>
+      <Container>
         <PatientListToolbar />
         <Box sx={{ mt: 3 }}>
           <PatientListResults patients={patients} />

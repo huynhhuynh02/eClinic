@@ -7,7 +7,12 @@ import {
   CardContent,
   TextField,
   InputAdornment,
-  SvgIcon, Typography
+  SvgIcon, Typography,
+  FormControlLabel,
+  Checkbox,
+  FormGroup,
+  Select,
+  MenuItem
 } from '@mui/material';
 import { useState } from 'react';
 import { Search as SearchIcon } from '../../icons/search';
@@ -17,87 +22,183 @@ import DateTimePicker from '@mui/lab/DateTimePicker';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
+import { display } from '@mui/system';
+
 
 export const ScheduleToolbar = (props) => {
   const [valueDateFrom, setValueDateFrom] = useState(null);
   const [valueDateTo, setValueDateTo] = useState(null);
+  const [dateSelect, setDateSelect] = useState('');
+  const [monthSelect, setMonthSelect] = useState('');
+  const [yearSelect, setYearSelect] = useState('');
+  const [sex, setSex] = useState('');
+
+  const handleChangeDate = (event) => {
+    setDateSelect(event.target.value);
+  };
+
+  const handleChangeMonth = (event) => {
+    setMonthSelect(event.target.value);
+  };
+
+  const handleChangeYear = (event) => {
+    setYearSelect(event.target.value);
+  };
+
+  const handleChangeSex = (event) => {
+    setSex(event.target.value);
+  };
+
+
+  var date = [];
+  var month = [];
+  var year = [];
+  var currentYear = new Date().getFullYear();
+  for (let i = 1; i <= 31; i++) {
+    date.push(i);
+  }
+  for (let i = 1; i <= 12; i++) {
+    month.push(i);
+  }
+
+  for (let i = currentYear - 100; i <= currentYear; i++) {
+    year.push(i);
+  }
+
+  const renderDate = date.map((index) => {
+    return (
+      <MenuItem value={index}>{index}</MenuItem>
+    )
+  })
+
+  const renderMonth = month.map((index) => {
+    return (
+      <MenuItem value={index}>{index}</MenuItem>
+    )
+  })
+
+  const renderYear = year.map((index) => {
+    return (
+      <MenuItem value={index}>{index}</MenuItem>
+    )
+  })
+
   return (
-    <Box {...props}>
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          m: -1
-        }}
-      >
-        <Typography
-          sx={{ m: 1 }}
-          variant="h4"
+    <Card {...props}>
+      <CardContent>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            m: -1
+          }}
         >
-          Danh sách lịch hẹn
-        </Typography>
-      </Box>
-      <Box sx={{ mt: 3 }}>
-        <Container maxWidth="lg">
+          <Typography
+            sx={{ m: 1 }}
+            variant="h6"
+          >
+            Thông tin bệnh nhân
+          </Typography>
+        </Box>
+        <Box sx={{ mt: 3 }}>
           <Grid
             container
+            spacing={3}
           >
-            <Grid item sm={4}>
+            <Grid item sm={6}>
               <Box sx={{ mb: 5 }}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    renderInput={(props) => <TextField {...props} />}
-                    label="Từ ngày"
-                    value={valueDateFrom}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
-                  />
-                </LocalizationProvider>
+                <TextField fullWidth id="standard-basic" label="Họ tên *" variant="standard" />
+              </Box>
+              <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                Ngày sinh
+              </InputLabel>
+              <Box sx={{ mb: 3 }}>
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                  <InputLabel id="simple-select-date-label">Ngày</InputLabel>
+                  <Select
+                    labelId="simple-select-date-label"
+                    id="simple-select-date"
+                    value={dateSelect}
+                    onChange={handleChangeDate}
+                    label="Ngày"
+                  >
+                    {renderDate}
+                  </Select>
+                </FormControl>
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                  <InputLabel id="simple-select-month-label">Tháng</InputLabel>
+                  <Select
+                    labelId="simple-select-month-label"
+                    id="simple-select-month"
+                    value={monthSelect}
+                    onChange={handleChangeMonth}
+                    label="Tháng"
+                  >
+                    {renderMonth}
+                  </Select>
+                </FormControl>
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                  <InputLabel id="simple-select-year-label">Tháng</InputLabel>
+                  <Select
+                    labelId="simple-select-year-label"
+                    id="simple-select-year"
+                    value={yearSelect}
+                    onChange={handleChangeYear}
+                    label="Tháng"
+                  >
+                    {renderYear}
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box sx={{ mb: 3 }}>
+                <TextField fullWidth id="standard-basic" label="Địa chỉ" variant="standard" />
+              </Box>
+              <Box sx={{ mb: 5 }}>
+                <TextField fullWidth id="standard-basic" label="Nghề nghiệp" variant="standard" />
+              </Box>
+              <Button variant="contained">Thêm</Button>
+            </Grid>
+            <Grid item sm={6}>
+              <Box sx={{ mb: 8 }}>
+                <TextField fullWidth id="standard-basic" label="Bí danh" variant="standard" />
+              </Box>
+              <Box sx={{ mb: 3 }}>
+                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+                  <InputLabel id="simple-select-year-label">Giới tính</InputLabel>
+                  <Select
+                    labelId="simple-select-sex-label"
+                    id="simple-select-sex"
+                    value={sex}
+                    onChange={handleChangeSex}
+                    label="Giới tính"
+                  >
+                    <MenuItem value={0}>Nam</MenuItem>
+                    <MenuItem value={1}>Nữ</MenuItem>
+                    <MenuItem value={2}>Khác</MenuItem>
+                  </Select>
+                </FormControl>
+              </Box>
+              <Box sx={{ mb: 8 }}>
+                <TextField fullWidth id="standard-basic" label="Điện thoại" variant="standard" />
               </Box>
               <Box>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DateTimePicker
-                    renderInput={(props) => <TextField {...props} />}
-                    label="Đến ngày"
-                    value={valueDateTo}
-                    onChange={(newValue) => {
-                      setValue(newValue);
-                    }}
-                  />
-                </LocalizationProvider>
+                <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                  Nhóm bệnh nhân
+                </InputLabel>
+                <FormGroup sx={{
+                  display: 'flex'
+                }}>
+                  <FormControlLabel control={<Checkbox defaultChecked />} label="Nha Khoa" />
+                  <FormControlLabel control={<Checkbox />} label="Nội khoa" />
+                  <FormControlLabel control={<Checkbox />} label="Ngoại Khoa" />
+                </FormGroup>
               </Box>
             </Grid>
-            <Grid item sm={ 5 }>
-              <Grid mb={ 5 }>
-                <FormControl fullWidth>
-                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                    Nhóm bệnh nhân
-                  </InputLabel>
-                  <NativeSelect
-                    defaultValue={ 0 }
-                    inputProps={{
-                      name: 'age',
-                      id: 'uncontrolled-native',
-                    }}
-                  >
-                    <option value={0}>Chọn nhóm bệnh nhân</option>
-                    <option value={10}>Ten</option>
-                    <option value={20}>Twenty</option>
-                    <option value={30}>Thirty</option>
-                  </NativeSelect>
-                </FormControl>
-              </Grid>
-              <TextField fullWidth id="standard-basic" label="Nhập tên hoặc sđt" variant="standard" />
-            </Grid>
-            <Grid item sm={3} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-              <Button variant="contained">Tìm kiếm</Button>
-            </Grid>
           </Grid>
-        </Container> 
-      </Box>
-    </Box>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
