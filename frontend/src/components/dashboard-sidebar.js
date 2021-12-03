@@ -1,25 +1,30 @@
-import { useEffect } from 'react';
-import NextLink from 'next/link';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import PropTypes from 'prop-types';
-import { Box, Button, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
+import {
+  Box,
+  Button,
+  Divider,
+  AppBar,
+  Typography,
+  useMediaQuery,
+  Container,
+  Menu,
+  Fade,
+  MenuList,
+  MenuItem
+} from '@mui/material';
 import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
-import { Cog as CogIcon } from '../icons/cog';
-import { Lock as LockIcon } from '../icons/lock';
-import { Selector as SelectorIcon } from '../icons/selector';
-import { ShoppingBag as ShoppingBagIcon } from '../icons/shopping-bag';
-import { User as UserIcon } from '../icons/user';
-import { UserAdd as UserAddIcon } from '../icons/user-add';
 import { Users as UsersIcon } from '../icons/users';
 import { XCircle as XCircleIcon } from '../icons/x-circle';
-import { Logo } from './logo';
 import { NavItem } from './nav-item';
 import EventAvailableIcon from '@mui/icons-material/EventAvailable';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import SettingsIcon from '@mui/icons-material/Settings';
+import NextLink from 'next/link';
+
 
 const items = [
   {
@@ -30,22 +35,32 @@ const items = [
   {
     href: '/patient',
     icon: (<UsersIcon fontSize="small" />),
-    title: 'Bệnh Nhân'
-  },
-  {
-    href: '/schedule',
-    icon: (<EventAvailableIcon fontSize="small" />),
-    title: 'Lịch hẹn'
+    title: 'Khám bệnh',
+    submenu: [
+      {
+        title: 'Tạo khám bệnh',
+        href: '/schedule',
+      },
+      {
+        title: 'Danh sách khám bệnh',
+        href: '/patient',
+      }
+    ]
   },
   {
     href: '/prescribe',
     icon: (<AssignmentIcon fontSize="small" />),
-    title: 'Đơn thuốc'
-  },
-  {
-    href: '/supplie',
-    icon: (<AddShoppingCartIcon fontSize="small" />),
-    title: 'Thuốc-Vật tư'
+    title: 'Đơn thuốc',
+    submenu: [
+      {
+        title: 'Đơn thuốc',
+        href: '/patient',
+      },
+      {
+        title: 'Hoá đơn',
+        href: '/patient',
+      }
+    ]
   },
   {
     href: '/statistical',
@@ -55,7 +70,17 @@ const items = [
   {
     href: '/setting',
     icon: (<SettingsIcon fontSize="small" />),
-    title: 'Cài đặt'
+    title: 'Cấu hình',
+    submenu: [
+      {
+        title: 'Danh mục',
+        href: '/patient',
+      },
+      {
+        title: 'Thuốc',
+        href: '/patient',
+      }
+    ]
   },
 ];
 
@@ -86,102 +111,79 @@ export const DashboardSidebar = (props) => {
       <Box
         sx={{
           display: 'flex',
-          flexDirection: 'column',
-          height: '100%'
+          flexDirection: 'row',
+          width: '100%',
         }}
       >
-        <div>
-          <Box sx={{ p: 3 }}>
-            <NextLink
-              href="/"
-              passHref
+        {items.map((item) => (
+          <NavItem
+            key={item.title}
+            icon={item.icon}
+            href={item.href}
+            title={item.title}
+          >
+            <MenuList sx={{
+              position: 'absolute',
+              top: '100%',
+              left: 0,
+              backgroundColor: 'background.paper',
+              display: 'none',
+              minWidth: '100%'
+
+            }}
+              className="tapa-nav-sub"
             >
-              <a>
-                <Logo
-                  sx={{
-                    height: 42,
-                    width: 42
-                  }}
-                />
-              </a>
-            </NextLink>
-          </Box>
-          <Box sx={{ px: 2 }}>
-            <Box
-              sx={{
-                alignItems: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'space-between',
-                px: 3,
-                py: '11px',
-                borderRadius: 1
-              }}
-            >
-              <div>
-                <Typography
-                  color="inherit"
-                  variant="subtitle1"
-                >
-                  Acme Inc
-                </Typography>
-                <Typography
-                  color="neutral.400"
-                  variant="body2"
-                >
-                  Your tier
-                  {' '}
-                  : Premium
-                </Typography>
-              </div>
-              <SelectorIcon
-                sx={{
-                  color: 'neutral.500',
-                  width: 14,
-                  height: 14
-                }}
-              />
-            </Box>
-          </Box>
-        </div>
-        <Divider
-          sx={{
-            borderColor: '#2D3748',
-            my: 3
-          }}
-        />
-        <Box sx={{ flexGrow: 1 }}>
-          {items.map((item) => (
-            <NavItem
-              key={item.title}
-              icon={item.icon}
-              href={item.href}
-              title={item.title}
-            />
-          ))}
-        </Box>
-        <Divider sx={{ borderColor: '#2D3748' }} />
+              {
+                item.submenu?.map((sub) => (
+                  <MenuItem>
+                    <NextLink
+                      href={sub.href}
+                      passHref
+                    >
+                      <Button
+                        className="tapa-nav-item"
+                        component="a"
+                        startIcon={sub.icon}
+                        disableRipple
+                        sx={{
+                          borderRadius: 1,
+                          fontWeight: 'fontWeightBold',
+                          justifyContent: 'flex-start',
+                          px: 3,
+                          textAlign: 'left',
+                          textTransform: 'none',
+                          width: '100%',
+                          position: 'relative',
+                          '&:hover': {
+                            backgroundColor: 'rgba(255,255,255, 0.08)'
+                          }
+                        }}
+                      >
+                        <Box sx={{ flexGrow: 1 }}>
+                          {sub.title}
+                        </Box>
+                      </Button>
+                    </NextLink>
+                  </MenuItem>
+                ))
+              }
+            </MenuList>
+          </NavItem>
+        ))}
       </Box>
     </>
   );
 
   if (lgUp) {
     return (
-      <Drawer
-        anchor="left"
-        open
-        PaperProps={{
-          sx: {
-            backgroundColor: 'neutral.900',
-            color: '#FFFFFF',
-            width: 280
-          }
-        }}
-        variant="permanent"
-      >
-        {content}
-      </Drawer>
+      <AppBar sx={{
+        top: 64
+      }}>
+        <Container>
+          {content}
+        </Container>
+
+      </AppBar>
     );
   }
 
