@@ -51,7 +51,7 @@ const items = [
       },
       {
         title: "Hoá đơn",
-        href: "/patient",
+        href: "/prescribe",
       },
     ],
   },
@@ -164,6 +164,7 @@ export const DashboardSidebar = (props) => {
       <AppBar
         sx={{
           top: 64,
+          backgroundColor: "#fff",
         }}
       >
         <Container>{content}</Container>

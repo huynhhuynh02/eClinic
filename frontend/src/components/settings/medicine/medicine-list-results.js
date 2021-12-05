@@ -98,7 +98,7 @@ export const SettingMedicineListResults = ({ medicines, ...rest }) => {
                 {medicines.slice(0, limit).map((patient) => (
                   <TableRow
                     hover
-                    key={patient.id}
+                    // key={patient.id}
                     selected={selectedCustomerIds.indexOf(patient.id) !== -1}
                   >
                     <TableCell padding="checkbox">

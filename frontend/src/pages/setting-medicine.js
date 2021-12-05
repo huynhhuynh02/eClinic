@@ -1,6 +1,6 @@
 import { Box, Container } from "@mui/material";
 import Head from "next/head";
-import { SettingMedicineListResults } from "src/components/settings/medicine-list-results";
+import { SettingMedicineListResults } from "src/components/settings/medicine/medicine-list-results";
 import { SettingMedicineToolbar } from "src/components/settings/medicine/medicine_toolbar";
 import { DashboardLayout } from "../components/dashboard-layout";
 import { patients } from "../__mocks__/patients";

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { node } from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -9,6 +9,11 @@ import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
+import Slide from '@mui/material/Slide';
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+  return <Slide direction="up" ref={ref} {...props} />;
+});
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -49,34 +54,35 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function CustomizedDialogs(props) {
-  const [open, setOpen] = React.useState(false);
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-  const handleClose = () => {
-    setOpen(false);
-  };
-
+  const { children, open, actions, onClose, title, maxWidth, ...other } = props;
   return (
     <div>
       <BootstrapDialog
-        onClose={handleClose}
+        maxWidth={maxWidth}
+        fullWidth
+        TransitionComponent={Transition}
+        onClose={onClose}
         aria-labelledby="customized-dialog-title"
         open={open}
       >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={handleClose}>
-          {props.title}
+        <BootstrapDialogTitle id="customized-dialog-title" onClose={onClose}>
+          {title}
         </BootstrapDialogTitle>
         <DialogContent dividers>
-          {props.children}
+          {children}
         </DialogContent>
         <DialogActions>
-          <Button autoFocus variant="contained" color="primany" onClick={handleClose}>
-            Save 
-          </Button>
+          {actions}
         </DialogActions>
       </BootstrapDialog>
     </div>
   );
+}
+
+CustomizedDialogs.propTypes = {
+  title: PropTypes.string,
+  open: PropTypes.bool,
+  actions: PropTypes.node,
+  onClose: PropTypes.func,
+  children: PropTypes.node
 }

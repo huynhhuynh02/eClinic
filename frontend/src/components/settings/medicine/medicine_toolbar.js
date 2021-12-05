@@ -1,19 +1,4 @@
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Checkbox,
-  FormControlLabel,
-  FormGroup,
-  Grid,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
-import FormControl from "@mui/material/FormControl";
-import InputLabel from "@mui/material/InputLabel";
+import { Box, Card, CardContent, MenuItem, Typography } from "@mui/material";
 import { useState } from "react";
 
 export const SettingMedicineToolbar = (props) => {
@@ -95,7 +80,7 @@ export const SettingMedicineToolbar = (props) => {
             Thông tin bệnh nhân
           </Typography>
         </Box>
-        <Box sx={{ mt: 3 }}>
+        {/* <Box sx={{ mt: 3 }}>
           <Grid container spacing={3}>
             <Grid item sm={6}>
               <Box sx={{ mb: 5 }}>
@@ -189,7 +174,7 @@ export const SettingMedicineToolbar = (props) => {
               </Box>
             </Grid>
           </Grid>
-        </Box>
+        </Box> */}
       </CardContent>
     </Card>
   );
