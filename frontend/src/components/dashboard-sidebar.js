@@ -1,95 +1,92 @@
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import PropTypes from 'prop-types';
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import SettingsIcon from "@mui/icons-material/Settings";
 import {
+  AppBar,
   Box,
   Button,
-  Divider,
-  AppBar,
-  Typography,
-  useMediaQuery,
   Container,
-  Menu,
-  Fade,
+  Drawer,
+  MenuItem,
   MenuList,
-  MenuItem
-} from '@mui/material';
-import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
-import { Users as UsersIcon } from '../icons/users';
-import { XCircle as XCircleIcon } from '../icons/x-circle';
-import { NavItem } from './nav-item';
-import EventAvailableIcon from '@mui/icons-material/EventAvailable';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import SettingsIcon from '@mui/icons-material/Settings';
-import NextLink from 'next/link';
-
+  useMediaQuery,
+} from "@mui/material";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import PropTypes from "prop-types";
+import { useEffect } from "react";
+import { ChartBar as ChartBarIcon } from "../icons/chart-bar";
+import { Users as UsersIcon } from "../icons/users";
+import { NavItem } from "./nav-item";
 
 const items = [
   {
-    href: '/',
-    icon: (<ChartBarIcon fontSize="small" />),
-    title: 'Dashboard'
+    href: "/",
+    icon: <ChartBarIcon fontSize="small" />,
+    title: "Dashboard",
   },
   {
-    href: '/patient',
-    icon: (<UsersIcon fontSize="small" />),
-    title: 'Khám bệnh',
+    href: "/patient",
+    icon: <UsersIcon fontSize="small" />,
+    title: "Khám bệnh",
     submenu: [
       {
-        title: 'Tạo khám bệnh',
-        href: '/schedule',
+        title: "Tạo khám bệnh",
+        href: "/schedule",
       },
       {
-        title: 'Danh sách khám bệnh',
-        href: '/patient',
-      }
-    ]
+        title: "Danh sách khám bệnh",
+        href: "/patient",
+      },
+    ],
   },
   {
-    href: '/prescribe',
-    icon: (<AssignmentIcon fontSize="small" />),
-    title: 'Đơn thuốc',
+    href: "/prescribe",
+    icon: <AssignmentIcon fontSize="small" />,
+    title: "Đơn thuốc",
     submenu: [
       {
-        title: 'Đơn thuốc',
-        href: '/patient',
+        title: "Đơn thuốc",
+        href: "/patient",
       },
       {
-        title: 'Hoá đơn',
-        href: '/patient',
-      }
-    ]
+        title: "Hoá đơn",
+        href: "/patient",
+      },
+    ],
   },
   {
-    href: '/statistical',
-    icon: (<BarChartIcon fontSize="small" />),
-    title: 'Thống kê'
+    href: "/statistical",
+    icon: <BarChartIcon fontSize="small" />,
+    title: "Thống kê",
   },
   {
-    href: '/setting',
-    icon: (<SettingsIcon fontSize="small" />),
-    title: 'Cấu hình',
+    href: "/settings",
+    icon: <SettingsIcon fontSize="small" />,
+    title: "Cấu hình",
     submenu: [
       {
-        title: 'Danh mục',
-        href: '/patient',
+        title: "Danh mục",
+        href: "/setting-medicine-category-group",
       },
       {
-        title: 'Thuốc',
-        href: '/patient',
-      }
-    ]
+        title: "Thuốc",
+        href: "/setting-medicine",
+      },
+      {
+        title: "Từ viết tắt",
+        href: "/setting-acronym",
+      },
+    ],
   },
 ];
 
 export const DashboardSidebar = (props) => {
   const { open, onClose } = props;
   const router = useRouter();
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
+  const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"), {
     defaultMatches: true,
-    noSsr: false
+    noSsr: false,
   });
 
   useEffect(
@@ -110,63 +107,51 @@ export const DashboardSidebar = (props) => {
     <>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'row',
-          width: '100%',
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
         }}
       >
         {items.map((item) => (
-          <NavItem
-            key={item.title}
-            icon={item.icon}
-            href={item.href}
-            title={item.title}
-          >
-            <MenuList sx={{
-              position: 'absolute',
-              top: '100%',
-              left: 0,
-              backgroundColor: 'background.paper',
-              display: 'none',
-              minWidth: '100%'
-
-            }}
+          <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title}>
+            <MenuList
+              sx={{
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                backgroundColor: "background.paper",
+                display: "none",
+                minWidth: "100%",
+              }}
               className="tapa-nav-sub"
             >
-              {
-                item.submenu?.map((sub) => (
-                  <MenuItem>
-                    <NextLink
-                      href={sub.href}
-                      passHref
+              {item.submenu?.map((sub, index) => (
+                <MenuItem key={index}>
+                  <NextLink href={sub.href} passHref>
+                    <Button
+                      className="tapa-nav-item"
+                      component="a"
+                      startIcon={sub.icon}
+                      disableRipple
+                      sx={{
+                        borderRadius: 1,
+                        fontWeight: "fontWeightBold",
+                        justifyContent: "flex-start",
+                        px: 3,
+                        textAlign: "left",
+                        textTransform: "none",
+                        width: "100%",
+                        position: "relative",
+                        "&:hover": {
+                          backgroundColor: "rgba(255,255,255, 0.08)",
+                        },
+                      }}
                     >
-                      <Button
-                        className="tapa-nav-item"
-                        component="a"
-                        startIcon={sub.icon}
-                        disableRipple
-                        sx={{
-                          borderRadius: 1,
-                          fontWeight: 'fontWeightBold',
-                          justifyContent: 'flex-start',
-                          px: 3,
-                          textAlign: 'left',
-                          textTransform: 'none',
-                          width: '100%',
-                          position: 'relative',
-                          '&:hover': {
-                            backgroundColor: 'rgba(255,255,255, 0.08)'
-                          }
-                        }}
-                      >
-                        <Box sx={{ flexGrow: 1 }}>
-                          {sub.title}
-                        </Box>
-                      </Button>
-                    </NextLink>
-                  </MenuItem>
-                ))
-              }
+                      <Box sx={{ flexGrow: 1 }}>{sub.title}</Box>
+                    </Button>
+                  </NextLink>
+                </MenuItem>
+              ))}
             </MenuList>
           </NavItem>
         ))}
@@ -176,13 +161,12 @@ export const DashboardSidebar = (props) => {
 
   if (lgUp) {
     return (
-      <AppBar sx={{
-        top: 64
-      }}>
-        <Container>
-          {content}
-        </Container>
-
+      <AppBar
+        sx={{
+          top: 64,
+        }}
+      >
+        <Container>{content}</Container>
       </AppBar>
     );
   }
@@ -194,10 +178,10 @@ export const DashboardSidebar = (props) => {
       open={open}
       PaperProps={{
         sx: {
-          backgroundColor: 'neutral.900',
-          color: '#FFFFFF',
-          width: 280
-        }
+          backgroundColor: "neutral.900",
+          color: "#FFFFFF",
+          width: 280,
+        },
       }}
       sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
       variant="temporary"
@@ -209,5 +193,5 @@ export const DashboardSidebar = (props) => {
 
 DashboardSidebar.propTypes = {
   onClose: PropTypes.func,
-  open: PropTypes.bool
+  open: PropTypes.bool,
 };
