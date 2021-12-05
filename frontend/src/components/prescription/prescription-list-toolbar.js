@@ -20,52 +20,53 @@ export const PrescriptionListToolbar = (props) => {
         }}
       >
         <Typography sx={{ m: 1 }}
-variant="h4">
+          variant="h4">
           Danh sách đơn thuốc
         </Typography>
       </Box>
       <Box sx={{ mt: 3 }}>
-        <Container maxWidth="lg">
-          <Grid container>
-            <Grid
-              item
-              xs={3}>
-              <Box sx={{ m: 1 }}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    renderInput={(props) => <TextField {...props} />}
-                    label="Từ ngày"
-                    value={valueDateFrom}
-                    inputFormat="dd/MM/yyyy"
-                    hideTabs= {true}
-                    onChange={(newValue) => {
-                      setValueDateFrom(newValue);
-                    }}
-                  />
-                </LocalizationProvider>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={3}
-            >
-              <Box sx={{ m: 1 }}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    renderInput={(props) => <TextField {...props} />}
-                    label="Đến ngày"
-                    value={valueDateTo}
-                    onChange={(newValue) => {
-                      setValueDateTo(newValue);
-                    }}
-                  />
-                </LocalizationProvider>
-              </Box>
-            </Grid>
-            <Grid
-              item
-              xs={3}
-            >
+        <Grid container >
+          <Grid
+            item
+            xs={3}>
+            <Box sx={{ m: 1 }}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  renderInput={(props) => <TextField fullWidth {...props} variant="standard" />}
+                  variant="standard"
+                  label="Từ ngày"
+                  value={valueDateFrom}
+                  inputFormat="dd/MM/yyyy"
+                  hideTabs={true}
+                  onChange={(newValue) => {
+                    setValueDateFrom(newValue);
+                  }}
+                />
+              </LocalizationProvider>
+            </Box>
+          </Grid>
+          <Grid
+            item
+            xs={3}
+          >
+            <Box sx={{ m: 1 }}>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <DatePicker
+                  renderInput={(props) => <TextField fullWidth {...props} variant="standard" />}
+                  label="Đến ngày"
+                  value={valueDateTo}
+                  onChange={(newValue) => {
+                    setValueDateTo(newValue);
+                  }}
+                />
+              </LocalizationProvider>
+            </Box>
+          </Grid>
+          <Grid
+            item
+            xs={3}
+          >
+            <Box sx={{ m: 1 }}>
               <TextField
                 fullWidth
                 id="standard-basic"
@@ -77,16 +78,18 @@ variant="h4">
                   setSearchTextInput(e.target.value);
                 }}
               />
-            </Grid>
-            <Grid
-              item
-              sm={3}
-              sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-            >
-              <Button variant="contained">Tìm kiếm</Button>
-            </Grid>
+            </Box>
           </Grid>
-        </Container>
+          <Grid
+            item
+            sm={3}
+            sx={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+          >
+            <Box sx={{ m: 1 }}>
+              <Button variant="contained">Tìm kiếm</Button>
+            </Box>
+          </Grid>
+        </Grid>
       </Box>
     </Box>
   );

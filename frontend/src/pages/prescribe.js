@@ -16,7 +16,7 @@ const Prescriptions = () => (
         py: 8,
       }}
     >
-      <Container maxWidth={false}>
+      <Container>
         <PrescriptionListToolbar />
         <Box sx={{ mt: 3 }}>
           <PrescriptionListResults prescriptions={prescriptions} />

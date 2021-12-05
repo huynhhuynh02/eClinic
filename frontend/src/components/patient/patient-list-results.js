@@ -19,11 +19,13 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
+import PrescriptionDialogs from './patient-prescription-dialog';
 
 export const PatientListResults = ({ patients, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [open, setOpen] = useState(false);
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -64,6 +66,15 @@ export const PatientListResults = ({ patients, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+
+  const handleOnClose = () => {
+    setOpen(false);
+  }
+
+  const handleOnOpen = () => {
+    setOpen(true);
+  }
+  
 
   return (
     <>
@@ -160,7 +171,7 @@ export const PatientListResults = ({ patients, ...rest }) => {
                     </IconButton>
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton href="#">
+                    <IconButton onClick={handleOnOpen}>
                       <AccountBoxIcon color="primary" />
                     </IconButton>
                   </TableCell>
@@ -190,6 +201,7 @@ export const PatientListResults = ({ patients, ...rest }) => {
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
+    <PrescriptionDialogs open={open} onClose={handleOnClose}/>
     </>
   );
 };
