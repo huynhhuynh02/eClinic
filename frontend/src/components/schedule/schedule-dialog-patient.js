@@ -19,121 +19,27 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import CustomizedDialogs from '../common/dialog';
+import { Box } from '@mui/material/Box';
 
-const Item = styled(Paper)(({ theme }) => ({
-    ...theme.typography.body2,
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
-}));
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-    return <Slide direction="up" ref={ref} {...props} />;
-});
-
-const BootstrapDialog = styled(Dialog)(({ theme }) => ({
-    '& .MuiDialogContent-root': {
-        padding: theme.spacing(2),
-    },
-    '& .MuiDialogActions-root': {
-        padding: theme.spacing(1),
-    },
-}));
-
-const BootstrapDialogTitle = (props) => {
-    const { children, onClose, ...other } = props;
-
-
-    return (
-        <DialogTitle sx={{ m: 0, p: 2 }} {...other} style={{
-            backgroundColor: ''
-        }}>
-            {children}
-            {onClose ? (
-                <IconButton
-                    aria-label="close"
-                    onClick={onClose}
-                    sx={{
-                        position: 'absolute',
-                        right: 8,
-                        top: 8,
-                        color: (theme) => theme.palette.grey[500],
-                    }}
-                >
-                    <CloseIcon />
-                </IconButton>
-            ) : null}
-        </DialogTitle>
-    );
-};
-
-BootstrapDialogTitle.propTypes = {
-    children: PropTypes.node,
-    onClose: PropTypes.func.isRequired,
-};
-
-export default function MedicalRecordDialogs({ open, onClose }) {
+export default function MedicalRecordDialogs(props) {
+    const { children, open, title, onClose, ...other } = props;
     const [value, setValue] = React.useState(new Date());
+    
     return (
-        <div>
-            <BootstrapDialog
-                TransitionComponent={Transition}
-                maxWidth="lg"
-                fullWidth
-                onClose={onClose}
-                aria-labelledby="customized-dialog-title"
-                open={open}
-            >
-                <BootstrapDialogTitle id="customized-dialog-title" >
-                    Nguyễn Văn A
-                </BootstrapDialogTitle>
-                <DialogContent dividers>
-                    <Typography variant="h6" component="h5" align="center">
-                        Hồ sơ bệnh nhân
-                    </Typography>
-                    <Grid container spacing={2}>
-                        <Grid item xs={6}>
-                            <Item>
-                            </Item>
-                        </Grid>
-                        <Grid item xs={6}>
-                            <Item>
-                                <TableContainer>
-                                    <Table>
-                                        <TableBody>
-                                            <TableRow>
-                                                <TableCell align="left">Họ tên: </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell align="left">Họ tên: </TableCell>
-                                            </TableRow>
-                                            <TableRow>
-                                                <TableCell align="left">Họ tên: </TableCell>
-                                            </TableRow>
-                                        </TableBody>
-                                    </Table>
-                                </TableContainer>
-                            </Item>
-                        </Grid>
-                    </Grid>
-                    <Typography align="left">
-                        Diễn tiến bệnh
-                    </Typography>
-                    
-                    <Typography align="left">
-                        Sinh hiệu
-                    </Typography>
-                    <Typography align="left">
-                        Lịch sử khám
-                    </Typography>
-                </DialogContent>
-                <DialogActions>
-                    <Button variant="outlined" color="primary" autoFocus onClick={onClose}>
-                        Đóng
-                    </Button>
-                </DialogActions>
-            </BootstrapDialog>
-        </div>
+        <CustomizedDialogs
+            title="Thông tin bệnh nhân"
+            open={open}
+            onClose={onClose}
+            actions= {
+                <>
+                <Button variant="contained">Contained</Button>
+                <Button variant="contained">Contained</Button>
+                </>
+            }
+        >
+            {children}
+        </CustomizedDialogs>
     );
 }
 

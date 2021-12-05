@@ -58,7 +58,7 @@ const items = [
       },
       {
         title: 'Hoá đơn',
-        href: '/patient',
+        href: '/prescribe',
       }
     ]
   },
@@ -121,6 +121,7 @@ export const DashboardSidebar = (props) => {
             icon={item.icon}
             href={item.href}
             title={item.title}
+            
           >
             <MenuList sx={{
               position: 'absolute',
@@ -177,7 +178,8 @@ export const DashboardSidebar = (props) => {
   if (lgUp) {
     return (
       <AppBar sx={{
-        top: 64
+        top: 64,
+        backgroundColor:'#fff'
       }}>
         <Container>
           {content}
