@@ -2,8 +2,8 @@ import { Box, Container } from "@mui/material";
 import Head from "next/head";
 import { SettingMedicineListResults } from "src/components/settings/medicine/medicine-list-results";
 import { SettingMedicineToolbar } from "src/components/settings/medicine/medicine_toolbar";
+import { medicines } from "src/__mocks__/medicines";
 import { DashboardLayout } from "../components/dashboard-layout";
-import { patients } from "../__mocks__/patients";
 
 const MedicineSetting = () => (
   <>
@@ -20,7 +20,7 @@ const MedicineSetting = () => (
       <Container>
         <SettingMedicineToolbar />
         <Box sx={{ mt: 3 }}>
-          <SettingMedicineListResults medicines={patients} />
+          <SettingMedicineListResults medicines={medicines} />
         </Box>
       </Container>
     </Box>

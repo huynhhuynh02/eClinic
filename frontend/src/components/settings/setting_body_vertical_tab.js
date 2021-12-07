@@ -4,8 +4,8 @@ import Tabs from "@mui/material/Tabs";
 import Typography from "@mui/material/Typography";
 import PropTypes from "prop-types";
 import * as React from "react";
-import AcronymCategory from "./acronym-list-results";
-import MedicalCategoryGroup from "./medical_category_group";
+import AcronymCategory from "./acronym/acronym-list-results";
+import MedicalCategoryGroup from "./category/medical_category_group";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;

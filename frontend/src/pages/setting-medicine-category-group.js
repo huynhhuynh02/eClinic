@@ -1,6 +1,6 @@
 import { Box, Container } from "@mui/material";
 import Head from "next/head";
-import MedicalCategoryGroup from "src/components/settings/medical_category_group";
+import MedicalCategoryGroup from "src/components/settings/category/medical_category_group";
 import { medicine_category_group } from "src/__mocks__/category_group";
 import { DashboardLayout } from "../components/dashboard-layout";
 

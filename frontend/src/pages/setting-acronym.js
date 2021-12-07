@@ -1,6 +1,6 @@
 import { Box, Container } from "@mui/material";
 import Head from "next/head";
-import AcronymCategory from "src/components/settings/acronym-list-results";
+import AcronymCategory from "src/components/settings/acronym/acronym-list-results";
 import { acronyms } from "src/__mocks__/acronyms";
 import { DashboardLayout } from "../components/dashboard-layout";
 

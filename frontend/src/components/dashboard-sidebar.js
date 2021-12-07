@@ -73,10 +73,10 @@ const items = [
         title: "Thuốc",
         href: "/setting-medicine",
       },
-      {
-        title: "Từ viết tắt",
-        href: "/setting-acronym",
-      },
+      // {
+      //   title: "Từ viết tắt",
+      //   href: "/setting-acronym",
+      // },
     ],
   },
 ];
