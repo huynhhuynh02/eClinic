@@ -1,36 +1,13 @@
-import {
-  Box,
-  Button,
-  Grid,
-  Container,
-  CardContent,
-  TextField,
-  InputAdornment,
-  SvgIcon, Typography,
-  FormControlLabel,
-  Checkbox,
-  FormGroup,
-  Select,
-  MenuItem,
-  Card
-} from '@mui/material';
-import { useState } from 'react';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
-import { display } from '@mui/system';
+import { Box, Card, CardContent, MenuItem, Typography } from "@mui/material";
+import { useState } from "react";
 
-
-export const ScheduleToolbar = (props) => {
+export const SettingMedicineToolbar = (props) => {
   const [valueDateFrom, setValueDateFrom] = useState(null);
   const [valueDateTo, setValueDateTo] = useState(null);
-  const [dateSelect, setDateSelect] = useState('');
-  const [monthSelect, setMonthSelect] = useState('');
-  const [yearSelect, setYearSelect] = useState('');
-  const [sex, setSex] = useState('');
+  const [dateSelect, setDateSelect] = useState("");
+  const [monthSelect, setMonthSelect] = useState("");
+  const [yearSelect, setYearSelect] = useState("");
+  const [sex, setSex] = useState("");
 
   const handleChangeDate = (event) => {
     setDateSelect(event.target.value);
@@ -47,7 +24,6 @@ export const ScheduleToolbar = (props) => {
   const handleChangeSex = (event) => {
     setSex(event.target.value);
   };
-
 
   var date = [];
   var month = [];
@@ -66,46 +42,46 @@ export const ScheduleToolbar = (props) => {
 
   const renderDate = date.map((index) => {
     return (
-      <MenuItem value={index}>{index}</MenuItem>
-    )
-  })
+      <MenuItem key={"date" + index} value={index}>
+        {index}
+      </MenuItem>
+    );
+  });
 
   const renderMonth = month.map((index) => {
     return (
-      <MenuItem value={index}>{index}</MenuItem>
-    )
-  })
+      <MenuItem key={"month" + index} value={index}>
+        {index}
+      </MenuItem>
+    );
+  });
 
   const renderYear = year.map((index) => {
     return (
-      <MenuItem value={index}>{index}</MenuItem>
-    )
-  })
+      <MenuItem key={"year" + index} value={index}>
+        {index}
+      </MenuItem>
+    );
+  });
 
   return (
     <Card {...props}>
       <CardContent>
         <Box
           sx={{
-            alignItems: 'center',
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            m: -1
+            alignItems: "center",
+            display: "flex",
+            justifyContent: "space-between",
+            flexWrap: "wrap",
+            m: -1,
           }}
         >
-          <Typography
-            sx={{ m: 1 }}
-            variant="h6"
-          >
+          <Typography sx={{ m: 1 }} variant="h6">
             Thông tin bệnh nhân
           </Typography>
         </Box>
-        <Box sx={{ mt: 3 }}>
-          <Grid
-            container
-            spacing={3}
-          >
+        {/* <Box sx={{ mt: 3 }}>
+          <Grid container spacing={3}>
             <Grid item sm={6}>
               <Box sx={{ mb: 5 }}>
                 <TextField fullWidth id="standard-basic" label="Họ tên *" variant="standard" />
@@ -186,9 +162,11 @@ export const ScheduleToolbar = (props) => {
                 <InputLabel variant="standard" htmlFor="uncontrolled-native">
                   Nhóm bệnh nhân
                 </InputLabel>
-                <FormGroup sx={{
-                  display: 'flex'
-                }}>
+                <FormGroup
+                  sx={{
+                    display: "flex",
+                  }}
+                >
                   <FormControlLabel control={<Checkbox defaultChecked />} label="Nha Khoa" />
                   <FormControlLabel control={<Checkbox />} label="Nội khoa" />
                   <FormControlLabel control={<Checkbox />} label="Ngoại Khoa" />
@@ -196,8 +174,8 @@ export const ScheduleToolbar = (props) => {
               </Box>
             </Grid>
           </Grid>
-        </Box>
+        </Box> */}
       </CardContent>
     </Card>
   );
-}
+};

@@ -106,15 +106,18 @@ const Dashboard = () => (
         py: 8,
       }}
     >
-      <Container maxWidth={false}>
+      <Container>
         <Grid container spacing={3}>
-          <Grid item lg={4} sm={6} xl={3} xs={12}>
+          <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalCustomers />
           </Grid>
-          <Grid item lg={4} sm={6} xl={3} xs={12}>
+          <Grid item lg={3} sm={6} xl={3} xs={12}>
             <Budget />
           </Grid>
-          <Grid item lg={4} sm={6} xl={3} xs={12}>
+          <Grid item lg={3} sm={6} xl={3} xs={12}>
+            <TotalProfit sx={{ height: "100%" }} />
+          </Grid>
+          <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalProfit sx={{ height: "100%" }} />
           </Grid>
         </Grid>

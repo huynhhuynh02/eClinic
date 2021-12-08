@@ -1,5 +1,5 @@
 import * as React from 'react';
-import PropTypes, { node } from 'prop-types';
+import PropTypes from 'prop-types';
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import Dialog from '@mui/material/Dialog';
@@ -10,6 +10,11 @@ import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import Typography from '@mui/material/Typography';
 import Slide from '@mui/material/Slide';
+import DoneIcon from '@mui/icons-material/Done';
+import CancelIcon from '@mui/icons-material/Cancel';
+import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import StaticDateTimePicker from '@mui/lab/StaticDateTimePicker';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -27,8 +32,11 @@ const BootstrapDialog = styled(Dialog)(({ theme }) => ({
 const BootstrapDialogTitle = (props) => {
   const { children, onClose, ...other } = props;
 
+  
   return (
-    <DialogTitle sx={{ m: 0, p: 2 }} {...other}>
+    <DialogTitle sx={{ m: 0, p: 2 }} {...other} style={{
+      backgroundColor: ''
+    }}>
       {children}
       {onClose ? (
         <IconButton
@@ -53,36 +61,54 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function CustomizedDialogs(props) {
-  const { children, open, actions, onClose, title, maxWidth, ...other } = props;
+export default function ScheduleTimedDialogs({ open, onClose }) {
+  const [value, setValue] = React.useState(new Date());
   return (
     <div>
       <BootstrapDialog
-        maxWidth={maxWidth}
-        fullWidth
         TransitionComponent={Transition}
+        maxWidth="sm"
+        fullWidth
         onClose={onClose}
         aria-labelledby="customized-dialog-title"
         open={open}
       >
-        <BootstrapDialogTitle id="customized-dialog-title" onClose={onClose}>
-          {title}
+        <BootstrapDialogTitle id="customized-dialog-title" >
+          Đổi giờ khám
         </BootstrapDialogTitle>
         <DialogContent dividers>
-          {children}
+          <LocalizationProvider dateAdapter={AdapterDateFns}>
+            <StaticDateTimePicker
+              displayStaticWrapperAs="desktop"
+              style= {{
+                maxWidth: '300px'
+              }}              
+              openTo="year"
+              value={value}
+              onChange={(newValue) => {
+                setValue(newValue);
+              }}
+              renderInput={(params) => <TextField {...params} />}
+            />
+          </LocalizationProvider>
         </DialogContent>
         <DialogActions>
-          {actions}
+          <Button variant="contained" autoFocus onClick={onClose} 
+            startIcon={<DoneIcon />}>
+            Cập nhật
+          </Button>
+          <Button variant="outlined" color="primary" autoFocus onClick={onClose} 
+            startIcon={<CancelIcon />}>
+            Huỷ
+          </Button>
         </DialogActions>
       </BootstrapDialog>
     </div>
   );
 }
 
-CustomizedDialogs.propTypes = {
-  title: PropTypes.string,
+ScheduleTimedDialogs.propTypes = {
   open: PropTypes.bool,
-  actions: PropTypes.node,
-  onClose: PropTypes.func,
-  children: PropTypes.node
-}
+  scheduleId: PropTypes.number,
+  onClose: PropTypes.func.isRequired,
+};

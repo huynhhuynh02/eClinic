@@ -24,9 +24,9 @@ import {
       >
         <Typography
           sx={{ m: 1 }}
-          variant="h4"
+          variant="h6"
         >
-          Bệnh nhân
+          Danh sách khám bệnh
         </Typography>
         <Box sx={{ m: 1 }}>
           <Button
