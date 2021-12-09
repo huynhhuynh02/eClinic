@@ -3,8 +3,11 @@ import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
+import axios from 'axios';
+import { useState } from 'react';
 
 const Login = () => {
+  const [errorLogin, setErrorLogin] = useState(null);
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -25,8 +28,20 @@ const Login = () => {
         .required(
           'Password is required')
     }),
-    onSubmit: () => {
-      router.push('/');
+    onSubmit: (values) => {
+      axios.get('/sanctum/csrf-cookie').then(response => {
+        axios.post('/api/login', values).then(res => {
+          if(res.status === 200)
+          {
+            localStorage.setItem('auth_token', res.data.access_token);
+            localStorage.setItem('user', res.data.user);
+            router.push('/');
+          }
+        }, error => {
+          console.log(error);
+          // setErrorLogin(errors.data.message);
+        })
+      });
     }
   });
 
@@ -93,6 +108,7 @@ const Login = () => {
               value={formik.values.password}
               variant="outlined"
             />
+            { errorLogin === null && errorLogin }
             <Box sx={{ py: 2 }}>
               <Button
                 color="primary"
