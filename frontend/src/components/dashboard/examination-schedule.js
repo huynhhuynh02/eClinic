@@ -16,12 +16,26 @@ import DescriptionIcon from "@mui/icons-material/Description";
 import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
-
+//
+import PatientRecordsDialog from "../Modal/patient-records-dialog";
 
 export const ExaminationSchedule = (props) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  //
+  // const [open, setOpen] = useState(false);
+  // const handleOpen = () => setOpen(true);
+  // const handleClose = () => setOpen(false);
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
@@ -32,7 +46,8 @@ export const ExaminationSchedule = (props) => {
   };
   return (
     <Card {...props}>
-      { props.header && <CardHeader title={ props.message_header } /> }
+      {props.header && <CardHeader title={props.message_header} />}
+      <PatientRecordsDialog open={open} handleClose={handleClose} />
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
           <Table>
@@ -69,7 +84,8 @@ export const ExaminationSchedule = (props) => {
                     </IconButton>
                   </TableCell>
                   <TableCell align="center">
-                    <IconButton href="#">
+                    {/* <IconButton onClick={handleOpen}> */}
+                    <IconButton onClick={handleClickOpen}>
                       <AccountBoxIcon color="secondary" />
                     </IconButton>
                   </TableCell>
