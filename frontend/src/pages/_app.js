@@ -8,6 +8,9 @@ import { createEmotionCache } from '../utils/create-emotion-cache';
 import { theme } from '../theme';
 import '../styles/App.css';
 import axios from 'axios';
+import { useState, useEffect } from 'react';
+
+import Login from './login';
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -27,6 +30,33 @@ const App = (props) => {
 
   const getLayout = Component.getLayout ?? ((page) => page);
 
+  const [isLogin, setIsLogin] = useState(false);
+
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    if (!isLogin) {
+      axios.get('/api/profile').then(
+        res => {
+          setIsLogin(true);
+          setUser(res.data.profile);
+          setIsLoading(false);
+        }
+      ).catch(
+        () => {
+          setIsLogin(false);
+          setIsLoading(false);
+        }
+      );
+    }
+  });
+
+  if (isLoading)
+  {
+    return <></>  
+  }
   return (
     <CacheProvider value={emotionCache}>
       <Head>
@@ -41,7 +71,7 @@ const App = (props) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          {getLayout(<Component {...pageProps} />)}
+          { !isLogin ? <Login /> : getLayout(<Component {...pageProps} />) }
         </ThemeProvider>
       </LocalizationProvider>
     </CacheProvider>
