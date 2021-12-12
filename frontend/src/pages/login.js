@@ -1,48 +1,40 @@
-import Head from 'next/head';
-import { useRouter } from 'next/router';
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
-import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
-import axios from 'axios';
-import { useState } from 'react';
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import { Box, Button, Container, Grid, Link, TextField, Typography } from "@mui/material";
+import axios from "axios";
+import { useState } from "react";
 
 const Login = () => {
   const [errorLogin, setErrorLogin] = useState(null);
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
-      email: '',
-      password: ''
+      email: "",
+      password: "",
     },
     validationSchema: Yup.object({
-      email: Yup
-        .string()
-        .email(
-          'Must be a valid email')
-        .max(255)
-        .required(
-          'Email is required'),
-      password: Yup
-        .string()
-        .max(255)
-        .required(
-          'Password is required')
+      email: Yup.string().email("Must be a valid email").max(255).required("Email is required"),
+      password: Yup.string().max(255).required("Password is required"),
     }),
     onSubmit: (values) => {
-      axios.get('/sanctum/csrf-cookie').then(response => {
-        axios.post('/api/login', values).then(res => {
-          if(res.status === 200)
-          {
-            localStorage.setItem('auth_token', res.data.access_token);
-            localStorage.setItem('user', res.data.user);
-            router.push('/');
+      axios.get("/sanctum/csrf-cookie").then((response) => {
+        axios.post("/api/login", values).then(
+          (res) => {
+            if (res.status === 200) {
+              localStorage.setItem("auth_token", res.data.access_token);
+              localStorage.setItem("user", res.data.user);
+              router.push("/");
+            }
+          },
+          (error) => {
+            console.log(error);
+            // setErrorLogin(errors.data.message);
           }
-        }, error => {
-          console.log(error);
-          // setErrorLogin(errors.data.message);
-        })
+        );
       });
-    }
+    },
   });
 
   return (
@@ -53,10 +45,10 @@ const Login = () => {
       <Box
         component="main"
         sx={{
-          alignItems: 'center',
-          display: 'flex',
+          alignItems: "center",
+          display: "flex",
           flexGrow: 1,
-          minHeight: '100%'
+          minHeight: "100%",
         }}
       >
         <Container maxWidth="sm">
@@ -64,21 +56,13 @@ const Login = () => {
             <Box
               sx={{
                 pb: 1,
-                pt: 3
+                pt: 3,
               }}
             >
-              <Typography
-                align="center"
-                color="textPrimary"
-                variant="h4"
-              >
+              <Typography align="center" color="textPrimary" variant="h4">
                 Sign in
               </Typography>
-              <Typography
-                align="center"
-                color="textSecondary"
-                variant="body1"
-              >
+              <Typography align="center" color="textSecondary" variant="body1">
                 Login with email address
               </Typography>
             </Box>
@@ -108,7 +92,7 @@ const Login = () => {
               value={formik.values.password}
               variant="outlined"
             />
-            { errorLogin === null && errorLogin }
+            {errorLogin === null && errorLogin}
             <Box sx={{ py: 2 }}>
               <Button
                 color="primary"

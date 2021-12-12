@@ -84,7 +84,6 @@ export const ExaminationSchedule = (props) => {
                     </IconButton>
                   </TableCell>
                   <TableCell align="center">
-                    {/* <IconButton onClick={handleOpen}> */}
                     <IconButton onClick={handleClickOpen}>
                       <AccountBoxIcon color="secondary" />
                     </IconButton>

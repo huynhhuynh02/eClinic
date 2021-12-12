@@ -50,7 +50,6 @@ export default function PatientRecordsDialog(props) {
     <div>
       <Dialog
         open={props.open}
-        // TransitionComponent={Transition}
         keepMounted
         onClose={props.handleClose}
         aria-describedby="alert-dialog-slide-description"

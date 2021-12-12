@@ -18,6 +18,9 @@ Route::post('register', 'API\AuthController@register');
 
 Route::post('login', 'API\AuthController@login')->name('login');
 
+Route::get('patient', 'API\PatientsController@index');
+Route::post('patient-create', 'API\PatientsController@create');
+
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // API route for logout user
     Route::get('profile', 'API\AuthController@profile');
