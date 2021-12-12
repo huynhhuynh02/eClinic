@@ -19,13 +19,14 @@ const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
 export const DashboardNavbar = (props) => {
   const { onSidebarOpen, ...other } = props;
   const router = useRouter();
+  const user_name = localStorage.getItem('user_name');
   const logout = (e) => {
     e.preventDefault();
 
     axios.post('/api/logout').then(res => {
       if (res.status === 200) {
-        localStorage.removeItem('auth_token', res.data.access_token);
-        localStorage.removeItem('user', res.data.user);
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user_name');
         router.push('/login');
       }
     },
@@ -98,6 +99,7 @@ export const DashboardNavbar = (props) => {
                 </Badge>
               </IconButton>
             </Tooltip>
+            <Box>{ user_name }</Box>
             <Avatar
               sx={{
                 height: 40,

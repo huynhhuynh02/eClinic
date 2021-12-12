@@ -20,19 +20,15 @@ const Login = () => {
     }),
     onSubmit: (values) => {
       axios.get("/sanctum/csrf-cookie").then((response) => {
-        axios.post("/api/login", values).then(
-          (res) => {
-            if (res.status === 200) {
-              localStorage.setItem("auth_token", res.data.access_token);
-              localStorage.setItem("user", res.data.user);
-              router.push("/");
-            }
-          },
-          (error) => {
-            console.log(error);
-            // setErrorLogin(errors.data.message);
+        axios.post("/api/login", values).then((res) => {
+          if (res.data.status === true) {
+            localStorage.setItem("auth_token", res.data.access_token);
+            localStorage.setItem("user_name", res.data.user.name);
+            router.push("/");
+          } else {
+            setErrorLogin(res.data.message);
           }
-        );
+        });
       });
     },
   });
@@ -63,14 +59,14 @@ const Login = () => {
                 Sign in
               </Typography>
               <Typography align="center" color="textSecondary" variant="body1">
-                Login with email address
+                Đăng nhập bằng email
               </Typography>
             </Box>
             <TextField
               error={Boolean(formik.touched.email && formik.errors.email)}
               fullWidth
               helperText={formik.touched.email && formik.errors.email}
-              label="Email Address"
+              label="Email"
               margin="normal"
               name="email"
               onBlur={formik.handleBlur}
@@ -83,7 +79,7 @@ const Login = () => {
               error={Boolean(formik.touched.password && formik.errors.password)}
               fullWidth
               helperText={formik.touched.password && formik.errors.password}
-              label="Password"
+              label="Mật khẩu"
               margin="normal"
               name="password"
               onBlur={formik.handleBlur}
@@ -92,16 +88,11 @@ const Login = () => {
               value={formik.values.password}
               variant="outlined"
             />
-            {errorLogin === null && errorLogin}
+            {errorLogin != null && (
+              <Box sx={{ textAlign: "left", color: "#e91e63" }}>{errorLogin}</Box>
+            )}
             <Box sx={{ py: 2 }}>
-              <Button
-                color="primary"
-                disabled={formik.isSubmitting}
-                fullWidth
-                size="large"
-                type="submit"
-                variant="contained"
-              >
+              <Button color="primary" fullWidth size="large" type="submit" variant="contained">
                 Sign In Now
               </Button>
             </Box>

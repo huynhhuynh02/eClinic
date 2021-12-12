@@ -1,7 +1,5 @@
-import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
 import DeleteIcon from "@mui/icons-material/Delete";
-import DescriptionIcon from "@mui/icons-material/Description";
+import EditIcon from "@mui/icons-material/Edit";
 import {
   Box,
   Card,
@@ -13,7 +11,6 @@ import {
   TableHead,
   TablePagination,
   TableRow,
-  Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
 import { useState } from "react";
@@ -28,7 +25,7 @@ export const SettingMedicineListResults = ({ medicines, ...rest }) => {
     let newSelectedCustomerIds;
 
     if (event.target.checked) {
-      newSelectedCustomerIds = medicines.map((patient) => patient.id);
+      newSelectedCustomerIds = medicines.map((item) => item.id);
     } else {
       newSelectedCustomerIds = [];
     }
@@ -83,65 +80,50 @@ export const SettingMedicineListResults = ({ medicines, ...rest }) => {
                       onChange={handleSelectAll}
                     />
                   </TableCell>
-                  <TableCell>Mã BN</TableCell>
-                  <TableCell>Họ tên</TableCell>
-                  <TableCell>Địa chỉ</TableCell>
-                  <TableCell>Tuổi</TableCell>
-                  <TableCell>Điện thoại</TableCell>
-                  <TableCell>Hồ sơ</TableCell>
-                  <TableCell>Kê đơn</TableCell>
-                  <TableCell>Chỉnh sửa</TableCell>
-                  <TableCell>Xoá</TableCell>
+                  <TableCell>Tên thuốc</TableCell>
+                  <TableCell>Ngày hết hạn</TableCell>
+                  <TableCell>Danh mục thuốc</TableCell>
+                  <TableCell>Giá</TableCell>
+                  <TableCell>Đơn vị tính</TableCell>
+                  <TableCell>Mô tả</TableCell>
+                  <TableCell align="right">Chỉnh sửa</TableCell>
+                  <TableCell align="right">Xoá</TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {medicines.slice(0, limit).map((patient) => (
+                {medicines.slice(0, limit).map((item) => (
                   <TableRow
                     hover
-                    // key={patient.id}
-                    selected={selectedCustomerIds.indexOf(patient.id) !== -1}
+                    key={item.id}
+                    selected={selectedCustomerIds.indexOf(item.id) !== -1}
                   >
                     <TableCell padding="checkbox">
                       <Checkbox
-                        checked={selectedCustomerIds.indexOf(patient.id) !== -1}
-                        onChange={(event) => handleSelectOne(event, patient.id)}
+                        checked={selectedCustomerIds.indexOf(item.id) !== -1}
+                        onChange={(event) => handleSelectOne(event, item.id)}
                         value="true"
                       />
                     </TableCell>
-                    <TableCell>
-                      <Box
-                        sx={{
-                          alignItems: "center",
-                          display: "flex",
-                        }}
-                      >
-                        <Typography color="textPrimary" variant="body1">
-                          {patient.id}
-                        </Typography>
-                      </Box>
-                    </TableCell>
-                    <TableCell>{patient.name}</TableCell>
-                    <TableCell>{patient.address}</TableCell>
-                    <TableCell>{patient.birthday}</TableCell>
-                    <TableCell>{patient.phone}</TableCell>
-                    <TableCell align="center">
+
+                    <TableCell>{item.name}</TableCell>
+                    <TableCell>{item.expiredDate}</TableCell>
+                    <TableCell>{item.category?.name}</TableCell>
+                    <TableCell>{item.price}</TableCell>
+                    <TableCell>{item.units?.id}</TableCell>
+                    <TableCell>{item.description}</TableCell>
+                    {/* <TableCell align="right">
                       <IconButton href="#">
                         <DescriptionIcon color="primary" />
                       </IconButton>
-                    </TableCell>
-                    <TableCell align="center">
+                    </TableCell> */}
+                    <TableCell align="right">
                       <IconButton href="#">
-                        <AccountBoxIcon color="primary" />
+                        <EditIcon color="primary" />
                       </IconButton>
                     </TableCell>
-                    <TableCell align="center">
+                    <TableCell align="right">
                       <IconButton href="#">
-                        <AccessTimeFilledIcon color="primary" />
-                      </IconButton>
-                    </TableCell>
-                    <TableCell align="center">
-                      <IconButton href="#">
-                        <DeleteIcon color="warning" />
+                        <DeleteIcon color="error" />
                       </IconButton>
                     </TableCell>
                   </TableRow>

@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Validator;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Utils\AppConstants;
 
 class AuthController extends Controller
 {
@@ -51,14 +52,14 @@ class AuthController extends Controller
 
         if(!Auth::attempt($request->only('email', 'password')))
         {
-            return response()->json(['message' => 'Unauthorized'], 401);
+            return response()->json(['message' => AppConstants::MESSAGE_LOGIN_NOT_CORRECT, 'status' => false]);
         }
 
         $user = User::where('email', $request->email)->firstOrFail();
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        return response()->json(['user' => $user, 'access_token' => $token, 'token_type' => 'Bearer']);
+        return response()->json(['user' => $user, 'access_token' => $token, 'token_type' => 'Bearer', 'status' => true]);
     }
 
     public function logout()
