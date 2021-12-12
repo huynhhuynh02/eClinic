@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import styled from '@emotion/styled';
-import { AppBar, Avatar, Badge, Box, IconButton, Toolbar, Tooltip, Container } from '@mui/material';
+import { AppBar, Avatar, Badge, Box, IconButton, Toolbar, Tooltip, Container, Button } from '@mui/material';
 import NextLink from 'next/link';
 import { Logo } from './logo';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -8,6 +8,8 @@ import SearchIcon from '@mui/icons-material/Search';
 import { Bell as BellIcon } from '../icons/bell';
 import { UserCircle as UserCircleIcon } from '../icons/user-circle';
 import { Users as UsersIcon } from '../icons/users';
+import { useRouter } from 'next/router';
+import axios from 'axios';
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.primany,
@@ -16,6 +18,21 @@ const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
 
 export const DashboardNavbar = (props) => {
   const { onSidebarOpen, ...other } = props;
+  const router = useRouter();
+  const logout = (e) => {
+    e.preventDefault();
+
+    axios.post('/api/logout').then(res => {
+      if (res.status === 200) {
+        localStorage.removeItem('auth_token', res.data.access_token);
+        localStorage.removeItem('user', res.data.user);
+        router.push('/login');
+      }
+    },
+    errors => {
+
+    })
+  }
 
   return (
     <>
@@ -91,6 +108,7 @@ export const DashboardNavbar = (props) => {
             >
               <UserCircleIcon fontSize="small" />
             </Avatar>
+            <Button variant="text text-white" onClick={ logout }>Logout</Button>
           </Toolbar>
         </Container>
       </DashboardNavbarRoot>
