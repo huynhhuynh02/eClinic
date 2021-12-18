@@ -48,7 +48,7 @@ export const schedules = [
         avatarUrl: '/static/images/avatars/avatar_3.png',
         createdAt: 1555016400000,
         email: 'ekaterina.tankova@devias.io',
-        name: 'Nguyen Van A',
+        name: 'Nguyen Van B',
         phone: '304-428-3097',
         birthday: '1996/01/11'
     }
@@ -74,7 +74,7 @@ export const schedules = [
         avatarUrl: '/static/images/avatars/avatar_3.png',
         createdAt: 1555016400000,
         email: 'ekaterina.tankova@devias.io',
-        name: 'Nguyen Van A',
+        name: 'Nguyen Van C',
         phone: '304-428-3097',
         birthday: '1996/01/11'
     },
@@ -101,7 +101,7 @@ export const schedules = [
         avatarUrl: '/static/images/avatars/avatar_3.png',
         createdAt: 1555016400000,
         email: 'ekaterina.tankova@devias.io',
-        name: 'Nguyen Van A',
+        name: 'Nguyen Van D',
         phone: '304-428-3097',
         birthday: '1996/01/11'
     },
@@ -128,7 +128,7 @@ export const schedules = [
         avatarUrl: '/static/images/avatars/avatar_3.png',
         createdAt: 1555016400000,
         email: 'ekaterina.tankova@devias.io',
-        name: 'Nguyen Van A',
+        name: 'Nguyen Van E',
         phone: '304-428-3097',
         birthday: '1996/01/11'
     },

@@ -54,16 +54,18 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function CustomizedDialogs(props) {
-  const { children, open, actions, onClose, title, maxWidth, ...other } = props;
+  const { children, open, actions, onClose,scroll, title, maxWidth, ...other } = props;
   return (
     <div>
       <BootstrapDialog
+        scroll={scroll}
         maxWidth={maxWidth}
         fullWidth
         TransitionComponent={Transition}
         onClose={onClose}
         aria-labelledby="customized-dialog-title"
         open={open}
+        other
       >
         <BootstrapDialogTitle id="customized-dialog-title" onClose={onClose}>
           {title}
@@ -80,6 +82,7 @@ export default function CustomizedDialogs(props) {
 }
 
 CustomizedDialogs.propTypes = {
+  scroll: PropTypes.string,
   title: PropTypes.string,
   open: PropTypes.bool,
   actions: PropTypes.node,

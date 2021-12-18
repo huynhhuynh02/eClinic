@@ -68,8 +68,8 @@ import {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search customer"
-                variant="outlined"
+                placeholder="Tên bệnh nhân, số điện thoại, mã bệnh nhân"
+                variant="standard"
               />
             </Box>
           </CardContent>

@@ -21,15 +21,16 @@ import DatePicker from '@mui/lab/DatePicker';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
 import NativeSelect from '@mui/material/NativeSelect';
+import AddIcon from '@mui/icons-material/Add';
 import { display } from '@mui/system';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
 
 
 export const ScheduleToolbar = (props) => {
   const [valueDateFrom, setValueDateFrom] = useState(null);
   const [valueDateTo, setValueDateTo] = useState(null);
-  const [dateSelect, setDateSelect] = useState('');
-  const [monthSelect, setMonthSelect] = useState('');
-  const [yearSelect, setYearSelect] = useState('');
+  const [birthDay, setBirthDay] = useState(null);
   const [sex, setSex] = useState('');
 
   const handleChangeDate = (event) => {
@@ -48,39 +49,34 @@ export const ScheduleToolbar = (props) => {
     setSex(event.target.value);
   };
 
-
-  var date = [];
-  var month = [];
-  var year = [];
-  var currentYear = new Date().getFullYear();
-  for (let i = 1; i <= 31; i++) {
-    date.push(i);
-  }
-  for (let i = 1; i <= 12; i++) {
-    month.push(i);
-  }
-
-  for (let i = currentYear - 100; i <= currentYear; i++) {
-    year.push(i);
-  }
-
-  const renderDate = date.map((index) => {
-    return (
-      <MenuItem value={index}>{index}</MenuItem>
-    )
-  })
-
-  const renderMonth = month.map((index) => {
-    return (
-      <MenuItem value={index}>{index}</MenuItem>
-    )
-  })
-
-  const renderYear = year.map((index) => {
-    return (
-      <MenuItem value={index}>{index}</MenuItem>
-    )
-  })
+  const formik = useFormik({
+    initialValues: {
+      name: '',
+      birthday: '',
+      sex: 'name',
+      phone: ''
+    },
+    validationSchema: Yup.object({
+      name: Yup
+        .string()
+        .max(50)
+        .required('Họ tên là bắc buộc'),
+      birthday: Yup.date()
+        .required('Vui lòng chọn ngày sinh'),
+      sex: Yup
+        .string()
+        .required(
+        'Vui lòng chọn giới tính'
+      ),
+      phone: Yup
+        .string()
+        .max(10, 'Số điện thoại 10 ký tự')
+        .required('Vui lòng nhập số điện thoại')
+    }),
+    handleSubmit: (values) => {
+      console.log(values);
+    },
+  });
 
   return (
     <Card {...props}>
@@ -102,100 +98,79 @@ export const ScheduleToolbar = (props) => {
           </Typography>
         </Box>
         <Box sx={{ mt: 3 }}>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid item sm={6}>
-              <Box sx={{ mb: 5 }}>
-                <TextField fullWidth id="standard-basic" label="Họ tên *" variant="standard" />
-              </Box>
-              <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                Ngày sinh
-              </InputLabel>
-              <Box sx={{ mb: 3 }}>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel id="simple-select-date-label">Ngày</InputLabel>
-                  <Select
-                    labelId="simple-select-date-label"
-                    id="simple-select-date"
-                    value={dateSelect}
-                    onChange={handleChangeDate}
-                    label="Ngày"
-                  >
-                    {renderDate}
-                  </Select>
-                </FormControl>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel id="simple-select-month-label">Tháng</InputLabel>
-                  <Select
-                    labelId="simple-select-month-label"
-                    id="simple-select-month"
-                    value={monthSelect}
-                    onChange={handleChangeMonth}
-                    label="Tháng"
-                  >
-                    {renderMonth}
-                  </Select>
-                </FormControl>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel id="simple-select-year-label">Tháng</InputLabel>
-                  <Select
-                    labelId="simple-select-year-label"
-                    id="simple-select-year"
-                    value={yearSelect}
-                    onChange={handleChangeYear}
-                    label="Tháng"
-                  >
-                    {renderYear}
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box sx={{ mb: 3 }}>
-                <TextField fullWidth id="standard-basic" label="Địa chỉ" variant="standard" />
-              </Box>
-              <Box sx={{ mb: 5 }}>
-                <TextField fullWidth id="standard-basic" label="Nghề nghiệp" variant="standard" />
-              </Box>
-              <Button variant="contained">Thêm</Button>
+          <form onSubmit={formik.handleSubmit}>
+            <Grid
+              container
+              spacing={3}
+            >
+              <Grid item sm={6}>
+                <Box sx={{ mb: 3 }}>
+                  <TextField
+                    name="name"
+                    error={Boolean(formik.touched.name && formik.errors.name)}
+                    helperText={formik.touched.name && formik.errors.name}
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values.name}
+                    fullWidth id="standard-basic" label="Họ tên" required variant="standard" />
+                </Box>
+                <Box sx={{ mb: 3 }}>
+                  <DatePicker
+                    error={Boolean(formik.touched.birthday && formik.errors.birthday)}
+                    helperText={formik.touched.birthday && formik.errors.birthday}
+                    onBlur={formik.handleBlur}
+                    onChange={(selectDate) => setBirthDay(selectDate)}
+                    name="birthday"
+                    label="Ngày sinh"
+                    value={birthDay}
+                    renderInput={(params) => <TextField 
+                    variant="standard" {...params} />}
+                  />
+                </Box>
+                <Box sx={{ mb: 3 }}>
+                  <TextField fullWidth id="standard-basic" label="Địa chỉ" variant="standard" />
+                </Box>
+                <Box sx={{ mb: 3 }}>
+                  <TextField fullWidth id="standard-basic" label="Nghề nghiệp" variant="standard" />
+                </Box>
+                <Button variant="contained" type="submit" onClick={formik.handleSubmit} startIcon={<AddIcon />}>Thêm</Button>
+              </Grid>
+              <Grid item sm={6}>
+                <Box sx={{ mb: 3 }}>
+                  <TextField name="aliases" fullWidth id="standard-basic" label="Bí danh" variant="standard" />
+                </Box>
+                <Box sx={{ mb: 3 }}>
+                  <FormControl variant="standard" sx={{ minWidth: 120 }}>
+                    <InputLabel id="simple-select-year-label">Giới tính *</InputLabel>
+                    <Select
+                      labelId="simple-select-sex-label"
+                      id="simple-select-sex"
+                      onChange={handleChangeSex}
+                      label="Giới tính"
+                    >
+                      <MenuItem value="nam">Nam</MenuItem>
+                      <MenuItem value="nu">Nữ</MenuItem>
+                      <MenuItem value="khac">Khác</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box sx={{ mb: 3 }}>
+                  <TextField 
+                    name="phone"
+                    error={Boolean(formik.touched.phone && formik.errors.phone)}
+                    helperText={formik.touched.phone && formik.errors.phone}
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values.phone}
+                    fullWidth 
+                    id="standard-basic" 
+                    label="Điện thoại" 
+                    required 
+                    variant="standard" />
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item sm={6}>
-              <Box sx={{ mb: 8 }}>
-                <TextField fullWidth id="standard-basic" label="Bí danh" variant="standard" />
-              </Box>
-              <Box sx={{ mb: 3 }}>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel id="simple-select-year-label">Giới tính</InputLabel>
-                  <Select
-                    labelId="simple-select-sex-label"
-                    id="simple-select-sex"
-                    value={sex}
-                    onChange={handleChangeSex}
-                    label="Giới tính"
-                  >
-                    <MenuItem value={0}>Nam</MenuItem>
-                    <MenuItem value={1}>Nữ</MenuItem>
-                    <MenuItem value={2}>Khác</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box sx={{ mb: 8 }}>
-                <TextField fullWidth id="standard-basic" label="Điện thoại" variant="standard" />
-              </Box>
-              <Box>
-                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                  Nhóm bệnh nhân
-                </InputLabel>
-                <FormGroup sx={{
-                  display: 'flex'
-                }}>
-                  <FormControlLabel control={<Checkbox defaultChecked />} label="Nha Khoa" />
-                  <FormControlLabel control={<Checkbox />} label="Nội khoa" />
-                  <FormControlLabel control={<Checkbox />} label="Ngoại Khoa" />
-                </FormGroup>
-              </Box>
-            </Grid>
-          </Grid>
+          </form>
         </Box>
       </CardContent>
     </Card>

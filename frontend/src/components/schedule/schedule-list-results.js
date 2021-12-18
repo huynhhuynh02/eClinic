@@ -53,11 +53,14 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
     const [openMedical, setOpenMedical] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openToast, setOpenToast] = useState(false);
+    const [patient, setPatient] =  useState("");
     const handleClickOpen = () => {
         setOpen(true);
     };
 
-    const handleClickOpenMedical = () => {
+    const handleClickOpenMedical = (id) => {
+        let schedule = schedules.filter(item => item.id == id);
+        setPatient(schedule[0].patient);
         setOpenMedical(true);
     };
 
@@ -161,9 +164,6 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                         Điện thoại
                                     </TableCell>
                                     <TableCell>
-                                        Bác sĩ khám
-                                    </TableCell>
-                                    <TableCell>
                                         Trạng thái
                                     </TableCell>
                                     <TableCell>
@@ -207,24 +207,6 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                             {schedule.patient.phone}
                                         </TableCell>
                                         <TableCell>
-                                            <FormControl fullWidth>
-                                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                                    Age
-                                                </InputLabel>
-                                                <NativeSelect
-                                                    defaultValue={30}
-                                                    inputProps={{
-                                                        name: 'age',
-                                                        id: 'uncontrolled-native',
-                                                    }}
-                                                >
-                                                    {schedule.doctors?.map((doctor) => (
-                                                        <option value={doctor.id}>{doctor.name}</option>
-                                                    ))}
-                                                </NativeSelect>
-                                            </FormControl>
-                                        </TableCell>
-                                        <TableCell>
                                             {schedule.status == 0 ? 'Khám mới' : 'Tái khám'}
                                         </TableCell>
                                         <TableCell>
@@ -236,7 +218,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                             </IconButton>
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary" onClick={handleClickOpenMedical}>
+                                            <IconButton color="primary" onClick={() => handleClickOpenMedical(schedule.id)}>
                                                 <AssignmentIcon></AssignmentIcon>
                                             </IconButton>
                                         </TableCell>
@@ -262,7 +244,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                 />
             </Card>
             <ScheduleTimedDialogs open={open} onClose={handleClose} />
-            <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} />
+            <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} patient={patient} />
             <CustomizedDialogs
                 onClose={handleCloseConfirm}
                 open={openConfirm}
