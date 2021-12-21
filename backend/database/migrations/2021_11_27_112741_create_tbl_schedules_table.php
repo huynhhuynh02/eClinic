@@ -16,6 +16,7 @@ class CreateTblSchedulesTable extends Migration
         Schema::create('tbl_schedules', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('patient_id');
+            $table->unsignedBigInteger('doctor_id');
             $table->timestamp('schedule_time');
             $table->string('description')->nullable();
             $table->integer('status')->nullable();
@@ -23,6 +24,7 @@ class CreateTblSchedulesTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('patient_id')->references('id')->on('tbl_patients')->onDelete('cascade');
+            $table->foreign('doctor_id')->references('id')->on('tbl_doctors')->onDelete('cascade');
         });
     }
 

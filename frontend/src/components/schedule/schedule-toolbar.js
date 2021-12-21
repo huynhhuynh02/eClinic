@@ -1,203 +1,45 @@
 import {
   Box,
-  Button,
   Grid,
-  Container,
-  CardContent,
   TextField,
-  InputAdornment,
-  SvgIcon, Typography,
-  FormControlLabel,
-  Checkbox,
-  FormGroup,
-  Select,
-  MenuItem,
-  Card
+  Button
 } from '@mui/material';
 import { useState } from 'react';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DatePicker from '@mui/lab/DatePicker';
-import InputLabel from '@mui/material/InputLabel';
-import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
-import { display } from '@mui/system';
+import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
+import { ScheduleFormAdd } from './schedule-form-add';
 
-
-export const ScheduleToolbar = (props) => {
-  const [valueDateFrom, setValueDateFrom] = useState(null);
-  const [valueDateTo, setValueDateTo] = useState(null);
-  const [dateSelect, setDateSelect] = useState('');
-  const [monthSelect, setMonthSelect] = useState('');
-  const [yearSelect, setYearSelect] = useState('');
-  const [sex, setSex] = useState('');
-
-  const handleChangeDate = (event) => {
-    setDateSelect(event.target.value);
-  };
-
-  const handleChangeMonth = (event) => {
-    setMonthSelect(event.target.value);
-  };
-
-  const handleChangeYear = (event) => {
-    setYearSelect(event.target.value);
-  };
-
-  const handleChangeSex = (event) => {
-    setSex(event.target.value);
-  };
-
-
-  var date = [];
-  var month = [];
-  var year = [];
-  var currentYear = new Date().getFullYear();
-  for (let i = 1; i <= 31; i++) {
-    date.push(i);
-  }
-  for (let i = 1; i <= 12; i++) {
-    month.push(i);
-  }
-
-  for (let i = currentYear - 100; i <= currentYear; i++) {
-    year.push(i);
-  }
-
-  const renderDate = date.map((index) => {
-    return (
-      <MenuItem value={index}>{index}</MenuItem>
-    )
-  })
-
-  const renderMonth = month.map((index) => {
-    return (
-      <MenuItem value={index}>{index}</MenuItem>
-    )
-  })
-
-  const renderYear = year.map((index) => {
-    return (
-      <MenuItem value={index}>{index}</MenuItem>
-    )
-  })
-
+export const ScheduleToolbar = () => { 
+  const [value, setValue] = useState(new Date());
+  const [openFormAdd, setOpenFormAdd] = useState({ open: false, formType: 'Examination' });
   return (
-    <Card {...props}>
-      <CardContent>
-        <Box
-          sx={{
-            alignItems: 'center',
-            display: 'flex',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            m: -1
-          }}
-        >
-          <Typography
-            sx={{ m: 1 }}
-            variant="h6"
-          >
-            Thông tin bệnh nhân
-          </Typography>
-        </Box>
-        <Box sx={{ mt: 3 }}>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid item sm={6}>
-              <Box sx={{ mb: 5 }}>
-                <TextField fullWidth id="standard-basic" label="Họ tên *" variant="standard" />
-              </Box>
-              <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                Ngày sinh
-              </InputLabel>
-              <Box sx={{ mb: 3 }}>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel id="simple-select-date-label">Ngày</InputLabel>
-                  <Select
-                    labelId="simple-select-date-label"
-                    id="simple-select-date"
-                    value={dateSelect}
-                    onChange={handleChangeDate}
-                    label="Ngày"
-                  >
-                    {renderDate}
-                  </Select>
-                </FormControl>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel id="simple-select-month-label">Tháng</InputLabel>
-                  <Select
-                    labelId="simple-select-month-label"
-                    id="simple-select-month"
-                    value={monthSelect}
-                    onChange={handleChangeMonth}
-                    label="Tháng"
-                  >
-                    {renderMonth}
-                  </Select>
-                </FormControl>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel id="simple-select-year-label">Tháng</InputLabel>
-                  <Select
-                    labelId="simple-select-year-label"
-                    id="simple-select-year"
-                    value={yearSelect}
-                    onChange={handleChangeYear}
-                    label="Tháng"
-                  >
-                    {renderYear}
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box sx={{ mb: 3 }}>
-                <TextField fullWidth id="standard-basic" label="Địa chỉ" variant="standard" />
-              </Box>
-              <Box sx={{ mb: 5 }}>
-                <TextField fullWidth id="standard-basic" label="Nghề nghiệp" variant="standard" />
-              </Box>
-              <Button variant="contained">Thêm</Button>
-            </Grid>
-            <Grid item sm={6}>
-              <Box sx={{ mb: 8 }}>
-                <TextField fullWidth id="standard-basic" label="Bí danh" variant="standard" />
-              </Box>
-              <Box sx={{ mb: 3 }}>
-                <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-                  <InputLabel id="simple-select-year-label">Giới tính</InputLabel>
-                  <Select
-                    labelId="simple-select-sex-label"
-                    id="simple-select-sex"
-                    value={sex}
-                    onChange={handleChangeSex}
-                    label="Giới tính"
-                  >
-                    <MenuItem value={0}>Nam</MenuItem>
-                    <MenuItem value={1}>Nữ</MenuItem>
-                    <MenuItem value={2}>Khác</MenuItem>
-                  </Select>
-                </FormControl>
-              </Box>
-              <Box sx={{ mb: 8 }}>
-                <TextField fullWidth id="standard-basic" label="Điện thoại" variant="standard" />
-              </Box>
-              <Box>
-                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                  Nhóm bệnh nhân
-                </InputLabel>
-                <FormGroup sx={{
-                  display: 'flex'
-                }}>
-                  <FormControlLabel control={<Checkbox defaultChecked />} label="Nha Khoa" />
-                  <FormControlLabel control={<Checkbox />} label="Nội khoa" />
-                  <FormControlLabel control={<Checkbox />} label="Ngoại Khoa" />
-                </FormGroup>
-              </Box>
-            </Grid>
+    <>
+      <Box >
+        <Grid container>
+          <Grid item xs={ 5 } sx={{ bgcolor: '#fff', p: 2 }}>
+            <TextField fullWidth label="Tìm bệnh nhân" id="fullWidth" />
           </Grid>
-        </Box>
-      </CardContent>
-    </Card>
+          <Grid item xs={ 7 } sx={{ bgcolor: '#fff', p: 2, display: 'flex', justifyContent: 'space-between', border: 1, borderColor: 'primary.main', borderRadius: '16px' }}>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <DesktopDateTimePicker
+                value={value}
+                onChange={(newValue) => {
+                  setValue(newValue);
+                }}
+                renderInput={(params) => <TextField {...params} />}
+              />
+            </LocalizationProvider>
+            <Button variant="outlined" onClick={ () => setOpenFormAdd({ open: true, formType: 'Re-examination' }) }>
+              Tái khám
+            </Button>
+            <Button variant="contained" onClick={ () => setOpenFormAdd({ open: true, formType: 'Examination' }) }>
+              Bệnh nhân mới
+            </Button>
+          </Grid>
+        </Grid>
+        <ScheduleFormAdd handleClose={ () => setOpenFormAdd({ open: false, formType: 'Examination' }) } openFormAdd={ openFormAdd }/>
+      </Box>
+    </>
   );
 }

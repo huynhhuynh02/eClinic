@@ -16,7 +16,6 @@ class CreateTblPatientGroupTable extends Migration
         Schema::create('tbl_patient_group', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('parent_id');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -3,16 +3,16 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Doctor;
+use App\Models\Schedule;
 
-class DoctorFactory extends Factory
+class ScheduleFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Doctor::class;
+    protected $model = Schedule::class;
     /**
      * Define the model's default state.
      *
@@ -21,9 +21,9 @@ class DoctorFactory extends Factory
     public function definition()
     {
         return [
-            //
-            'user_id' => $this->faker->unique()->numberBetween(1,10),
-            'name' => $this->faker->name(),
+            'patient_id' => $this->faker->numberBetween(1,20),
+            'schedule_time' => $this->faker->dateTime(),
+            'doctor_id' => $this->faker->numberBetween(1,10)
         ];
     }
 }
