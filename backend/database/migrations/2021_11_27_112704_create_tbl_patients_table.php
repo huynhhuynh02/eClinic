@@ -25,7 +25,6 @@ class CreateTblPatientsTable extends Migration
             $table->string('remark')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('patient_group_id')->references('id')->on('tbl_patient_group')->onDelete('cascade');
         });
     }
