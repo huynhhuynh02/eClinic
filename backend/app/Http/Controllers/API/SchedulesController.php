@@ -17,7 +17,7 @@ class SchedulesController extends Controller
      */
     public function index()
     {
-        $data['schedules'] = Schedule::with('doctor')->get();
+        $data['schedules'] = Schedule::with('patient', 'doctor')->get();
         return response()->json($data);
     }
 

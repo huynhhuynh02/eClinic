@@ -89,38 +89,6 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
         setOpenToast(false);
     };
 
-    const handleSelectAll = (event) => {
-        let newSelectedScheduleIds;
-
-        if (event.target.checked) {
-            newSelectedScheduleIds = schedules.map((schedule) => schedule.id);
-        } else {
-            newSelectedScheduleIds = [];
-        }
-
-        setSelectedScheduleIds(newSelectedScheduleIds);
-    };
-
-    const handleSelectOne = (event, id) => {
-        const selectedIndex = selectedScheduleIds.indexOf(id);
-        let newSelectedScheduleIds = [];
-
-        if (selectedIndex === -1) {
-            newSelectedScheduleIds = newSelectedScheduleIds.concat(selectedScheduleIds, id);
-        } else if (selectedIndex === 0) {
-            newSelectedScheduleIds = newSelectedCustomerIds.concat(selectedScheduleIds.slice(1));
-        } else if (selectedIndex === selectedCustomerIds.length - 1) {
-            newSelectedScheduleIds = newSelectedCustomerIds.concat(selectedScheduleIds.slice(0, -1));
-        } else if (selectedIndex > 0) {
-            newSelectedScheduleIds = newSelectedScheduleIds.concat(
-                selectedScheduleIds.slice(0, selectedIndex),
-                selectedScheduleIds.slice(selectedIndex + 1)
-            );
-        }
-
-        setSelectedScheduleIds(newSelectedScheduleIds);
-    };
-
     const handleLimitChange = (event) => {
         setLimit(event.target.value);
     };
@@ -137,17 +105,6 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                         <Table>
                             <TableHead>
                                 <TableRow>
-                                    <TableCell padding="checkbox">
-                                        <Checkbox
-                                            checked={selectedScheduleIds.length === schedules.length}
-                                            color="primary"
-                                            indeterminate={
-                                                selectedScheduleIds.length > 0
-                                                && selectedScheduleIds.length < schedules.length
-                                            }
-                                            onChange={handleSelectAll}
-                                        />
-                                    </TableCell>
                                     <TableCell>
                                         Ngày khám
                                     </TableCell>
@@ -187,27 +144,20 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                         key={schedule.id}
                                         selected={selectedScheduleIds.indexOf(schedule.id) !== -1}
                                     >
-                                        <TableCell padding="checkbox">
-                                            <Checkbox
-                                                checked={selectedScheduleIds.indexOf(schedule.id) !== -1}
-                                                onChange={(event) => handleSelectOne(event, schedule.id)}
-                                                value="true"
-                                            />
+                                        <TableCell>
+                                            {new Date(schedule.schedule_time).toLocaleString().split(',')[0]}
                                         </TableCell>
                                         <TableCell>
-                                            {schedule.date}
+                                            {new Date(schedule.schedule_time).toLocaleString().split(',')[1]}
                                         </TableCell>
                                         <TableCell>
-                                            {schedule.time}
-                                        </TableCell>
-                                        <TableCell>
-                                            {schedule.patient.name}
+                                            {schedule.patient.fullname}
                                         </TableCell>
                                         <TableCell>
                                             {schedule.patient.phone}
                                         </TableCell>
                                         <TableCell>
-                                            <FormControl fullWidth>
+                                            {/* <FormControl fullWidth>
                                                 <InputLabel variant="standard" htmlFor="uncontrolled-native">
                                                     Age
                                                 </InputLabel>
@@ -222,13 +172,14 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                                         <option value={doctor.id}>{doctor.name}</option>
                                                     ))}
                                                 </NativeSelect>
-                                            </FormControl>
+                                            </FormControl> */}
+                                            {schedule.doctor.name}
                                         </TableCell>
                                         <TableCell>
                                             {schedule.status == 0 ? 'Khám mới' : 'Tái khám'}
                                         </TableCell>
                                         <TableCell>
-                                            {schedule.description}
+                                            {schedule.remark == null ? 'Không có ghi chú' : schedule.remark}
                                         </TableCell>
                                         <TableCell>
                                             <IconButton color="primary" onClick={handleClickOpen}>

@@ -15,7 +15,7 @@ class CreateTblPatientsTable extends Migration
     {
         Schema::create('tbl_patients', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->unsignedBigInteger('patient_group_id');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();

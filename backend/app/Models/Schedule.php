@@ -10,6 +10,11 @@ class Schedule extends Model
     use HasFactory;
     protected $table = "tbl_schedules";
 
+    public function patient()
+    {
+        return $this->hasOne(Patient::class, 'id', 'patient_id');
+    }
+
     public function doctor()
     {
         return $this->hasOne(Doctor::class, 'id', 'doctor_id');
