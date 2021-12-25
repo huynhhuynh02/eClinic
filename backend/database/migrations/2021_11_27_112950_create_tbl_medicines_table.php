@@ -18,6 +18,7 @@ class CreateTblMedicinesTable extends Migration
             $table->unsignedBigInteger('unit_id');
             $table->unsignedBigInteger('cate_id');
             $table->string('name');
+            $table->integer('user_id');
             $table->integer('quantity')->nullable();
             $table->integer('price')->nullable();
             $table->timestamp('expired_date')->nullable();
