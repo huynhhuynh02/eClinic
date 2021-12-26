@@ -260,7 +260,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                 Bạn có chắc chắc muốn xoá
             </CustomizedDialogs>
             <Snackbar open={openToast} autoHideDuration={2000} onClose={handleCloseToast}>
-                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                <Alert severity="success" sx={{ width: '100%' }}>
                     This is a success message!
                 </Alert>
             </Snackbar>

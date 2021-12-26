@@ -1,6 +1,6 @@
 import { v4 as uuid } from 'uuid';
 
-export const medicines_group = [
+export const medicines_list = [
   {
     id: uuid(),
     name: 'Giảm đau hạ sốt',

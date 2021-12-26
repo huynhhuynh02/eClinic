@@ -37,6 +37,12 @@ export const PatientListResults = ({ patients, ...rest }) => {
     setOpenMedical(true);
   };
 
+  const handleClickOpenPrescription = (id) => {
+    let patient = patients.filter(item => item.id == id);
+    setPatient(patient[0]);
+    setOpen(true);
+  };
+
   const handleCloseMedical = () => {
     setOpenMedical(false);
   };
@@ -185,7 +191,7 @@ export const PatientListResults = ({ patients, ...rest }) => {
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={handleOnOpen}>
+                      <IconButton onClick={() => handleClickOpenPrescription(patient.id)}>
                         <AccountBoxIcon color="primary" />
                       </IconButton>
                     </TableCell>
@@ -215,7 +221,7 @@ export const PatientListResults = ({ patients, ...rest }) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Card>
-      <PrescriptionDialogs open={open} onClose={handleOnClose} />
+      <PrescriptionDialogs open={open} onClose={handleOnClose} patient={patient} />
       <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} patient={patient} />
     </>
   );
