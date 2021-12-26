@@ -23,6 +23,7 @@ class CreateTblMedicinesTable extends Migration
             $table->integer('price')->nullable();
             $table->timestamp('expired_date')->nullable();
             $table->text('description')->nullable();
+            $table->text('composition')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('unit_id')->references('id')->on('tbl_units')->onDelete('cascade');

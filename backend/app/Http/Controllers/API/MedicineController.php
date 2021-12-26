@@ -46,11 +46,19 @@ class MedicineController extends Controller
             $medicine->price = $request->price;
             $medicine->expired_date = $request->expired_date;
             $medicine->description = $request->description;
+            $medicine->composition = $request->composition;
             
             $medicine->save();
-
+            
+            return response()->json([
+                'medicine' => $medicine, 
+                'status'=>'success'
+            ],201);
         }catch (\Exception $e){
-            throw $e;
+            return response()->json([
+                'message' => $e, 
+                'status'=>'error'
+            ],401);
         }
     }
 
@@ -90,6 +98,7 @@ class MedicineController extends Controller
             $medicine->price = $request->price;
             $medicine->expired_date = $request->expired_date;
             $medicine->description = $request->description;
+            $medicine->composition = $request->composition;
             
             $medicine->save();
             
@@ -98,7 +107,10 @@ class MedicineController extends Controller
                 'status'=>'success'
             ],201);
         } catch (\Exception $e) {
-            throw $e;
+            return response()->json([
+                'message' => $e, 
+                'status'=>'error'
+            ],401);
         }
     }
 
