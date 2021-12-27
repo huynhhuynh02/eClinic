@@ -1,23 +1,27 @@
-import { Box, TextField, FormControl, InputLabel, MenuItem } from '@mui/material';
+import { Box, TextField, FormControl, InputLabel, MenuItem, Button } from '@mui/material';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Select from '@mui/material/Select';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DesktopDatePicker from '@mui/lab/DesktopDatePicker';
+import DateTimePicker from '@mui/lab/DateTimePicker';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Stack from "@mui/material/Stack";
+import axios from 'axios';
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 700,
-  bgcolor: 'background.paper',
-  borderRadius: '5px',
-  p: 4,
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 700,
+    bgcolor: 'background.paper',
+    borderRadius: '5px',
+    p: 4,
+    height: 600,
+    overflow: 'auto',
 };
 
 export const ScheduleFormAdd = (props) => {
@@ -32,7 +36,8 @@ export const ScheduleFormAdd = (props) => {
             phone: '',
             address: '',
             schedule_time: '',
-            doctor_id: '',
+            patient_group_id: 1,
+            doctor_id: 1,
             schedule_status: '',
             note: ''
         },
@@ -42,7 +47,7 @@ export const ScheduleFormAdd = (props) => {
             .max(255)
             .required(
                 'Tên bệnh nhân không được trống'),
-            birthday: Yup.string()
+            birthday: Yup.date()
             .required("Birthday is Required"),
             sex: Yup
             .string()
@@ -59,9 +64,23 @@ export const ScheduleFormAdd = (props) => {
             .max(255)
             .required(
                 'Địa chỉ không được trống'),
+            patient_group_id: Yup
+            .number()
+            .max(255),
+            schedule_time: Yup
+            .date()
+            .required(
+                'Lịch khám không được trống'),
+            doctor_id: Yup
+            .number()
+            .max(255),
+            schedule_status: Yup
+            .string()
+            .max(255),
         }),
         onSubmit: (values) => {
-            console.log(values)
+            // axios.post('/api/schedule', values).then(() => handleClose())
+            axios.post('/api/schedule', values).then(res => console.log(res.data), errors => console.log(errors))
         }
     });
     return (
@@ -101,11 +120,8 @@ export const ScheduleFormAdd = (props) => {
                                 >
                                     <DesktopDatePicker
                                         label="Ngày sinh"
-                                        inputFormat="MM/dd/yyyy"
                                         value={formik.values.birthday}
-                                        onChange={formik.handleChange}
-                                        // value={value}
-                                        // onChange={handleChange}
+                                        onChange={(value) => {formik.setFieldValue('birthday', value)}}
                                         renderInput={(params) => (
                                         <TextField
                                             {...params}
@@ -127,8 +143,6 @@ export const ScheduleFormAdd = (props) => {
                                 label="Giới tính"
                                 error={Boolean(formik.touched.sex && formik.errors.sex)}
                                 helperText={formik.touched.sex && formik.errors.sex}
-                                // value={sex}
-                                // onChange={handleChangeSex}
                                 >
                                 <MenuItem value={0}>Nữ</MenuItem>
                                 <MenuItem value={1}>Nam</MenuItem>
@@ -136,9 +150,9 @@ export const ScheduleFormAdd = (props) => {
                                 </Select>
                             </FormControl>
                             <TextField
-                                error={Boolean(formik.touched.birthday && formik.errors.birthday)}
+                                error={Boolean(formik.touched.phone && formik.errors.phone)}
                                 fullWidth
-                                helperText={formik.touched.birthday && formik.errors.birthday}
+                                helperText={formik.touched.phone && formik.errors.phone}
                                 label="Sdt bệnh nhân"
                                 margin="normal"
                                 name="phone"
@@ -154,71 +168,81 @@ export const ScheduleFormAdd = (props) => {
                                 helperText={formik.touched.address && formik.errors.address}
                                 label="Địa chỉ"
                                 margin="normal"
-                                name="patient_name"
+                                name="address"
                                 onBlur={formik.handleBlur}
                                 onChange={formik.handleChange}
                                 type="text"
                                 value={formik.values.address}
                                 variant="outlined"
                             />
+                            <FormControl fullWidth sx={{ mt: 2 }}>
+                                <InputLabel id="patient_group_id-select-label">Nhóm bệnh nhân</InputLabel>
+                                <Select
+                                    labelId="patient_group_id-select-label"
+                                    id="patient_group_id-select"
+                                    name="patient_group_id"
+                                    value={formik.values.patient_group_id}
+                                    onChange={formik.handleChange}
+                                    label="Giới tính"
+                                    error={Boolean(formik.touched.patient_group_id && formik.errors.patient_group_id)}
+                                    helperText={formik.touched.patient_group_id && formik.errors.patient_group_id}
+                                >
+                                    <MenuItem value={1}>Nhóm 1</MenuItem>
+                                    <MenuItem value={2}>Nhóm 2</MenuItem>
+                                    <MenuItem value={3}>Nhóm 3</MenuItem>
+                                </Select>
+                            </FormControl>
                         </Box>  
                         <Box sx={{ mt: 2 }}>
                             <h4>Chi tiết lịch hẹn:</h4>
                             <LocalizationProvider dateAdapter={AdapterDateFns}>
                                 <Stack
-                                error={Boolean(formik.touched.birthday && formik.errors.birthday)}
-                                helperText={formik.touched.birthday && formik.errors.birthday}
+                                error={Boolean(formik.touched.schedule_time && formik.errors.schedule_time)}
+                                helperText={formik.touched.schedule_time && formik.errors.schedule_time}
                                 sx={{ mt: 1 }}
                                 >
-                                    <DesktopDatePicker
+                                    <DateTimePicker
                                         label="Lịch khám"
-                                        inputFormat="MM/dd/yyyy"
-                                        value={formik.values.birthday}
-                                        onChange={formik.handleChange}
-                                        // value={value}
-                                        // onChange={handleChange}
+                                        value={formik.values.schedule_time}
+                                        onChange={(value) => {formik.setFieldValue('schedule_time', value)}}
                                         renderInput={(params) => (
                                         <TextField
                                             {...params}
-                                            error={Boolean(formik.touched.birthday && formik.errors.birthday)}
-                                            helperText={formik.touched.birthday && formik.errors.birthday}
+                                            error={Boolean(formik.touched.schedule_time && formik.errors.schedule_time)}
+                                            helperText={formik.touched.schedule_time && formik.errors.schedule_time}
                                         />
                                         )}
                                     />
                                 </Stack>
                             </LocalizationProvider>
                             <FormControl fullWidth sx={{ mt: 2 }}>
-                                <InputLabel id="sex-select-label">Bác sĩ</InputLabel>
+                                <InputLabel id="doctor_id-select-label">Bác sĩ</InputLabel>
                                 <Select
-                                labelId="sex-select-label"
-                                id="sex-select"
-                                name="sex"
-                                value={formik.values.sex}
+                                labelId="doctor_id-select-label"
+                                id="doctor_id-select"
+                                name="doctor_id"
+                                value={formik.values.doctor_id}
                                 onChange={formik.handleChange}
                                 label="Bác sĩ"
-                                error={Boolean(formik.touched.sex && formik.errors.sex)}
-                                helperText={formik.touched.sex && formik.errors.sex}
-                                // value={sex}
-                                // onChange={handleChangeSex}
+                                error={Boolean(formik.touched.doctor_id && formik.errors.doctor_id)}
+                                helperText={formik.touched.doctor_id && formik.errors.doctor_id}
                                 >
-                                <MenuItem value={0}>Bác sĩ 1</MenuItem>
-                                <MenuItem value={1}>Bác sĩ 2</MenuItem>
-                                <MenuItem value={2}>Bác sĩ 3</MenuItem>
+                                <MenuItem value={1}>Bác sĩ 1</MenuItem>
+                                <MenuItem value={5}>Bác sĩ 2</MenuItem>
+                                <MenuItem value={10}>Bác sĩ 3</MenuItem>
                                 </Select>
                             </FormControl>
                             <FormControl fullWidth sx={{ mt: 2 }}>
-                                <InputLabel id="sex-select-label">Trạng thái</InputLabel>
+                                <InputLabel id="status-select-label">Trạng thái</InputLabel>
                                 <Select
-                                labelId="sex-select-label"
-                                id="sex-select"
-                                name="sex"
-                                value={formik.values.sex}
+                                labelId="status-select-label"
+                                id="status-select"
+                                name="status"
+                                value={formik.values.status}
                                 onChange={formik.handleChange}
                                 label="Trạng thái"
-                                error={Boolean(formik.touched.sex && formik.errors.sex)}
-                                helperText={formik.touched.sex && formik.errors.sex}
-                                // value={sex}
-                                // onChange={handleChangeSex}
+                                error={Boolean(formik.touched.status && formik.errors.status)}
+                                helperText={formik.touched.status && formik.errors.status}
                                 >
                                 <MenuItem value={0}>Nữ</MenuItem>
                                 <MenuItem value={1}>Nam</MenuItem>
@@ -226,6 +250,17 @@ export const ScheduleFormAdd = (props) => {
                                 </Select>
                             </FormControl>
                         </Box>  
+                        <Box sx={{ py: 2 }}>
+                            <Button
+                                color="primary"
+                                fullWidth
+                                size="large"
+                                type="submit"
+                                variant="contained"
+                            >
+                                Thêm lịch hẹn
+                            </Button>
+                        </Box>
                     </form>
                 </Typography>
                 </Box>

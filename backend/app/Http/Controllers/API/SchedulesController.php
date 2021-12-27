@@ -39,6 +39,7 @@ class SchedulesController extends Controller
      */
     public function store(Request $request)
     {
+        return response()->json($request->all());
         if ($request->action === 'CREATE_SCHEDULE_ONLY') {
             $validator = Validator::make($request->all(), [
                 'patient_id' => 'required',
@@ -47,8 +48,8 @@ class SchedulesController extends Controller
             ]);
         } else {
             $validator = Validator::make($request->all(), [
-                'name' => 'required',
-                'patient_group_id ' => 'required',
+                'patient_name' => 'required',
+                'patient_group_id' => 'required',
                 'address' => 'required',
                 'phone' => 'required',
                 'sex' => 'required',
@@ -67,10 +68,10 @@ class SchedulesController extends Controller
             $patient_id = $request->patient_id;
         } else {
             $patient = new Patient();
-            $patient->name = $request->name;
+            $patient->fullname = $request->patient_name;
             $patient->patient_group_id = $request->patient_group_id;
             $patient->address = $request->address;
-            $patient->phone = $request->phpne;
+            $patient->phone = $request->phone;
             $patient->sex = $request->sex;
             $patient->birthday = $request->birthday;
             $patient->save();
@@ -79,7 +80,7 @@ class SchedulesController extends Controller
 
         $schedule = new Schedule();
         $schedule->patient_id = $patient_id;
-        $schedule->doctor = $request->doctor_id;
+        $schedule->doctor_id = $request->doctor_id;
         $schedule->schedule_time = $request->schedule_time;
         $schedule->save();
     }
