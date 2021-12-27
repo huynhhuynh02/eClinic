@@ -45,7 +45,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
 export const ScheduleListResults = ({ schedules, ...rest }) => {
     const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
     const [doctorId, setDoctorId] = useState('');
-    const [limit, setLimit] = useState(10);
+    const [limit, setLimit] = useState(50);
     const [page, setPage] = useState(0);
     const [clearedDate, setClearedDate] = useState(null);
     const [value, setValue] = useState(new Date('2019-01-01T18:54'));
@@ -209,7 +209,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                     onRowsPerPageChange={handleLimitChange}
                     page={page}
                     rowsPerPage={limit}
-                    rowsPerPageOptions={[5, 10, 25]}
+                    rowsPerPageOptions={[25, 50, 75]}
                 />
             </Card>
             <ScheduleTimedDialogs open={open} onClose={handleClose} />

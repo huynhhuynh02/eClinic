@@ -17,8 +17,6 @@ const Schedule = () => {
   if (schedules.length === 0) {
     getSchedules();
   }
-
-  console.log(schedules);
   
   return (
     <>
@@ -35,7 +33,7 @@ const Schedule = () => {
         }}
       >
         <Container>
-          <ScheduleToolbar />
+          <ScheduleToolbar getSchedules={getSchedules}/>
           <Box sx={{ mt: 3 }}>
             <ScheduleListResults schedules={schedules} />
           </Box>
