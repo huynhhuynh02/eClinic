@@ -1,10 +1,29 @@
 import { Box, Container } from "@mui/material";
+import axios from "axios";
 import Head from "next/head";
+import { useEffect, useState } from "react";
 import MedicalCategoryGroup from "src/components/settings/category/medical_category_group";
-import { medicine_category_group } from "src/__mocks__/category_group";
 import { DashboardLayout } from "../components/dashboard-layout";
 
-const SettingMedicineCategoryGroup = () => (
+
+const SettingMedicineCategoryGroup = () => {
+  const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
+  
+  useEffect(() => {
+    if (categories.length === 0){
+    axios.get('/api/categories').then(response => {
+      if (response.data.responsive.status === 'success') {
+        setCategories([...response.data.data]);
+      } else {
+        setError(response.data.message);
+        
+      }
+    }).catch(e => {
+      console.log(e);
+    });}
+  }, [categories]);
+  return(
   <>
     <Head>
       <title> Cấu hình danh mục nhóm thuốc | TAPA App</title>
@@ -18,12 +37,12 @@ const SettingMedicineCategoryGroup = () => (
     >
       <Container>
         <Box sx={{ mt: 3 }}>
-          <MedicalCategoryGroup medicineCategories={medicine_category_group} />
+          <MedicalCategoryGroup medicineCategories={categories} />
         </Box>
       </Container>
     </Box>
   </>
-);
+)};
 SettingMedicineCategoryGroup.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
 
 export default SettingMedicineCategoryGroup;
