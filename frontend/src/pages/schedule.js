@@ -8,13 +8,26 @@ import { useState } from 'react';
 
 const Schedule = () => {
   const [schedules, setSchedules] = useState([]);
+  const [keySearch, setKeySearch] = useState('');
   const getSchedules = () => {
-    axios.get('/api/schedule').then(res => {
-      setSchedules(res.data.schedules);
-    });
+    if (keySearch === '') {
+      axios.get('/api/schedule').then(res => {
+        setSchedules(res.data.schedules);
+      });
+    } else {
+      axios.get('/api/schedule?key=' + keySearch).then(res => {
+        setSchedules(res.data.schedules);
+      });
+    }
+    
   }
 
   if (schedules.length === 0) {
+    getSchedules();
+  }
+
+  const searchPatients = (key) => {
+    setKeySearch(key);
     getSchedules();
   }
   
@@ -33,9 +46,9 @@ const Schedule = () => {
         }}
       >
         <Container>
-          <ScheduleToolbar getSchedules={getSchedules}/>
+          <ScheduleToolbar getSchedules={ getSchedules } searchPatients={ searchPatients }/>
           <Box sx={{ mt: 3 }}>
-            <ScheduleListResults schedules={schedules} />
+            <ScheduleListResults schedules={schedules} getSchedules={ getSchedules } />
           </Box>
         </Container>
       </Box>

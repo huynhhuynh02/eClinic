@@ -15,9 +15,15 @@ class SchedulesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data['schedules'] = Schedule::with('patient', 'doctor')->get();
+        if ($key = $request->key)
+        {
+            $data['schedules'] = Schedule::with('patient', 'doctor')->whereRelation('patient', 'fullname', 'like', '%'.$key.'%')->orWhereRelation('patient', 'phone', 'like', $key.'%')->get();
+        } else {
+            $data['schedules'] = Schedule::with('patient', 'doctor')->get();
+        }
+        
         return response()->json($data);
     }
 

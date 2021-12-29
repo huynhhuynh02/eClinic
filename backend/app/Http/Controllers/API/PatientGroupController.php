@@ -4,23 +4,10 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Doctor;
-use App\Models\User;
+use App\Models\PatientGroup;
 
-class DoctorsController extends Controller
+class PatientGroupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    // public function __construct()
-    // {
-    //     $this->middleware('permission:doctor-list|doctor-create|doctor-edit|doctor-delete', ['only' => ['index', 'show']]);
-    //     $this->middleware('permission:doctor-create', ['only' => ['create', 'store']]);
-    //     $this->middlewara('permission:doctor-edit', ['only' => ['edit', 'update']]);
-    //     $this->middlewara('permission:doctor-delete', ['only' => ['destroy']]);
-    // }
     /**
      * Display a listing of the resource.
      *
@@ -28,8 +15,8 @@ class DoctorsController extends Controller
      */
     public function index()
     {
-        $doctors = Doctor::all();
-        return response()->json(['doctors' => $doctors]);
+        $data['patient_group'] = PatientGroup::all();
+        return response()->json($data);
     }
 
     /**
@@ -39,8 +26,7 @@ class DoctorsController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-        return response()->json(['users' => $users]);
+        //
     }
 
     /**
@@ -51,11 +37,7 @@ class DoctorsController extends Controller
      */
     public function store(Request $request)
     {
-        request()->validate([
-            'use_id' => 'required',
-            'name' => 'required',
-        ]);
-        Doctor::create($request->all());
+        //
     }
 
     /**
@@ -66,8 +48,7 @@ class DoctorsController extends Controller
      */
     public function show($id)
     {
-        $doctor = Doctor::find($id);
-        return response()->json(['doctor' => $doctor]);
+        //
     }
 
     /**
@@ -78,8 +59,7 @@ class DoctorsController extends Controller
      */
     public function edit($id)
     {
-        $doctor = Doctor::find($id);
-        return response()->json(['doctor' => $doctor]);
+        //
     }
 
     /**
@@ -91,11 +71,7 @@ class DoctorsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        request()->validate([
-            'use_id' => 'required',
-            'name' => 'required',
-        ]);
-        Doctor::update($request->all());
+        //
     }
 
     /**
@@ -107,6 +83,5 @@ class DoctorsController extends Controller
     public function destroy($id)
     {
         //
-        Doctor::delete($id);
     }
 }

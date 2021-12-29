@@ -2,47 +2,33 @@ import * as React from 'react';
 import { useState } from 'react';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import PropTypes from 'prop-types';
-import { format } from 'date-fns';
 import {
-    Avatar,
     Box,
     Card,
-    Checkbox,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TablePagination,
     TableRow,
-    Typography,
-    FormControl,
-    InputLabel,
-    NativeSelect,
     Button,
     Snackbar
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
-import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DateTimePicker from '@mui/lab/DateTimePicker';
-import Stack from '@mui/material/Stack';
-import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
 import AssignmentIcon from '@mui/icons-material/Assignment';
 import DeleteIcon from '@mui/icons-material/Delete';
 import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
 import ScheduleTimedDialogs from './schedule-dialog-datetime';
 import MedicalRecordDialogs from './schedule-dialog-patient';
 import CustomizedDialogs from '../common/dialog';
-import PrescriptionDialogs from '../patient/patient-prescription-dialog';
-
+import axios from 'axios';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
+});
   
-export const ScheduleListResults = ({ schedules, ...rest }) => {
+export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
     const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
     const [doctorId, setDoctorId] = useState('');
     const [limit, setLimit] = useState(50);
@@ -53,7 +39,11 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
     const [openMedical, setOpenMedical] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openToast, setOpenToast] = useState(false);
-    const handleClickOpen = () => {
+    const [scheduleSelectDelete, setScheduleSelectDelete] = useState(null);
+    const [scheduleTime, setScheduleTime] = useState(new Date());
+    const handleClickOpen = (schedule_time) => {
+        console.log(schedule_time);
+        setScheduleTime(schedule_time);
         setOpen(true);
     };
 
@@ -69,7 +59,8 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
         setOpenMedical(false);
     };
 
-    const handleOpenConfirm = () => {
+    const handleOpenConfirm = (schedule_id) => {
+        setScheduleSelectDelete(schedule_id);
         setOpenConfirm(true);
     }
     const handleCloseConfirm = () => {
@@ -77,8 +68,11 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
     }
 
     const handleDeleteConfirm = () =>{
-        setOpenConfirm(false);
-        setOpenToast(true);
+        axios.delete('/api/schedule/' + scheduleSelectDelete).then(() => {
+            getSchedules();
+            setOpenConfirm(false);
+            setOpenToast(true);
+        })
     }
 
     const handleCloseToast = (event, reason) => {
@@ -157,22 +151,6 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                             {schedule.patient.phone}
                                         </TableCell>
                                         <TableCell>
-                                            {/* <FormControl fullWidth>
-                                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                                                    Age
-                                                </InputLabel>
-                                                <NativeSelect
-                                                    defaultValue={30}
-                                                    inputProps={{
-                                                        name: 'age',
-                                                        id: 'uncontrolled-native',
-                                                    }}
-                                                >
-                                                    {schedule.doctors?.map((doctor) => (
-                                                        <option value={doctor.id}>{doctor.name}</option>
-                                                    ))}
-                                                </NativeSelect>
-                                            </FormControl> */}
                                             {schedule.doctor.name}
                                         </TableCell>
                                         <TableCell>
@@ -182,7 +160,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                             {schedule.remark == null ? 'Không có ghi chú' : schedule.remark}
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary" onClick={handleClickOpen}>
+                                            <IconButton color="primary" onClick={() => handleClickOpen(schedule.schedule_time)}>
                                                 <AccessAlarmsIcon></AccessAlarmsIcon>
                                             </IconButton>
                                         </TableCell>
@@ -191,7 +169,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                                 <AssignmentIcon></AssignmentIcon>
                                             </IconButton>
                                         </TableCell>
-                                        <TableCell onClick={handleOpenConfirm}>
+                                        <TableCell onClick={() => handleOpenConfirm(schedule.id)}>
                                             <IconButton color="error">
                                                 <DeleteIcon></DeleteIcon>
                                             </IconButton>
@@ -212,7 +190,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                     rowsPerPageOptions={[25, 50, 75]}
                 />
             </Card>
-            <ScheduleTimedDialogs open={open} onClose={handleClose} />
+            <ScheduleTimedDialogs schedule_time={ scheduleTime } open={open} onClose={handleClose} />
             <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} />
             <CustomizedDialogs
                 onClose={handleCloseConfirm}

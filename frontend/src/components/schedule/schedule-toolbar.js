@@ -18,7 +18,7 @@ export const ScheduleToolbar = (props) => {
       <Box >
         <Grid container>
           <Grid item xs={ 7 } sx={{ bgcolor: '#fff', p: 2 }}>
-            <TextField fullWidth label="Tìm bệnh nhân" id="fullWidth" />
+            <TextField fullWidth onChange={ (e) => props.searchPatients(e.target.value) } label="Tìm lịch khám (Nhập tên hoặc số điện thoại bệnh nhân)" id="fullWidth" />
           </Grid>
           <Grid item xs={ 5 } sx={{ bgcolor: '#fff', p: 2, display: 'flex', justifyContent: 'space-between', border: 1, borderColor: 'primary.main', borderRadius: '16px' }}>
             <LocalizationProvider dateAdapter={AdapterDateFns}>

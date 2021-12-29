@@ -61,8 +61,8 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function ScheduleTimedDialogs({ open, onClose }) {
-  const [value, setValue] = React.useState(new Date());
+export default function ScheduleTimedDialogs({ open, onClose, schedule_time }) {
+  const [value, setValue] = React.useState(schedule_time);
   return (
     <div>
       <BootstrapDialog

@@ -9,8 +9,11 @@ import {
     Radio, 
     FormLabel, 
     RadioGroup, 
-    FormControlLabel 
+    FormControlLabel, 
+    Snackbar, 
 } from '@mui/material';
+import MuiAlert from '@mui/material/Alert';
+import * as React from 'react';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import Select from '@mui/material/Select';
@@ -23,6 +26,10 @@ import * as Yup from 'yup';
 import Stack from "@mui/material/Stack";
 import axios from 'axios';
 import { useState } from 'react';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 const style = {
     position: 'absolute',
@@ -47,9 +54,11 @@ export const ScheduleFormAdd = (props) => {
     const [patientsSearch, setPatientsSearch] = useState([]);
     const [keySearch, setKeySearch] = useState('');
     const [patientSelect, setPatientSelect] = useState(null);
+    const [doctors, setDoctors] = useState(null);
+    const [patientGroup, setPatientGroup] = useState(null);
+    const [openSnackBar, setOpenSnackBar] = useState(false);
     const formik = useFormik({
-        initialValues: {
-            patient_id: null,
+        initialValues: patientSelect === null ? {
             patient_name: '',
             birthday: new Date(),
             sex: '',
@@ -57,6 +66,10 @@ export const ScheduleFormAdd = (props) => {
             address: '',
             schedule_time: new Date(),
             patient_group_id: 1,
+            doctor_id: 1,
+            schedule_status: '',
+            note: ''
+        } : {
             doctor_id: 1,
             schedule_status: '',
             note: ''
@@ -100,8 +113,6 @@ export const ScheduleFormAdd = (props) => {
                 .max(255),
             } :
             {
-                patient_id: Yup
-                .number(),
                 schedule_time: Yup
                 .string()
                 .required(
@@ -115,14 +126,26 @@ export const ScheduleFormAdd = (props) => {
             }    
         ),
         onSubmit: (values) => {
-            console.log(formik.errors);
-            // axios.post('/api/schedule', values).then(() => {
-            //     handleClose();
-            //     props.getSchedules();
-            //     setPatientsSearch([]);
-            //     setKeySearch('');
-            //     setPatientSelect(null);
-            // }, errors => console.log(errors))
+            if (patientSelect === null) {
+                axios.post('/api/schedule', values).then(() => {
+                    props.getSchedules();
+                    setPatientsSearch([]);
+                    setKeySearch('');
+                    setPatientSelect(null);
+                    setOpenSnackBar(true);
+                    handleClose();
+                }, errors => console.log(errors))
+            } else {
+                axios.post('/api/schedule?action=CREATE_SCHEDULE_ONLY&patient_id=' + patientSelect, values).then((res) => {
+                    props.getSchedules();
+                    setPatientsSearch([]);
+                    setKeySearch('');
+                    setPatientSelect(null);
+                    setOpenSnackBar(true);
+                    handleClose();
+                }, errors => console.log(errors))
+            }
+            
         }
     });
     const searchPatient = () => {
@@ -130,6 +153,27 @@ export const ScheduleFormAdd = (props) => {
             setPatientsSearch(res.data.patients);
         }, errors => console.log(errors));
     }
+    
+    const getDoctors = () => {
+        axios.get('/api/doctor').then(res => {
+            setDoctors(res.data.doctors);
+        })
+    }
+
+    const getPatientGroup = () => {
+        axios.get('/api/patient-group').then(res => {
+            setPatientGroup(res.data.patient_group);
+        })
+    }
+
+    if (doctors === null) {
+        getDoctors();
+    }
+
+    if (patientGroup === null) {
+        getPatientGroup();
+    }
+    
     return (
         <>
             <Modal
@@ -139,206 +183,215 @@ export const ScheduleFormAdd = (props) => {
                 aria-describedby="modal-modal-description"
             >
                 <Box sx={style}>
-                <Typography id="modal-modal-title" variant="h6" component="h2">
-                    { props.openFormAdd.formType === 'Examination' ? 'Tạo lịch khám' : 'Tái khám' }
-                </Typography>
-                <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    <form onSubmit={formik.handleSubmit}>
-                        <Box>
-                            <h4>Tìm kiếm bệnh nhân:</h4>
-                            <Grid sx={{ display: 'flex', justifyContent: 'space-between', py: 2 }}>
-                                <TextField onChange={ e => setKeySearch(e.target.value) } sx={{ mr: 3 }} fullWidth id="filled-basic" label="Nhập tên hoặc số điện thoại" variant="outlined" />
-                                <Button variant="contained" sx={{ width: 200, height: 56 }} onClick={ searchPatient }>
-                                    Tìm bệnh nhân
-                                </Button>
-                            </Grid>
-                            { patientsSearch.length != 0 && 
-                                <Grid>
-                                    <FormLabel component="legend">Chọn bệnh nhân</FormLabel>
-                                    <RadioGroup
-                                        aria-label="gender"
-                                        name="radio-buttons-group"
-                                        value={ patientSelect }
-                                        onChange={ e => setPatientSelect(e.target.value) }
-                                    >
-                                        { patientsSearch.map((patient) => (
-                                            <FormControlLabel value={patient.id} control={<Radio />} label={'Bệnh nhân: ' + patient.fullname + ', Sđt:' + patient.phone } />
-                                        )) }
-                                    </RadioGroup>
+                    <Typography id="modal-modal-title" variant="h6" component="h2">
+                        { props.openFormAdd.formType === 'Examination' ? 'Tạo lịch khám' : 'Tái khám' }
+                    </Typography>
+                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        <form onSubmit={formik.handleSubmit}>
+                            <Box>
+                                <h4>Tìm kiếm bệnh nhân:</h4>
+                                <Grid sx={{ display: 'flex', justifyContent: 'space-between', py: 2 }}>
+                                    <TextField onChange={ e => setKeySearch(e.target.value) } sx={{ mr: 3 }} fullWidth id="filled-basic" label="Nhập tên hoặc số điện thoại" variant="outlined" />
+                                    <Button variant="contained" sx={{ width: 200, height: 56 }} onClick={ searchPatient }>
+                                        Tìm bệnh nhân
+                                    </Button>
                                 </Grid>
-                            }
-                            <hr/>
-                            { patientSelect === null &&  
-                                <Grid>
-                                    <h4 sx={{ mt: 3 }}>Hoặc tạo bệnh nhân mới:</h4>
-                                    <TextField
-                                        error={Boolean(formik.touched.patient_name && formik.errors.patient_name)}
-                                        fullWidth
-                                        helperText={formik.touched.patient_name && formik.errors.patient_name}
-                                        label="Tên bệnh nhân"
-                                        margin="normal"
-                                        name="patient_name"
-                                        onBlur={formik.handleBlur}
-                                        onChange={formik.handleChange}
-                                        type="text"
-                                        value={formik.values.patient_name}
-                                        variant="outlined"
-                                    />
-                                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                        <Stack
-                                        error={Boolean(formik.touched.birthday && formik.errors.birthday)}
-                                        helperText={formik.touched.birthday && formik.errors.birthday}
-                                        sx={{ mt: 1 }}
+                                { patientsSearch.length != 0 && 
+                                    <Grid>
+                                        <FormLabel component="legend">Chọn bệnh nhân</FormLabel>
+                                        <RadioGroup
+                                            aria-label="gender"
+                                            name="radio-buttons-group"
+                                            value={ patientSelect }
+                                            onChange={ (e) => setPatientSelect(e.target.value) }
                                         >
-                                            <DesktopDatePicker
-                                                label="Ngày sinh"
-                                                value={formik.values.birthday}
-                                                onChange={(value) => {formik.setFieldValue('birthday', value)}}
-                                                renderInput={(params) => (
-                                                <TextField
-                                                    {...params}
-                                                    error={Boolean(formik.touched.birthday && formik.errors.birthday)}
-                                                    helperText={formik.touched.birthday && formik.errors.birthday}
+                                            { patientsSearch.map((patient) => (
+                                                <FormControlLabel value={patient.id} control={<Radio />} label={'Bệnh nhân: ' + patient.fullname + ', Sđt:' + patient.phone } />
+                                            )) }
+                                        </RadioGroup>
+                                    </Grid>
+                                }
+                                <hr/>
+                                { patientSelect === null &&  
+                                    <Grid>
+                                        <h4 sx={{ mt: 3 }}>Hoặc tạo bệnh nhân mới:</h4>
+                                        <TextField
+                                            error={Boolean(formik.touched.patient_name && formik.errors.patient_name)}
+                                            fullWidth
+                                            helperText={formik.touched.patient_name && formik.errors.patient_name}
+                                            label="Tên bệnh nhân"
+                                            margin="normal"
+                                            name="patient_name"
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                            type="text"
+                                            value={formik.values.patient_name}
+                                            variant="outlined"
+                                        />
+                                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                            <Stack
+                                            error={Boolean(formik.touched.birthday && formik.errors.birthday)}
+                                            helperText={formik.touched.birthday && formik.errors.birthday}
+                                            sx={{ mt: 1 }}
+                                            >
+                                                <DesktopDatePicker
+                                                    label="Ngày sinh"
+                                                    value={formik.values.birthday}
+                                                    onChange={(value) => {formik.setFieldValue('birthday', value)}}
+                                                    renderInput={(params) => (
+                                                    <TextField
+                                                        {...params}
+                                                        error={Boolean(formik.touched.birthday && formik.errors.birthday)}
+                                                        helperText={formik.touched.birthday && formik.errors.birthday}
+                                                    />
+                                                    )}
                                                 />
-                                                )}
-                                            />
-                                        </Stack>
-                                    </LocalizationProvider>
-                                    <FormControl fullWidth sx={{ mt: 2 }}>
-                                        <InputLabel id="sex-select-label">Giới tính</InputLabel>
-                                        <Select
-                                        labelId="sex-select-label"
-                                        id="sex-select"
-                                        name="sex"
-                                        value={formik.values.sex}
-                                        onChange={formik.handleChange}
-                                        label="Giới tính"
-                                        error={Boolean(formik.touched.sex && formik.errors.sex)}
-                                        helperText={formik.touched.sex && formik.errors.sex}
-                                        >
-                                        <MenuItem value={0}>Nữ</MenuItem>
-                                        <MenuItem value={1}>Nam</MenuItem>
-                                        <MenuItem value={2}>Khác</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                    <TextField
-                                        error={Boolean(formik.touched.phone && formik.errors.phone)}
-                                        fullWidth
-                                        helperText={formik.touched.phone && formik.errors.phone}
-                                        label="Sdt bệnh nhân"
-                                        margin="normal"
-                                        name="phone"
-                                        onBlur={formik.handleBlur}
-                                        onChange={formik.handleChange}
-                                        type="text"
-                                        value={formik.values.phone}
-                                        variant="outlined"
-                                    />
-                                    <TextField
-                                        error={Boolean(formik.touched.address && formik.errors.address)}
-                                        fullWidth
-                                        helperText={formik.touched.address && formik.errors.address}
-                                        label="Địa chỉ"
-                                        margin="normal"
-                                        name="address"
-                                        onBlur={formik.handleBlur}
-                                        onChange={formik.handleChange}
-                                        type="text"
-                                        value={formik.values.address}
-                                        variant="outlined"
-                                    />
-                                    <FormControl fullWidth sx={{ mt: 2 }}>
-                                        <InputLabel id="patient_group_id-select-label">Nhóm bệnh nhân</InputLabel>
-                                        <Select
-                                            labelId="patient_group_id-select-label"
-                                            id="patient_group_id-select"
-                                            name="patient_group_id"
-                                            value={formik.values.patient_group_id}
+                                            </Stack>
+                                        </LocalizationProvider>
+                                        <FormControl fullWidth sx={{ mt: 2 }}>
+                                            <InputLabel id="sex-select-label">Giới tính</InputLabel>
+                                            <Select
+                                            labelId="sex-select-label"
+                                            id="sex-select"
+                                            name="sex"
+                                            value={formik.values.sex}
                                             onChange={formik.handleChange}
                                             label="Giới tính"
-                                            error={Boolean(formik.touched.patient_group_id && formik.errors.patient_group_id)}
-                                            helperText={formik.touched.patient_group_id && formik.errors.patient_group_id}
-                                        >
-                                            <MenuItem value={1}>Nhóm 1</MenuItem>
-                                            <MenuItem value={2}>Nhóm 2</MenuItem>
-                                            <MenuItem value={3}>Nhóm 3</MenuItem>
-                                        </Select>
-                                    </FormControl>
-                                </Grid>
-                            }
-                        </Box>  
-                        <Box sx={{ mt: 2 }}>
-                            <h4 sx={{ mb: 3 }}>Chi tiết lịch hẹn:</h4>
-                            <LocalizationProvider dateAdapter={AdapterDateFns}>
-                                <Stack
-                                error={Boolean(formik.touched.schedule_time && formik.errors.schedule_time)}
-                                helperText={formik.touched.schedule_time && formik.errors.schedule_time}
-                                sx={{ mt: 1 }}
-                                >
-                                    <DateTimePicker
-                                        label="Lịch khám"
-                                        value={formik.values.schedule_time}
-                                        onChange={(value) => {formik.setFieldValue('schedule_time', value)}}
-                                        renderInput={(params) => (
+                                            error={Boolean(formik.touched.sex && formik.errors.sex)}
+                                            helperText={formik.touched.sex && formik.errors.sex}
+                                            >
+                                            <MenuItem value={0}>Nữ</MenuItem>
+                                            <MenuItem value={1}>Nam</MenuItem>
+                                            <MenuItem value={2}>Khác</MenuItem>
+                                            </Select>
+                                        </FormControl>
                                         <TextField
-                                            {...params}
-                                            error={Boolean(formik.touched.schedule_time && formik.errors.schedule_time)}
-                                            helperText={formik.touched.schedule_time && formik.errors.schedule_time}
+                                            error={Boolean(formik.touched.phone && formik.errors.phone)}
+                                            fullWidth
+                                            helperText={formik.touched.phone && formik.errors.phone}
+                                            label="Sdt bệnh nhân"
+                                            margin="normal"
+                                            name="phone"
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                            type="text"
+                                            value={formik.values.phone}
+                                            variant="outlined"
                                         />
-                                        )}
-                                    />
-                                </Stack>
-                            </LocalizationProvider>
-                            <FormControl fullWidth sx={{ mt: 2 }}>
-                                <InputLabel id="doctor_id-select-label">Bác sĩ</InputLabel>
-                                <Select
-                                labelId="doctor_id-select-label"
-                                id="doctor_id-select"
-                                name="doctor_id"
-                                value={formik.values.doctor_id}
-                                onChange={formik.handleChange}
-                                label="Bác sĩ"
-                                error={Boolean(formik.touched.doctor_id && formik.errors.doctor_id)}
-                                helperText={formik.touched.doctor_id && formik.errors.doctor_id}
+                                        <TextField
+                                            error={Boolean(formik.touched.address && formik.errors.address)}
+                                            fullWidth
+                                            helperText={formik.touched.address && formik.errors.address}
+                                            label="Địa chỉ"
+                                            margin="normal"
+                                            name="address"
+                                            onBlur={formik.handleBlur}
+                                            onChange={formik.handleChange}
+                                            type="text"
+                                            value={formik.values.address}
+                                            variant="outlined"
+                                        />
+                                        <FormControl fullWidth sx={{ mt: 2 }}>
+                                            <InputLabel id="patient_group_id-select-label">Nhóm bệnh nhân</InputLabel>
+                                            <Select
+                                                labelId="patient_group_id-select-label"
+                                                id="patient_group_id-select"
+                                                name="patient_group_id"
+                                                value={formik.values.patient_group_id}
+                                                onChange={formik.handleChange}
+                                                label="Giới tính"
+                                                error={Boolean(formik.touched.patient_group_id && formik.errors.patient_group_id)}
+                                                helperText={formik.touched.patient_group_id && formik.errors.patient_group_id}
+                                            >
+                                                { patientGroup != null && patientGroup.map(patientGroupChild => (
+                                                    <MenuItem value={ patientGroupChild.id }>{ patientGroupChild.name }</MenuItem>
+                                                )) }
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+                                }
+                            </Box>  
+                            <Box sx={{ mt: 2 }}>
+                                <h4 sx={{ mb: 3 }}>Chi tiết lịch hẹn:</h4>
+                                <LocalizationProvider dateAdapter={AdapterDateFns}>
+                                    <Stack
+                                    error={Boolean(formik.touched.schedule_time && formik.errors.schedule_time)}
+                                    helperText={formik.touched.schedule_time && formik.errors.schedule_time}
+                                    sx={{ mt: 1 }}
+                                    >
+                                        <DateTimePicker
+                                            label="Lịch khám"
+                                            value={formik.values.schedule_time}
+                                            onChange={(value) => {formik.setFieldValue('schedule_time', value)}}
+                                            renderInput={(params) => (
+                                            <TextField
+                                                {...params}
+                                                error={Boolean(formik.touched.schedule_time && formik.errors.schedule_time)}
+                                                helperText={formik.touched.schedule_time && formik.errors.schedule_time}
+                                            />
+                                            )}
+                                        />
+                                    </Stack>
+                                </LocalizationProvider>
+                                <FormControl fullWidth sx={{ mt: 2 }}>
+                                    <InputLabel id="doctor_id-select-label">Bác sĩ</InputLabel>
+                                    <Select
+                                    labelId="doctor_id-select-label"
+                                    id="doctor_id-select"
+                                    name="doctor_id"
+                                    value={formik.values.doctor_id}
+                                    onChange={formik.handleChange}
+                                    label="Bác sĩ"
+                                    error={Boolean(formik.touched.doctor_id && formik.errors.doctor_id)}
+                                    helperText={formik.touched.doctor_id && formik.errors.doctor_id}
+                                    >
+                                        { doctors != null && doctors.map(doctor => (
+                                            <MenuItem value={ doctor.id }>{ doctor.name }</MenuItem>
+                                        )) }
+                                    </Select>
+                                </FormControl>
+                                <FormControl fullWidth sx={{ mt: 2 }}>
+                                    <InputLabel id="status-select-label">Trạng thái</InputLabel>
+                                    <Select
+                                    labelId="status-select-label"
+                                    id="status-select"
+                                    name="status"
+                                    value={formik.values.status}
+                                    onChange={formik.handleChange}
+                                    label="Trạng thái"
+                                    error={Boolean(formik.touched.status && formik.errors.status)}
+                                    helperText={formik.touched.status && formik.errors.status}
+                                    >
+                                    <MenuItem value={0}>Trạng thái 1</MenuItem>
+                                    <MenuItem value={1}>Trạng thái 2</MenuItem>
+                                    <MenuItem value={2}>Trạng thái 3</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Box>  
+                            <Box sx={{ py: 2 }}>
+                                <Button
+                                    color="primary"
+                                    fullWidth
+                                    size="large"
+                                    type="submit"
+                                    variant="contained"
                                 >
-                                <MenuItem value={1}>Bác sĩ 1</MenuItem>
-                                <MenuItem value={5}>Bác sĩ 2</MenuItem>
-                                <MenuItem value={10}>Bác sĩ 3</MenuItem>
-                                </Select>
-                            </FormControl>
-                            <FormControl fullWidth sx={{ mt: 2 }}>
-                                <InputLabel id="status-select-label">Trạng thái</InputLabel>
-                                <Select
-                                labelId="status-select-label"
-                                id="status-select"
-                                name="status"
-                                value={formik.values.status}
-                                onChange={formik.handleChange}
-                                label="Trạng thái"
-                                error={Boolean(formik.touched.status && formik.errors.status)}
-                                helperText={formik.touched.status && formik.errors.status}
-                                >
-                                <MenuItem value={0}>Nữ</MenuItem>
-                                <MenuItem value={1}>Nam</MenuItem>
-                                <MenuItem value={2}>Khác</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </Box>  
-                        <Box sx={{ py: 2 }}>
-                            <Button
-                                color="primary"
-                                fullWidth
-                                size="large"
-                                type="submit"
-                                variant="contained"
-                            >
-                                Thêm lịch hẹn
-                            </Button>
-                        </Box>
-                    </form>
-                </Typography>
+                                    Thêm lịch hẹn
+                                </Button>
+                            </Box>
+                        </form>
+                    </Typography>
                 </Box>
             </Modal>
+            <Snackbar
+                open={openSnackBar}
+                autoHideDuration={3000}
+                onClose={() => setOpenSnackBar(false)}
+            >
+                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                    Đặt lịch thành công!
+                </Alert>
+            </Snackbar>
         </>
     );
 }
