@@ -1,16 +1,16 @@
-import Head from 'next/head';
 import { CacheProvider } from '@emotion/react';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
+import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import { createEmotionCache } from '../utils/create-emotion-cache';
-import { theme } from '../theme';
-import '../styles/App.css';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
-
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import '../styles/App.css';
+import { theme } from '../theme';
+import { createEmotionCache } from '../utils/create-emotion-cache';
 import Login from './login';
+
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -37,8 +37,8 @@ const App = (props) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    if (!isLogin) {
-      axios.get('/api/profile').then(
+    const fetchUser = async () => {
+    await axios.get('/api/profile').then(
         res => {
           setIsLogin(true);
           setUser(res.data.profile);
@@ -51,7 +51,8 @@ const App = (props) => {
         }
       );
     }
-  });
+      fetchUser();
+  },[]);
 
   if (isLoading)
   {

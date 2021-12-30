@@ -18,7 +18,8 @@ class UnitController extends Controller
     public function index()
     {
         $id = auth()->id(); 
-        $units = Unit::where('user_id',$id)->get();
+        $units = Unit::all();
+        // $units = Unit::where('parent_id',$id)->get();
 
         return new UnitCollection($units);
     }

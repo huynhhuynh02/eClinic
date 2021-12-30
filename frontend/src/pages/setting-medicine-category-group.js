@@ -10,19 +10,23 @@ const SettingMedicineCategoryGroup = () => {
   const [error, setError] = useState(null);
   const [categories, setCategories] = useState([]);
   
+  
   useEffect(() => {
-    if (categories.length === 0){
-    axios.get('/api/categories').then(response => {
-      if (response.data.responsive.status === 'success') {
-        setCategories([...response.data.data]);
-      } else {
-        setError(response.data.message);
-        
+    const fetchCategory = async () => {
+      try {
+        await axios.get('/api/categories').then(response => {
+          if (response.data.responsive.status === 'success') {
+            setCategories([...response.data.data]);
+          } else {
+            setError(response.data.message);
+          }
+        })
+      } catch (e) {
+        setError(e);
       }
-    }).catch(e => {
-      console.log(e);
-    });}
-  }, [categories]);
+    };
+    fetchCategory();
+  }, []);
   return(
   <>
     <Head>
