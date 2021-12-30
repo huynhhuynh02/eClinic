@@ -62,7 +62,7 @@ BootstrapDialogTitle.propTypes = {
 };
 
 export default function ScheduleTimedDialogs({ open, onClose, schedule_time }) {
-  const [value, setValue] = React.useState(schedule_time);
+  const [value, setValue] = React.useState(new Date(schedule_time));
   return (
     <div>
       <BootstrapDialog

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Schedule;
 use App\Models\Patient;
+use App\Models\Doctor;
 use Validator;
 
 class SchedulesController extends Controller
@@ -23,6 +24,8 @@ class SchedulesController extends Controller
         } else {
             $data['schedules'] = Schedule::with('patient', 'doctor')->get();
         }
+
+        $data['doctors'] = Doctor::all();
         
         return response()->json($data);
     }
@@ -45,7 +48,6 @@ class SchedulesController extends Controller
      */
     public function store(Request $request)
     {
-        // return response()->json();
         if ($request->action === 'CREATE_SCHEDULE_ONLY') {
             $validator = Validator::make($request->all(), [
                 'patient_id' => 'required',
@@ -126,7 +128,23 @@ class SchedulesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        if ($request->action === 'UPDATE_DOCTOR_ONLY')
+        {
+            $validator = Validator::make($request->all(), [
+                'doctor_id' => 'required',
+            ]);
+        }
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors());
+        }
+
+        if ($request->action === 'UPDATE_DOCTOR_ONLY')
+        {
+            $schedule = Schedule::find($id);
+            $schedule->doctor_id = $request->doctor_id;
+            $schedule->save();
+        }
     }
 
     /**

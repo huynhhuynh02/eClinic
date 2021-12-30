@@ -12,7 +12,11 @@ import {
     TablePagination,
     TableRow,
     Button,
-    Snackbar
+    Snackbar,
+    InputLabel, 
+    MenuItem, 
+    FormControl, 
+    Select, 
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
@@ -30,6 +34,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
   
 export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
     const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
+    const [doctors, setDoctors] = useState(null);
     const [doctorId, setDoctorId] = useState('');
     const [limit, setLimit] = useState(50);
     const [page, setPage] = useState(0);
@@ -46,6 +51,16 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
         setScheduleTime(schedule_time);
         setOpen(true);
     };
+
+    const getDoctors = () => {
+        axios.get('api/doctor').then(res => {
+            setDoctors(res.data.doctors);
+        })
+    }
+
+    if (doctors === null) {
+        getDoctors();
+    }
 
     const handleClickOpenMedical = () => {
         setOpenMedical(true);
@@ -90,6 +105,12 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
     const handlePageChange = (event, newPage) => {
         setPage(newPage);
     };
+
+    const handleChangeDoctor = (scheduleId, doctorId) => {
+        axios.patch('/api/schedule/' + scheduleId + '?action=UPDATE_DOCTOR_ONLY&doctor_id=' + doctorId).then(res => {
+            setOpenToast(true);
+        });
+    }
 
     return (
         <>
@@ -151,7 +172,20 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
                                             {schedule.patient.phone}
                                         </TableCell>
                                         <TableCell>
-                                            {schedule.doctor.name}
+                                            <FormControl fullWidth>
+                                                <InputLabel id="demo-simple-select-label">Doctor</InputLabel>
+                                                <Select
+                                                labelId="demo-simple-select-label"
+                                                id="demo-simple-select"
+                                                value={schedule.doctor.id}
+                                                label="Doctor"
+                                                onChange={ (e) => handleChangeDoctor(schedule.id, e.target.value) }
+                                                >
+                                                    {doctors != null && doctors.map((doctor) => 
+                                                        <MenuItem value={doctor.id}>{ doctor.name }</MenuItem>
+                                                    ) }
+                                                </Select>
+                                            </FormControl>
                                         </TableCell>
                                         <TableCell>
                                             {schedule.status == 0 ? 'Khám mới' : 'Tái khám'}
