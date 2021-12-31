@@ -16,7 +16,6 @@ class CreateTblPatientsTable extends Migration
         Schema::create('tbl_patients', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('patient_group_id');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
             $table->string('fullname')->nullable();
@@ -26,7 +25,6 @@ class CreateTblPatientsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('patient_group_id')->references('id')->on('tbl_patient_group')->onDelete('cascade');
         });
     }
 
