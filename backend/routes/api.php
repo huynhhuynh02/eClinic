@@ -22,4 +22,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // API route for logout user
     Route::get('profile', 'API\AuthController@profile');
     Route::post('logout', 'API\AuthController@logout');
+    Route::resource('roles', 'API\RoleController');
+    Route::resource('users', 'API\UserController');
+    Route::resource('users', 'API\DoctorsController');
+    Route::resource('categories','API\CategoryController');
+    Route::resource('medicines','API\MedicineController');
+    Route::resource('units','API\UnitController');
 });

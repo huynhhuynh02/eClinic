@@ -1,47 +1,35 @@
-import * as React from 'react';
-import { useState } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
-    Avatar,
-    Box,
-    Card,
-    Checkbox,
-    Table,
+    Box, Button, Card,
+    Checkbox, FormControl,
+    InputLabel,
+    NativeSelect, Snackbar, Table,
     TableBody,
     TableCell,
     TableHead,
     TablePagination,
-    TableRow,
-    Typography,
-    FormControl,
-    InputLabel,
-    NativeSelect,
-    Button,
-    Snackbar
+    TableRow
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
-import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DateTimePicker from '@mui/lab/DateTimePicker';
-import Stack from '@mui/material/Stack';
-import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
+import PropTypes from 'prop-types';
+import * as React from 'react';
+import { useState } from 'react';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import CustomizedDialogs from '../common/dialog';
 import ScheduleTimedDialogs from './schedule-dialog-datetime';
 import MedicalRecordDialogs from './schedule-dialog-patient';
-import CustomizedDialogs from '../common/dialog';
-import PrescriptionDialogs from '../patient/patient-prescription-dialog';
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
-  });
-  
+    return <MuiAlert elevation={6}
+        ref={ref}
+        variant="filled"
+        {...props} />;
+});
+
 export const ScheduleListResults = ({ schedules, ...rest }) => {
     const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
     const [doctorId, setDoctorId] = useState('');
@@ -53,7 +41,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
     const [openMedical, setOpenMedical] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openToast, setOpenToast] = useState(false);
-    const [patient, setPatient] =  useState("");
+    const [patient, setPatient] = useState("");
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -79,16 +67,16 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
         setOpenConfirm(false);
     }
 
-    const handleDeleteConfirm = () =>{
+    const handleDeleteConfirm = () => {
         setOpenConfirm(false);
         setOpenToast(true);
     }
 
     const handleCloseToast = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
-    
+
         setOpenToast(false);
     };
 
