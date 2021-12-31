@@ -18,10 +18,12 @@ class CreateTblMedicinesTable extends Migration
             $table->unsignedBigInteger('unit_id');
             $table->unsignedBigInteger('cate_id');
             $table->string('name');
+            $table->integer('user_id');
             $table->integer('quantity')->nullable();
             $table->integer('price')->nullable();
-            $table->timestamp('expired_date')->nullable();
+            $table->date('expired_date')->nullable();
             $table->text('description')->nullable();
+            $table->text('composition')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('unit_id')->references('id')->on('tbl_units')->onDelete('cascade');

@@ -4,30 +4,38 @@ import SaveIcon from "@mui/icons-material/Save";
 import {
   Button,
   Card,
-  Grid,
-  IconButton,
-  Table,
+  Grid, IconButton, Snackbar, Table,
   TableBody,
   TableCell,
   TableHead,
   TablePagination,
   TableRow,
   TextField,
-  Typography,
+  Typography
 } from "@mui/material";
+import Alert from '@mui/material/Alert';
 import { Box } from "@mui/system";
-import React, { useCallback, useState } from "react";
+import axios from "axios";
+import React, { useCallback, useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
-import { v4 } from "uuid";
+import CustomizedDialogs from "src/components/common/dialog";
 
 const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
-  const [listCategory, setListCategory] = useState(medicineCategories);
+  const [listCategory, setListCategory] = useState([]);
   const [editItem, setEditItem] = useState({});
   const [inputCode, setInputCode] = useState("");
   const [inputName, setInputName] = useState("");
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [toast, setToast] = useState({
+    status: "success",
+    message: "Success!",
+  });
+  const [showToast, setShowToast] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState('');
 
+  //Function
   const onInputCodeChange = useCallback((e) => {
     setInputCode(e.target.value);
   }, []);
@@ -38,19 +46,27 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
 
   //Add new
   const onClickAddBtn = useCallback(() => {
-    setListCategory([
-      ...listCategory,
-      {
-        id: v4(),
-        code:
-          inputCode.trim().length === 0 ? generateCodeFromInputName(inputName) : inputCode.trim(),
-        name: inputName.trim(),
-      },
-    ]);
+    let input = {
+      code:
+        inputCode.trim().length === 0 ? generateCodeFromInputName(inputName) : inputCode.trim(),
+      name: inputName.trim(),
+    };
+    axios.post('/api/categories', input).then(res => {
+      if (res.data.status === 'success') {
 
-    setInputCode("");
-    setInputName("");
-  }, [inputCode, inputName, listCategory]);
+        setListCategory([
+          ...listCategory,
+          res.data.category
+        ]);
+
+        setInputCode("");
+        setInputName("");
+        handleShowToast("Thêm thành công!",res.data.status);
+      } else {
+        handleShowToast("Thêm không thành công",res.data.status);
+      }
+    })
+  }, [inputCode, inputName, listCategory,handleShowToast]);
 
   //Edit item
   const onClickEditIcon = (item) => {
@@ -58,10 +74,19 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
   };
 
   const onClickSaveEditBtn = (id) => {
-    let index = listCategory.findIndex((el) => el.id === editItem.id);
-    listCategory[index] = editItem;
-    setListCategory(listCategory);
-    setEditItem({});
+    axios.put('/api/categories/'+id, editItem).then(res => {
+      if (res.data.status === 'success') {
+
+        let index = listCategory.findIndex((el) => el.id === editItem.id);
+        listCategory[index] = res.data.category;
+        setListCategory(listCategory);
+        setEditItem({});
+        handleShowToast("Sửa thành công!",res.data.status);
+      } else {
+        handleShowToast("Sửa không thành công",res.data.status);
+        setEditItem({});
+      }
+    })
   };
 
   const onEditInputCodeChange = (e) => {
@@ -74,9 +99,18 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
     setEditItem(editItem);
   };
 
-  async function onDeleteItem(id) {
-    // await CustomizedDialogs({title: "Xác nhận xoá", desription: ""})
-    setListCategory(listCategory.filter((e) => e.id !== id));
+  const handleDeleteItem = () => {
+    setShowConfirmDelete(false);
+    axios.delete('/api/categories/'+deleteItemId).then(res => {
+      if (res.data.status === 'success') {
+
+        setListCategory(listCategory.filter((e) => e.id !== deleteItemId));
+        handleShowToast("Xoá thành công!", res.data.status);
+        setDeleteItemId('');
+      } else {
+        handleShowToast("Xoá không thành công",res.data.status);
+      }
+    })
   }
 
   const handleLimitChange = (event) => {
@@ -86,6 +120,20 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+  const handleShowToast = useCallback( ( message, status) => {
+    toast.message = message;
+    toast.status = status;
+    setToast(toast);
+    setShowToast(true);
+  }, [toast]);
+  
+  const handleHideToast = useCallback( (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    toast.isOpen = false;
+    setShowToast(false);
+  },[toast]);
 
   function generateCodeFromInputName(name) {
     let _code = name
@@ -97,16 +145,35 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
       .join("");
     return _code;
   }
+  useEffect(() => {
+    if (listCategory.length == 0) {
+      setListCategory([...medicineCategories]);
+    }
+  }, [listCategory.length, medicineCategories])
+  
+  const handleOpenConfirmDeleteItem = (id) => {
+    setDeleteItemId(id);
+    setShowConfirmDelete(true);
+}
+const handleCloseConfirm = () => {
+  setDeleteItemId('');
+  setShowConfirmDelete(false);
+  
+}
+
 
   return (
     <>
-      <Typography sx={{ mb: 3 }} variant="h5">
+      <Typography sx={{ mb: 3 }}
+variant="h5">
         Danh mục nhóm thuốc
       </Typography>
 
       <Box sx={{ mt: 3 }}>
-        <Grid container spacing={3}>
-          <Grid item xs={3}>
+        <Grid container
+spacing={3}>
+          <Grid item
+xs={3}>
             <Box>
               <TextField
                 fullWidth
@@ -120,7 +187,8 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
             </Box>
           </Grid>
 
-          <Grid item xs={8}>
+          <Grid item
+xs={8}>
             <Box>
               <TextField
                 fullWidth
@@ -133,7 +201,8 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
               />
             </Box>
           </Grid>
-          <Grid item xs={1}>
+          <Grid item
+xs={1}>
             <Button
               variant="contained"
               disabled={inputName.length == 0}
@@ -145,7 +214,8 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
           </Grid>
         </Grid>
       </Box>
-      <Card {...rest} sx={{ mt: 3 }}>
+      <Card {...rest}
+sx={{ mt: 3 }}>
         <PerfectScrollbar>
           <Box sx={{ minWidth: 1050 }}>
             <Table>
@@ -170,14 +240,15 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {listCategory.map((item) => (
+                {listCategory?.map((item) => (
                   <TableRow
                     hover
                     key={item.id}
                     // selected={selectedCustomerIds.indexOf(item.id) !== -1}
                   >
                     <TableCell align="center">
-                      <Typography color="textPrimary" variant="body1">
+                      <Typography color="textPrimary"
+variant="body1">
                         {listCategory.findIndex((el) => el.id == item.id) + 1}
                       </Typography>
                     </TableCell>
@@ -206,17 +277,20 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton href="#">
+                      <IconButton >
                         {Object.keys(editItem).length !== 0 && editItem.id === item.id ? (
-                          <SaveIcon color="success" onClick={() => onClickSaveEditBtn(item.id)} />
+                          <SaveIcon color="success"
+onClick={() => onClickSaveEditBtn(item.id)} />
                         ) : (
-                          <EditIcon color="primary" onClick={() => onClickEditIcon(item)} />
+                          <EditIcon color="primary"
+onClick={() => onClickEditIcon(item)} />
                         )}
                       </IconButton>
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton href="#">
-                        <DeleteIcon color="error" onClick={() => onDeleteItem(item.id)} />
+                      <IconButton >
+                        <DeleteIcon color="error"
+onClick={() => handleOpenConfirmDeleteItem(item.id)} />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -235,6 +309,33 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Card>
+      <Snackbar  open={showToast}
+autoHideDuration={2000}
+onClose={handleHideToast} 
+        anchorOrigin={{ vertical:"top", horizontal:"right" }}>
+        <Alert severity={toast.status}
+sx={{ width: '100%' }}>
+          {toast.message}
+        </Alert>
+      </Snackbar>
+
+      <CustomizedDialogs
+                onClose={handleCloseConfirm}
+                open={showConfirmDelete}
+                title="Xoá danh mục"
+                maxWidth="xs"
+                actions={
+                    <>
+                        <Button variant="contained"
+color="error"
+onClick={handleDeleteItem}>Xoá</Button>
+                        <Button variant="outlined"
+onClick={handleCloseConfirm}>Huỷ</Button>
+                    </>
+                }
+            >
+                Bạn có chắc chắc muốn xoá?
+            </CustomizedDialogs>
     </>
   );
 };
