@@ -25,11 +25,11 @@ import MedicalRecordDialogs from './schedule-dialog-patient';
 
 const Alert = React.forwardRef(function Alert(props, ref) {
     return <MuiAlert elevation={6}
-ref={ref}
-variant="filled"
-{...props} />;
-  });
-  
+        ref={ref}
+        variant="filled"
+        {...props} />;
+});
+
 export const ScheduleListResults = ({ schedules, ...rest }) => {
     const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
     const [doctorId, setDoctorId] = useState('');
@@ -41,11 +41,14 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
     const [openMedical, setOpenMedical] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openToast, setOpenToast] = useState(false);
+    const [patient, setPatient] = useState("");
     const handleClickOpen = () => {
         setOpen(true);
     };
 
-    const handleClickOpenMedical = () => {
+    const handleClickOpenMedical = (id) => {
+        let schedule = schedules.filter(item => item.id == id);
+        setPatient(schedule[0].patient);
         setOpenMedical(true);
     };
 
@@ -64,16 +67,16 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
         setOpenConfirm(false);
     }
 
-    const handleDeleteConfirm = () =>{
+    const handleDeleteConfirm = () => {
         setOpenConfirm(false);
         setOpenToast(true);
     }
 
     const handleCloseToast = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
-    
+
         setOpenToast(false);
     };
 
@@ -149,9 +152,6 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                         Điện thoại
                                     </TableCell>
                                     <TableCell>
-                                        Bác sĩ khám
-                                    </TableCell>
-                                    <TableCell>
                                         Trạng thái
                                     </TableCell>
                                     <TableCell>
@@ -195,39 +195,18 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                             {schedule.patient.phone}
                                         </TableCell>
                                         <TableCell>
-                                            <FormControl fullWidth>
-                                                <InputLabel variant="standard"
-htmlFor="uncontrolled-native">
-                                                    Age
-                                                </InputLabel>
-                                                <NativeSelect
-                                                    defaultValue={30}
-                                                    inputProps={{
-                                                        name: 'age',
-                                                        id: 'uncontrolled-native',
-                                                    }}
-                                                >
-                                                    {schedule.doctors?.map((doctor) => (
-                                                        <option value={doctor.id}>{doctor.name}</option>
-                                                    ))}
-                                                </NativeSelect>
-                                            </FormControl>
-                                        </TableCell>
-                                        <TableCell>
                                             {schedule.status == 0 ? 'Khám mới' : 'Tái khám'}
                                         </TableCell>
                                         <TableCell>
                                             {schedule.description}
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary"
-onClick={handleClickOpen}>
+                                            <IconButton color="primary" onClick={handleClickOpen}>
                                                 <AccessAlarmsIcon></AccessAlarmsIcon>
                                             </IconButton>
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary"
-onClick={handleClickOpenMedical}>
+                                            <IconButton color="primary" onClick={() => handleClickOpenMedical(schedule.id)}>
                                                 <AssignmentIcon></AssignmentIcon>
                                             </IconButton>
                                         </TableCell>
@@ -252,10 +231,8 @@ onClick={handleClickOpenMedical}>
                     rowsPerPageOptions={[5, 10, 25]}
                 />
             </Card>
-            <ScheduleTimedDialogs open={open}
-onClose={handleClose} />
-            <MedicalRecordDialogs open={openMedical}
-onClose={handleCloseMedical} />
+            <ScheduleTimedDialogs open={open} onClose={handleClose} />
+            <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} patient={patient} />
             <CustomizedDialogs
                 onClose={handleCloseConfirm}
                 open={openConfirm}
@@ -263,22 +240,15 @@ onClose={handleCloseMedical} />
                 maxWidth="xs"
                 actions={
                     <>
-                        <Button variant="contained"
-color="error"
-onClick={handleDeleteConfirm}>Xoá</Button>
-                        <Button variant="outlined"
-onClick={handleCloseConfirm}>Huỷ</Button>
+                        <Button variant="contained" color="error" onClick={handleDeleteConfirm}>Xoá</Button>
+                        <Button variant="outlined" onClick={handleCloseConfirm}>Huỷ</Button>
                     </>
                 }
             >
                 Bạn có chắc chắc muốn xoá
             </CustomizedDialogs>
-            <Snackbar open={openToast}
-autoHideDuration={2000}
-onClose={handleCloseToast}>
-                <Alert onClose={handleClose}
-severity="success"
-sx={{ width: '100%' }}>
+            <Snackbar open={openToast} autoHideDuration={2000} onClose={handleCloseToast}>
+                <Alert severity="success" sx={{ width: '100%' }}>
                     This is a success message!
                 </Alert>
             </Snackbar>

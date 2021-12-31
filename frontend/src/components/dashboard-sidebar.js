@@ -31,11 +31,11 @@ const items = [
     title: "Khám bệnh",
     submenu: [
       {
-        title: "Tạo khám bệnh",
+        title: "Tạo lịch hẹn",
         href: "/schedule",
       },
       {
-        title: "Danh sách khám bệnh",
+        title: "Danh sách khám",
         href: "/patient",
       },
     ],
