@@ -1,45 +1,33 @@
-import * as React from 'react';
-import { useState } from 'react';
-import PerfectScrollbar from 'react-perfect-scrollbar';
-import PropTypes from 'prop-types';
-import { format } from 'date-fns';
+import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {
-    Avatar,
-    Box,
-    Card,
-    Checkbox,
-    Table,
+    Box, Button, Card,
+    Checkbox, FormControl,
+    InputLabel,
+    NativeSelect, Snackbar, Table,
     TableBody,
     TableCell,
     TableHead,
     TablePagination,
-    TableRow,
-    Typography,
-    FormControl,
-    InputLabel,
-    NativeSelect,
-    Button,
-    Snackbar
+    TableRow
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
-import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
-import DateTimePicker from '@mui/lab/DateTimePicker';
-import Stack from '@mui/material/Stack';
-import DesktopDateTimePicker from '@mui/lab/DesktopDateTimePicker';
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import DeleteIcon from '@mui/icons-material/Delete';
-import AccessAlarmsIcon from '@mui/icons-material/AccessAlarms';
+import PropTypes from 'prop-types';
+import * as React from 'react';
+import { useState } from 'react';
+import PerfectScrollbar from 'react-perfect-scrollbar';
+import CustomizedDialogs from '../common/dialog';
 import ScheduleTimedDialogs from './schedule-dialog-datetime';
 import MedicalRecordDialogs from './schedule-dialog-patient';
-import CustomizedDialogs from '../common/dialog';
-import PrescriptionDialogs from '../patient/patient-prescription-dialog';
 
 
 const Alert = React.forwardRef(function Alert(props, ref) {
-    return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+    return <MuiAlert elevation={6}
+ref={ref}
+variant="filled"
+{...props} />;
   });
   
 export const ScheduleListResults = ({ schedules, ...rest }) => {
@@ -208,7 +196,8 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                         </TableCell>
                                         <TableCell>
                                             <FormControl fullWidth>
-                                                <InputLabel variant="standard" htmlFor="uncontrolled-native">
+                                                <InputLabel variant="standard"
+htmlFor="uncontrolled-native">
                                                     Age
                                                 </InputLabel>
                                                 <NativeSelect
@@ -231,12 +220,14 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                             {schedule.description}
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary" onClick={handleClickOpen}>
+                                            <IconButton color="primary"
+onClick={handleClickOpen}>
                                                 <AccessAlarmsIcon></AccessAlarmsIcon>
                                             </IconButton>
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary" onClick={handleClickOpenMedical}>
+                                            <IconButton color="primary"
+onClick={handleClickOpenMedical}>
                                                 <AssignmentIcon></AssignmentIcon>
                                             </IconButton>
                                         </TableCell>
@@ -261,8 +252,10 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                     rowsPerPageOptions={[5, 10, 25]}
                 />
             </Card>
-            <ScheduleTimedDialogs open={open} onClose={handleClose} />
-            <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} />
+            <ScheduleTimedDialogs open={open}
+onClose={handleClose} />
+            <MedicalRecordDialogs open={openMedical}
+onClose={handleCloseMedical} />
             <CustomizedDialogs
                 onClose={handleCloseConfirm}
                 open={openConfirm}
@@ -270,15 +263,22 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                 maxWidth="xs"
                 actions={
                     <>
-                        <Button variant="contained" color="error" onClick={handleDeleteConfirm}>Xoá</Button>
-                        <Button variant="outlined" onClick={handleCloseConfirm}>Huỷ</Button>
+                        <Button variant="contained"
+color="error"
+onClick={handleDeleteConfirm}>Xoá</Button>
+                        <Button variant="outlined"
+onClick={handleCloseConfirm}>Huỷ</Button>
                     </>
                 }
             >
                 Bạn có chắc chắc muốn xoá
             </CustomizedDialogs>
-            <Snackbar open={openToast} autoHideDuration={2000} onClose={handleCloseToast}>
-                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+            <Snackbar open={openToast}
+autoHideDuration={2000}
+onClose={handleCloseToast}>
+                <Alert onClose={handleClose}
+severity="success"
+sx={{ width: '100%' }}>
                     This is a success message!
                 </Alert>
             </Snackbar>

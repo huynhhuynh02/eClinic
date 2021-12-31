@@ -18,6 +18,7 @@ import { Box } from "@mui/system";
 import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import CustomizedDialogs from "src/components/common/dialog";
 
 const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
   const [listCategory, setListCategory] = useState([]);
@@ -31,7 +32,10 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
     message: "Success!",
   });
   const [showToast, setShowToast] = useState(false);
+  const [showConfirmDelete, setShowConfirmDelete] = useState(false);
+  const [deleteItemId, setDeleteItemId] = useState('');
 
+  //Function
   const onInputCodeChange = useCallback((e) => {
     setInputCode(e.target.value);
   }, []);
@@ -95,12 +99,14 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
     setEditItem(editItem);
   };
 
-  async function onDeleteItem(id) {
-    axios.delete('/api/categories/'+id).then(res => {
+  const handleDeleteItem = () => {
+    setShowConfirmDelete(false);
+    axios.delete('/api/categories/'+deleteItemId).then(res => {
       if (res.data.status === 'success') {
 
-        setListCategory(listCategory.filter((e) => e.id !== id));
-        handleShowToast("Xoá thành công!",res.data.status);
+        setListCategory(listCategory.filter((e) => e.id !== deleteItemId));
+        handleShowToast("Xoá thành công!", res.data.status);
+        setDeleteItemId('');
       } else {
         handleShowToast("Xoá không thành công",res.data.status);
       }
@@ -143,7 +149,17 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
     if (listCategory.length == 0) {
       setListCategory([...medicineCategories]);
     }
-  },[listCategory.length, medicineCategories])
+  }, [listCategory.length, medicineCategories])
+  
+  const handleOpenConfirmDeleteItem = (id) => {
+    setDeleteItemId(id);
+    setShowConfirmDelete(true);
+}
+const handleCloseConfirm = () => {
+  setDeleteItemId('');
+  setShowConfirmDelete(false);
+  
+}
 
 
   return (
@@ -261,7 +277,7 @@ variant="body1">
                       )}
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton href="#">
+                      <IconButton >
                         {Object.keys(editItem).length !== 0 && editItem.id === item.id ? (
                           <SaveIcon color="success"
 onClick={() => onClickSaveEditBtn(item.id)} />
@@ -272,9 +288,9 @@ onClick={() => onClickEditIcon(item)} />
                       </IconButton>
                     </TableCell>
                     <TableCell align="right">
-                      <IconButton href="#">
+                      <IconButton >
                         <DeleteIcon color="error"
-onClick={() => onDeleteItem(item.id)} />
+onClick={() => handleOpenConfirmDeleteItem(item.id)} />
                       </IconButton>
                     </TableCell>
                   </TableRow>
@@ -302,6 +318,24 @@ sx={{ width: '100%' }}>
           {toast.message}
         </Alert>
       </Snackbar>
+
+      <CustomizedDialogs
+                onClose={handleCloseConfirm}
+                open={showConfirmDelete}
+                title="Xoá danh mục"
+                maxWidth="xs"
+                actions={
+                    <>
+                        <Button variant="contained"
+color="error"
+onClick={handleDeleteItem}>Xoá</Button>
+                        <Button variant="outlined"
+onClick={handleCloseConfirm}>Huỷ</Button>
+                    </>
+                }
+            >
+                Bạn có chắc chắc muốn xoá?
+            </CustomizedDialogs>
     </>
   );
 };

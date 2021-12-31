@@ -15,11 +15,11 @@ import {
   TextField,
   Typography
 } from "@mui/material";
+import axios from "axios";
 import { useState } from "react";
-import { medicine_category_group } from "src/__mocks__/category_group";
-import { units } from "src/__mocks__/unit";
 
-export const SettingMedicineToolbar = (props) => {
+export const SettingMedicineToolbar = ({categories, units, ...props}) => {
+  
   const [expiredDate, setExpiredDate] = useState(null);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -34,7 +34,7 @@ export const SettingMedicineToolbar = (props) => {
   const [showToast, setShowToast] = useState(false);
 
   const handleChangeDate = (event) => {
-    setExpiredDate(event?.value);
+    setExpiredDate(event);
   };
 
   const handleChangeName = (event) => {
@@ -69,8 +69,8 @@ export const SettingMedicineToolbar = (props) => {
       expired_date:expiredDate,
       description:description,
       composition:composition,
-      
     }
+    console.log(input)
     axios.post('/api/medicines', input).then(res => {
       if (res.data.status === 'success') {
 
@@ -165,7 +165,7 @@ fullWidth>
                     onChange={handleChangeCategoryId}
                     label="Danh mục thuốc*"
                   >
-                    {medicine_category_group.map((cate) => (
+                    {categories?.map((cate) => (
                       <MenuItem key={cate.id}
                         value={cate.id}>
                         {cate.name}
@@ -208,7 +208,7 @@ fullWidth>
                     onChange={handleChangeUnitId}
                     label="Đơn vị tính *"
                   >
-                    {units.map((item) => (
+                    {units?.map((item) => (
                       <MenuItem key={item.id}
 value={item.id}>
                         {item.name}
@@ -241,7 +241,7 @@ sm={6}>
                 <TextField
                   fullWidth
                   id="standard-basic"
-                  label="Mô tả"
+                  label="Cách dùng"
                   variant="standard"
                   value={description}
                   onChange={handleChangeDescription}
@@ -261,6 +261,7 @@ sm={6}>
               categoryId.length === 0 ||
               unitId.length === 0
             }
+            onClick={handleAddButton}
           >
             Thêm
           </Button>

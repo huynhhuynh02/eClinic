@@ -27,4 +27,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('users', 'API\DoctorsController');
     Route::resource('categories','API\CategoryController');
     Route::resource('medicines','API\MedicineController');
+    Route::resource('units','API\UnitController');
 });

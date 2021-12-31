@@ -7,6 +7,7 @@ use App\Http\Resources\MedicineCollection;
 use App\Http\Resources\MedicineResource;
 use Illuminate\Http\Request;
 use App\Models\Medicine;
+use DateTime;
 
 class MedicineController extends Controller
 {
@@ -44,17 +45,17 @@ class MedicineController extends Controller
             $medicine->user_id = $user_id;
             $medicine->quantity = $request->quantity;
             $medicine->price = $request->price;
-            $medicine->expired_date = $request->expired_date;
+            $medicine->expired_date = new DateTime($request->expired_date);
             $medicine->description = $request->description;
             $medicine->composition = $request->composition;
-            
             $medicine->save();
             
             return response()->json([
-                'medicine' => $medicine, 
+                'medicine' => new MedicineResource(Medicine::find($medicine->id)), 
                 'status'=>'success'
             ],201);
         }catch (\Exception $e){
+            
             return response()->json([
                 'message' => $e, 
                 'status'=>'error'
@@ -96,14 +97,14 @@ class MedicineController extends Controller
             $medicine->user_id = $user_id;
             $medicine->quantity = $request->quantity;
             $medicine->price = $request->price;
-            $medicine->expired_date = $request->expired_date;
+            $medicine->expired_date = new DateTime($request->expired_date);
             $medicine->description = $request->description;
             $medicine->composition = $request->composition;
             
             $medicine->save();
             
             return response()->json([
-                'medicine' => $medicine, 
+                'medicine' => new MedicineResource(Medicine::find($medicine->id)),  
                 'status'=>'success'
             ],201);
         } catch (\Exception $e) {
