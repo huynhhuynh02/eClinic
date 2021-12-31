@@ -73,7 +73,7 @@ export default function MedicalRecordDialogs(props) {
             scroll="paper"
             actions={
                 <>
-                    <Button variant="contained">Đóng</Button>
+                    <Button variant="contained" onClick={onClose}>Đóng</Button>
                 </>
             }
         >

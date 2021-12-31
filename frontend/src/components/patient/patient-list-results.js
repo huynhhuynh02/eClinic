@@ -104,7 +104,7 @@ export const PatientListResults = ({ patients, ...rest }) => {
             <Table>
               <TableHead>
                 <TableRow>
-                  <TableCell padding="checkbox">
+                  {/* <TableCell padding="checkbox">
                     <Checkbox
                       checked={selectedCustomerIds.length === patients.length}
                       color="primary"
@@ -114,7 +114,7 @@ export const PatientListResults = ({ patients, ...rest }) => {
                       }
                       onChange={handleSelectAll}
                     />
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell>
                     Mã BN
                   </TableCell>
@@ -136,12 +136,12 @@ export const PatientListResults = ({ patients, ...rest }) => {
                   <TableCell>
                     Kê đơn
                   </TableCell>
-                  <TableCell>
+                  {/* <TableCell>
                     Chỉnh sửa
                   </TableCell>
                   <TableCell>
                     Xoá
-                  </TableCell>
+                  </TableCell> */}
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -151,13 +151,13 @@ export const PatientListResults = ({ patients, ...rest }) => {
                     key={patient.id}
                     selected={selectedCustomerIds.indexOf(patient.id) !== -1}
                   >
-                    <TableCell padding="checkbox">
+                    {/* <TableCell padding="checkbox">
                       <Checkbox
                         checked={selectedCustomerIds.indexOf(patient.id) !== -1}
                         onChange={(event) => handleSelectOne(event, patient.id)}
                         value="true"
                       />
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <Box
                         sx={{
@@ -195,7 +195,7 @@ export const PatientListResults = ({ patients, ...rest }) => {
                         <AccountBoxIcon color="primary" />
                       </IconButton>
                     </TableCell>
-                    <TableCell align="center">
+                    {/* <TableCell align="center">
                       <IconButton href="#">
                         <AccessTimeFilledIcon color="primary" />
                       </IconButton>
@@ -204,7 +204,7 @@ export const PatientListResults = ({ patients, ...rest }) => {
                       <IconButton href="#">
                         <DeleteIcon color="warning" />
                       </IconButton>
-                    </TableCell>
+                    </TableCell> */}
                   </TableRow>
                 ))}
               </TableBody>
