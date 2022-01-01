@@ -2,19 +2,13 @@
 
 namespace App\Models;
 
-<<<<<<< HEAD
-=======
 use App\Models\Schedule;
->>>>>>> develop
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Patient extends Model
 {
     use HasFactory;
-<<<<<<< HEAD
-    protected $table = "tbl_patients";
-=======
 
     /**
      * The table associated with the model.
@@ -30,5 +24,4 @@ class Patient extends Model
     {
         return $this->hasMany(Schedule::class);
     }
->>>>>>> develop
 }
