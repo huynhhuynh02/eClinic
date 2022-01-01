@@ -2,10 +2,6 @@
 
 namespace App\Models;
 
-<<<<<<< HEAD
-=======
-use App\Models\Patient;
->>>>>>> develop
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
