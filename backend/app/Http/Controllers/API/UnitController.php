@@ -3,14 +3,12 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\CategoryCollection;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\UnitCollection;
+use App\Http\Resources\UnitResource;
+use App\Models\Unit;
 use Illuminate\Http\Request;
-use App\Models\Category;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 
-class CategoryController extends Controller
+class UnitController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,9 +18,10 @@ class CategoryController extends Controller
     public function index()
     {
         $id = auth()->id(); 
-        $categories = Category::where('user_id',$id)->get();
+        $units = Unit::all();
+        // $units = Unit::where('parent_id',$id)->get();
 
-        return new CategoryCollection($categories);
+        return new UnitCollection($units);
     }
 
     /**
@@ -34,25 +33,14 @@ class CategoryController extends Controller
     public function store(Request $request)
     {
         try{
-            $user_id = Auth::id(); 
-
-            $cate = new Category;
-            $cate->code = $request->code;
-            $cate->name = $request->name;
-            $cate->parent_id = $request->parent_id;
-            $cate->user_id = $user_id;
+            $unit = new Unit;
+            $unit->name = $request->name;
+            $unit->parent_id = $request->parent_id;
             
-            $cate->save();
+            $unit->save();
 
-            return response()->json([
-                'category' => $cate, 
-                'status'=>'success'
-            ],201);
         }catch (\Exception $e){
-            return response()->json([
-                'message' => $e, 
-                'status'=>'error'
-            ],401);
+            throw $e;
         }
     }
 
@@ -64,11 +52,11 @@ class CategoryController extends Controller
      */
     public function show($id)
     {
-        $category = Category::find($id);
-        if(!$category){
+        $unit = Unit::find($id);
+        if(!$unit){
             return response()->json(['message'=>'id '.$id.' not found','status'=>'error'],404);
         }
-        return new CategoryResource($category);
+        return new UnitResource($unit);
     }
 
     /**
@@ -82,25 +70,19 @@ class CategoryController extends Controller
     public function update(Request $request, $id )
     {
         try {
-            $category = Category::find($id);
-            $user_id = Auth::id(); 
+            $unit = Unit::find($id);
 
-            $category->code = $request->code;
-            $category->name = $request->name;
-            $category->parent_id = $request->parentId;
-            $category->user_id = $user_id;
+            $unit->name = $request->name;
+            $unit->parent_id = $request->parentId;
             
-            $category->save();
+            $unit->save();
             
             return response()->json([
-                'category' => $category, 
+                'unit' => $unit, 
                 'status'=>'success'
             ],201);
         } catch (\Exception $e) {
-            return response()->json([
-                'message' => $e, 
-                'status'=>'error'
-            ],401);
+            throw $e;
         }
     }
 
@@ -114,12 +96,13 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $cate = Category::find($id);
-        if(!$cate){
+        $unit = Unit::find($id);
+        if(!$unit){
             return response()->json(['message'=>'id '.$id.' not found','status'=>'error'],404);
         }
-        $cate->delete();
+        $unit->delete();
         return response()->json(['message'=>'delete success','status'=>'success'],201);
     }
 }
+
 

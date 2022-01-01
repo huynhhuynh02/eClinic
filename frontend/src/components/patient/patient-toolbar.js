@@ -26,7 +26,7 @@ import {
           sx={{ m: 1 }}
           variant="h6"
         >
-          Danh sách khám bệnh
+          Danh sách cần khám hôm nay
         </Typography>
         <Box sx={{ m: 1 }}>
           <Button
@@ -68,8 +68,8 @@ import {
                     </InputAdornment>
                   )
                 }}
-                placeholder="Search customer"
-                variant="outlined"
+                placeholder="Tên bệnh nhân, số điện thoại, mã bệnh nhân"
+                variant="standard"
               />
             </Box>
           </CardContent>

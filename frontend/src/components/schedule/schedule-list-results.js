@@ -96,9 +96,9 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
 
     const handleCloseToast = (event, reason) => {
         if (reason === 'clickaway') {
-          return;
+            return;
         }
-    
+
         setOpenToast(false);
     };
 
@@ -138,9 +138,6 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
                                     </TableCell>
                                     <TableCell>
                                         Điện thoại
-                                    </TableCell>
-                                    <TableCell>
-                                        Bác sĩ khám
                                     </TableCell>
                                     <TableCell>
                                         Trạng thái
@@ -209,7 +206,7 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
                                             </IconButton>
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary" onClick={handleClickOpenMedical}>
+                                            <IconButton color="primary" onClick={() => handleClickOpenMedical(schedule.id)}>
                                                 <AssignmentIcon></AssignmentIcon>
                                             </IconButton>
                                         </TableCell>
@@ -251,7 +248,7 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
                 Bạn có chắc chắc muốn xoá
             </CustomizedDialogs>
             <Snackbar open={openToast} autoHideDuration={2000} onClose={handleCloseToast}>
-                <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+                <Alert severity="success" sx={{ width: '100%' }}>
                     This is a success message!
                 </Alert>
             </Snackbar>
