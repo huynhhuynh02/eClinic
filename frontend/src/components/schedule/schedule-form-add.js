@@ -125,7 +125,7 @@ export const ScheduleFormAdd = (props) => {
                 .max(255),
             }    
         ),
-        onSubmit: (values) => {
+        onSubmit: (values, { resetForm }) => {
             if (patientSelect === null) {
                 axios.post('/api/schedule', values).then(() => {
                     props.getSchedules();
@@ -134,6 +134,7 @@ export const ScheduleFormAdd = (props) => {
                     setPatientSelect(null);
                     setOpenSnackBar(true);
                     handleClose();
+                    resetForm({});
                 }, errors => console.log(errors))
             } else {
                 axios.post('/api/schedule?action=CREATE_SCHEDULE_ONLY&patient_id=' + patientSelect, values).then((res) => {
@@ -143,6 +144,7 @@ export const ScheduleFormAdd = (props) => {
                     setPatientSelect(null);
                     setOpenSnackBar(true);
                     handleClose();
+                    resetForm({});
                 }, errors => console.log(errors))
             }
             

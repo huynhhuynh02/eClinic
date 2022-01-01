@@ -82,15 +82,16 @@ class SchedulesController extends Controller
             $patient->address = $request->address;
             $patient->phone = $request->phone;
             $patient->sex = $request->sex;
-            $patient->birthday = date("Y-m-d", strtotime($request->birthday));
+            $birthday = new Carbon($request->birthday);
+            $patient->birthday = $birthday->toDateString();
             $patient->save();
             $patient_id = $patient->id;
         }
-
         $schedule = new Schedule();
         $schedule->patient_id = $patient_id;
         $schedule->doctor_id = $request->doctor_id;
-        $schedule->schedule_time = date("Y-m-d H:m:s", strtotime($request->schedule_time));
+        $schedule_time = new Carbon($request->schedule_time);
+        $schedule->schedule_time = $schedule_time->toDateTimeString();  
         $schedule->save();
     }
 
@@ -149,7 +150,7 @@ class SchedulesController extends Controller
         {
             $schedule->doctor_id = $request->doctor_id;
         } else {
-            $new_schedule_time = implode(' ', array_slice(explode(' ' ,$request->schedule_time), 1, 4));
+            $new_schedule_time = implode(' ', array_slice(explode(' ', $request->schedule_time), 1, 4));
             $schedule->schedule_time = date("Y-m-d H:m:s", strtotime($new_schedule_time));
         }
         $schedule->save();
