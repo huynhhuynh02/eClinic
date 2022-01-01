@@ -45,10 +45,9 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openToast, setOpenToast] = useState(false);
     const [scheduleSelectDelete, setScheduleSelectDelete] = useState(null);
-    const [scheduleTime, setScheduleTime] = useState(new Date());
-    const handleClickOpen = (schedule_time) => {
-        console.log(schedule_time);
-        setScheduleTime(schedule_time);
+    const [scheduleId, setScheduleId] = useState(new Date());
+    const handleClickOpen = (scheduleId) => {
+        setScheduleId(scheduleId);
         setOpen(true);
     };
 
@@ -80,6 +79,11 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
     }
     const handleCloseConfirm = () => {
         setOpenConfirm(false);
+    }
+
+    const handleOpenToast = () => {
+        getSchedules();
+        setOpenToast(true);
     }
 
     const handleDeleteConfirm = () =>{
@@ -121,10 +125,13 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
                             <TableHead>
                                 <TableRow>
                                     <TableCell>
-                                        Ngày khám
+                                        #
                                     </TableCell>
                                     <TableCell>
                                         Giờ khám
+                                    </TableCell>
+                                    <TableCell>
+                                        Ngày khám
                                     </TableCell>
                                     <TableCell>
                                         Họ tên
@@ -153,12 +160,15 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {schedules.slice(0, limit).map((schedule) => (
+                                {schedules.slice(0, limit).map((schedule, i) => (
                                     <TableRow
                                         hover
                                         key={schedule.id}
                                         selected={selectedScheduleIds.indexOf(schedule.id) !== -1}
                                     >
+                                        <TableCell>
+                                            {i+1}
+                                        </TableCell>
                                         <TableCell>
                                             {new Date(schedule.schedule_time).toLocaleString().split(',')[0]}
                                         </TableCell>
@@ -194,7 +204,7 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
                                             {schedule.remark == null ? 'Không có ghi chú' : schedule.remark}
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary" onClick={() => handleClickOpen(schedule.schedule_time)}>
+                                            <IconButton color="primary" onClick={() => handleClickOpen(schedule.id)}>
                                                 <AccessAlarmsIcon></AccessAlarmsIcon>
                                             </IconButton>
                                         </TableCell>
@@ -224,7 +234,7 @@ export const ScheduleListResults = ({ schedules, getSchedules, ...rest }) => {
                     rowsPerPageOptions={[25, 50, 75]}
                 />
             </Card>
-            <ScheduleTimedDialogs schedule_time={ scheduleTime } open={open} onClose={handleClose} />
+            <ScheduleTimedDialogs schedule_id={ scheduleId } open={open} handleOpenToast={ handleOpenToast } onClose={handleClose} />
             <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} />
             <CustomizedDialogs
                 onClose={handleCloseConfirm}

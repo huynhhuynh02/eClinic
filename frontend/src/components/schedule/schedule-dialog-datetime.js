@@ -8,13 +8,13 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogActions from '@mui/material/DialogActions';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
-import Typography from '@mui/material/Typography';
 import Slide from '@mui/material/Slide';
 import DoneIcon from '@mui/icons-material/Done';
 import CancelIcon from '@mui/icons-material/Cancel';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import StaticDateTimePicker from '@mui/lab/StaticDateTimePicker';
+import axios from 'axios';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -61,8 +61,14 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function ScheduleTimedDialogs({ open, onClose, schedule_time }) {
-  const [value, setValue] = React.useState(new Date(schedule_time));
+export default function ScheduleTimedDialogs({ open, onClose, schedule_id, handleOpenToast }) {
+  const [value, setValue] = React.useState(new Date());
+    const updateScheduleTime = () => {
+    axios.patch('/api/schedule/' + schedule_id + '?action=UPDATE_SCHEDULE_TIME_ONLY&schedule_time=' + value).then((res) => {
+        handleOpenToast();
+        onClose();
+    });
+  }
   return (
     <div>
       <BootstrapDialog
@@ -93,7 +99,7 @@ export default function ScheduleTimedDialogs({ open, onClose, schedule_time }) {
           </LocalizationProvider>
         </DialogContent>
         <DialogActions>
-          <Button variant="contained" autoFocus onClick={onClose} 
+          <Button variant="contained" autoFocus onClick={ updateScheduleTime } 
             startIcon={<DoneIcon />}>
             Cập nhật
           </Button>

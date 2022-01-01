@@ -8,6 +8,7 @@ use App\Models\Schedule;
 use App\Models\Patient;
 use App\Models\Doctor;
 use Validator;
+use Carbon\Carbon;
 
 class SchedulesController extends Controller
 {
@@ -133,18 +134,25 @@ class SchedulesController extends Controller
             $validator = Validator::make($request->all(), [
                 'doctor_id' => 'required',
             ]);
+        } else {
+            $validator = Validator::make($request->all(), [
+                'schedule_time' => 'required',
+            ]);
         }
 
         if ($validator->fails()) {
             return response()->json($validator->errors());
         }
 
+        $schedule = Schedule::find($id);
         if ($request->action === 'UPDATE_DOCTOR_ONLY')
         {
-            $schedule = Schedule::find($id);
             $schedule->doctor_id = $request->doctor_id;
-            $schedule->save();
+        } else {
+            $new_schedule_time = implode(' ', array_slice(explode(' ' ,$request->schedule_time), 1, 4));
+            $schedule->schedule_time = date("Y-m-d H:m:s", strtotime($new_schedule_time));
         }
+        $schedule->save();
     }
 
     /**
