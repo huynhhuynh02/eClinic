@@ -15,12 +15,13 @@ class CreateTblPatientsTable extends Migration
     {
         Schema::create('tbl_patients', function (Blueprint $table) {
             $table->id();
+            $table->string('pid', 18); // pid là mã bênh nhân được quy đình mã phòng khám + datetime, 00120220103080000
             $table->unsignedBigInteger('user_id');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
             $table->string('fullname')->nullable();
             $table->string('sex')->nullable();
-            $table->timestamp('birthday')->nullable();
+            $table->date('birthday')->nullable();
             $table->string('remark')->nullable();
             $table->timestamps();
             $table->softDeletes();

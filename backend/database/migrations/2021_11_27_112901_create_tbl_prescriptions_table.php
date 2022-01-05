@@ -20,6 +20,7 @@ class CreateTblPrescriptionsTable extends Migration
             $table->string('diagnose')->nullable();
             $table->string('total_price')->nullable();
             $table->string('remark')->nullable();
+            $table->string('remark')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
