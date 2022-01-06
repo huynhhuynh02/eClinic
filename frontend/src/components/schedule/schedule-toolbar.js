@@ -2,60 +2,36 @@ import {
   Box,
   Button,
   Grid,
-  Container,
   CardContent,
   TextField,
-  InputAdornment,
-  SvgIcon, Typography,
-  FormControlLabel,
-  Checkbox,
-  FormGroup,
+  Typography,
   Select,
   MenuItem,
   Card
 } from '@mui/material';
-import { useState } from 'react';
 import DatePicker from '@mui/lab/DatePicker';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
 import AddIcon from '@mui/icons-material/Add';
-import { display } from '@mui/system';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-
+import axios from 'axios';
+import moment from 'moment';
 
 export const ScheduleToolbar = (props) => {
-  const [valueDateFrom, setValueDateFrom] = useState(null);
-  const [valueDateTo, setValueDateTo] = useState(null);
-  const [birthDay, setBirthDay] = useState(null);
-  const [sex, setSex] = useState('');
-
-  const handleChangeDate = (event) => {
-    setDateSelect(event.target.value);
-  };
-
-  const handleChangeMonth = (event) => {
-    setMonthSelect(event.target.value);
-  };
-
-  const handleChangeYear = (event) => {
-    setYearSelect(event.target.value);
-  };
-
-  const handleChangeSex = (event) => {
-    setSex(event.target.value);
-  };
-
+  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const formik = useFormik({
     initialValues: {
-      name: '',
-      birthday: '',
-      sex: 'name',
-      phone: ''
+      fullname: '',
+      birthday: moment(new Date).format("YYYY-MM-DD"),
+      aliases: '',
+      sex: '0',
+      address:'',
+      phone: '',
+      job: '',
     },
     validationSchema: Yup.object({
-      name: Yup
+      fullname: Yup
         .string()
         .max(50)
         .required('Họ tên là bắc buộc'),
@@ -67,13 +43,20 @@ export const ScheduleToolbar = (props) => {
         'Vui lòng chọn giới tính'
       ),
       phone: Yup
-        .string()
+        .string().matches(phoneRegExp, 'Phone number is not valid')
         .max(10, 'Số điện thoại 10 ký tự')
         .required('Vui lòng nhập số điện thoại')
     }),
-    handleSubmit: (values) => {
-      console.log(values);
-    },
+    onSubmit: (values) => {
+      axios.post('/api/schedules', values).then(res=>{
+        console.log(res);
+        if (res.status === 200) {
+          alert("Tạo lịch khám thành công!");
+        }else {
+          alert("Tạo lịch khám thất bại!");
+        }
+      })
+    }
   });
 
   return (
@@ -96,7 +79,10 @@ export const ScheduleToolbar = (props) => {
           </Typography>
         </Box>
         <Box sx={{ mt: 3 }}>
-          <form onSubmit={formik.handleSubmit}>
+          <form onSubmit={(e)=>{
+            e.preventDefault();
+            formik.handleSubmit()}}
+            >
             <Grid
               container
               spacing={3}
@@ -104,56 +90,79 @@ export const ScheduleToolbar = (props) => {
               <Grid item sm={6}>
                 <Box sx={{ mb: 3 }}>
                   <TextField
-                    name="name"
-                    error={Boolean(formik.touched.name && formik.errors.name)}
-                    helperText={formik.touched.name && formik.errors.name}
+                    name="fullname"
+                    error={Boolean(formik.touched.fullname && formik.errors.fullname)}
+                    helperText={formik.touched.fullname && formik.errors.fullname}
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
-                    value={formik.values.name}
-                    fullWidth id="standard-basic" label="Họ tên" required variant="standard" />
+                    value={formik.values.fullname}
+                    fullWidth id="standard-basic" label="Họ tên *" variant="standard" />
                 </Box>
                 <Box sx={{ mb: 3 }}>
                   <DatePicker
                     error={Boolean(formik.touched.birthday && formik.errors.birthday)}
                     helperText={formik.touched.birthday && formik.errors.birthday}
                     onBlur={formik.handleBlur}
-                    onChange={(selectDate) => setBirthDay(selectDate)}
+                    onChange={(selectDate) => formik.setFieldValue("birthday", moment(selectDate).format("YYYY-MM-DD"))}
                     name="birthday"
-                    label="Ngày sinh"
-                    value={birthDay}
-                    renderInput={(params) => <TextField 
+                    label="Ngày sinh *"
+                    value={formik.values.birthday}
+                    renderInput={(params) => <TextField
                     variant="standard" {...params} />}
                   />
                 </Box>
                 <Box sx={{ mb: 3 }}>
-                  <TextField fullWidth id="standard-basic" label="Địa chỉ" variant="standard" />
+                  <TextField
+                    id="standard-basic"
+                    name="address"
+                    value={formik.values.address}
+                    onChange={formik.handleChange}
+                    fullWidth 
+                    label="Địa chỉ"
+                    variant="standard" />
                 </Box>
                 <Box sx={{ mb: 3 }}>
-                  <TextField fullWidth id="standard-basic" label="Nghề nghiệp" variant="standard" />
+                  <TextField
+                    id="standard-basic"
+                    name="job"
+                    value={formik.values.job}
+                    onChange={formik.handleChange}
+                    label="Nghề nghiệp"
+                    fullWidth
+                    variant="standard" />
                 </Box>
-                <Button variant="contained" type="submit" onClick={formik.handleSubmit} startIcon={<AddIcon />}>Thêm</Button>
               </Grid>
               <Grid item sm={6}>
                 <Box sx={{ mb: 3 }}>
-                  <TextField name="aliases" fullWidth id="standard-basic" label="Bí danh" variant="standard" />
+                  <TextField
+                    id="standard-basic"
+                    name="aliases"
+                    value={formik.values.aliases}
+                    onChange={formik.handleChange}
+                    fullWidth
+                    label="Bí danh"
+                    variant="standard" />
                 </Box>
                 <Box sx={{ mb: 3 }}>
                   <FormControl variant="standard" sx={{ minWidth: 120 }}>
-                    <InputLabel id="simple-select-year-label">Giới tính *</InputLabel>
+                    <InputLabel id="simple-select-year-label">Giới tính</InputLabel>
                     <Select
                       labelId="simple-select-sex-label"
                       id="simple-select-sex"
-                      onChange={handleChangeSex}
+                      onChange={formik.handleChange}
                       label="Giới tính"
+                      name='sex'
+                      value={formik.values.sex}
                     >
-                      <MenuItem value="nam">Nam</MenuItem>
-                      <MenuItem value="nu">Nữ</MenuItem>
-                      <MenuItem value="khac">Khác</MenuItem>
+                      <MenuItem value="0">Nam</MenuItem>
+                      <MenuItem value="1">Nữ</MenuItem>
+                      <MenuItem value="2">Khác</MenuItem>
                     </Select>
                   </FormControl>
                 </Box>
                 <Box sx={{ mb: 3 }}>
-                  <TextField 
+                  <TextField
+                    id="standard-basic" 
                     name="phone"
                     error={Boolean(formik.touched.phone && formik.errors.phone)}
                     helperText={formik.touched.phone && formik.errors.phone}
@@ -161,13 +170,12 @@ export const ScheduleToolbar = (props) => {
                     onChange={formik.handleChange}
                     value={formik.values.phone}
                     fullWidth 
-                    id="standard-basic" 
-                    label="Điện thoại" 
-                    required 
+                    label="Điện thoại *" 
                     variant="standard" />
                 </Box>
               </Grid>
             </Grid>
+            <Button variant="contained" type="submit" startIcon={<AddIcon />}>Thêm</Button>
           </form>
         </Box>
       </CardContent>
