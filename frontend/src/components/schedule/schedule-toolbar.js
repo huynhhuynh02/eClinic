@@ -49,9 +49,8 @@ export const ScheduleToolbar = (props) => {
     }),
     onSubmit: (values) => {
       axios.post('/api/schedules', values).then(res=>{
-        console.log(res);
         if (res.status === 200) {
-          alert("Tạo lịch khám thành công!");
+          props.handlePage();
         }else {
           alert("Tạo lịch khám thất bại!");
         }

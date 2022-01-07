@@ -15,6 +15,9 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import StaticDateTimePicker from '@mui/lab/StaticDateTimePicker';
+import { useState } from 'react';
+import { Box } from '@mui/system';
+import { TextField } from '@mui/material';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;
@@ -61,8 +64,9 @@ BootstrapDialogTitle.propTypes = {
   onClose: PropTypes.func.isRequired,
 };
 
-export default function ScheduleTimedDialogs({ open, onClose }) {
-  const [value, setValue] = React.useState(new Date());
+export default function ScheduleTimedDialogs({ open, onClose, scheduleTime, updateScheduleTime }) {
+  const [scheduleDate, setScheduleDate] = useState(scheduleTime);
+  const [description,setDescription] = useState("");
   return (
     <div>
       <BootstrapDialog
@@ -82,18 +86,20 @@ export default function ScheduleTimedDialogs({ open, onClose }) {
               displayStaticWrapperAs="desktop"
               style= {{
                 maxWidth: '300px'
-              }}              
-              openTo="year"
-              value={value}
+              }}
+              value={scheduleDate}
               onChange={(newValue) => {
-                setValue(newValue);
+                setScheduleDate(newValue);
               }}
               renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
         </DialogContent>
+        <Box padding={1}>
+         <TextField fullWidth label="Ghi chú"  value={description} onChange={(e)=>{setDescription(e.target.value)}}/>
+        </Box>
         <DialogActions>
-          <Button variant="contained" autoFocus onClick={onClose} 
+          <Button variant="contained" autoFocus onClick={()=>{ onClose(); updateScheduleTime(scheduleDate,description)}} 
             startIcon={<DoneIcon />}>
             Cập nhật
           </Button>

@@ -18,10 +18,11 @@ class ScheduleController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        return new ScheduleCollection(Schedule::all());
+        $perPager = $request["per_page"];
+        $pagination =  new ScheduleCollection(Schedule::paginate($perPager)->appends(request()->query()));
+        return $pagination;
     }
 
     /**
@@ -120,9 +121,7 @@ class ScheduleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
         try {
-            //code...
             $schedule = Schedule::find($id);
             if(!$schedule) {
                 return response()->json([
@@ -136,14 +135,9 @@ class ScheduleController extends Controller
             $schedule->save();
 
             return new ScheduleResource($schedule);
-
-
         } catch (\Exception $e) {
             throw $e;
         }
-        
-
-
     }
 
     /**
