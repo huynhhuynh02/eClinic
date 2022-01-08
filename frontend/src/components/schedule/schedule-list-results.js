@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import MuiAlert from '@mui/material/Alert';
 import IconButton from '@mui/material/IconButton';
+import moment from 'moment';
 import PropTypes from 'prop-types';
 import * as React from 'react';
 import { useState } from 'react';
@@ -30,22 +31,21 @@ const Alert = React.forwardRef(function Alert(props, ref) {
         {...props} />;
 });
 
-export const ScheduleListResults = ({ schedules, ...rest }) => {
+export const ScheduleListResults = ({ schedules, pager, handlePage, updateScheduleTime, deleteSchedule, ...rest, }) => {
     const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
-    const [doctorId, setDoctorId] = useState('');
     const [limit, setLimit] = useState(10);
-    const [page, setPage] = useState(0);
-    const [clearedDate, setClearedDate] = useState(null);
-    const [value, setValue] = useState(new Date('2019-01-01T18:54'));
     const [open, setOpen] = useState(false);
     const [openMedical, setOpenMedical] = useState(false);
     const [openConfirm, setOpenConfirm] = useState(false);
     const [openToast, setOpenToast] = useState(false);
     const [patient, setPatient] = useState("");
-    const handleClickOpen = () => {
-        setOpen(true);
+    const [scheduleTime, setScheduleTime] = useState(new Date());
+    const [scheduleId, setScheduleId] = useState(null);
+    const handleClickOpen = (id,date) => {
+        setOpen(id);
+        setScheduleTime(date);
+        setScheduleId(id);
     };
-
     const handleClickOpenMedical = (id) => {
         let schedule = schedules.filter(item => item.id == id);
         setPatient(schedule[0].patient);
@@ -60,7 +60,8 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
         setOpenMedical(false);
     };
 
-    const handleOpenConfirm = () => {
+    const handleOpenConfirm = (id) => {
+        setScheduleId(id);
         setOpenConfirm(true);
     }
     const handleCloseConfirm = () => {
@@ -68,6 +69,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
     }
 
     const handleDeleteConfirm = () => {
+        deleteSchedule(scheduleId);
         setOpenConfirm(false);
         setOpenToast(true);
     }
@@ -82,13 +84,11 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
 
     const handleSelectAll = (event) => {
         let newSelectedScheduleIds;
-
         if (event.target.checked) {
             newSelectedScheduleIds = schedules.map((schedule) => schedule.id);
         } else {
             newSelectedScheduleIds = [];
         }
-
         setSelectedScheduleIds(newSelectedScheduleIds);
     };
 
@@ -114,10 +114,15 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
 
     const handleLimitChange = (event) => {
         setLimit(event.target.value);
+        handlePage(event.target.value,0);
     };
 
-    const handlePageChange = (event, newPage) => {
-        setPage(newPage);
+    const handlePageChange = (e,newPage) => {
+        handlePage(limit,newPage);
+    };
+
+    const handleScheduleTime = (scheduleTime,description) => {
+        updateScheduleTime(scheduleId,scheduleTime,description);
     };
 
     return (
@@ -169,7 +174,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {schedules.slice(0, limit).map((schedule) => (
+                                {schedules.map((schedule) => (
                                     <TableRow
                                         hover
                                         key={schedule.id}
@@ -183,13 +188,13 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                             />
                                         </TableCell>
                                         <TableCell>
-                                            {schedule.date}
+                                            {moment(schedule.schedule_time).format("DD-MM-YYYY")}
                                         </TableCell>
                                         <TableCell>
-                                            {schedule.time}
+                                            {moment(schedule.schedule_time).format("h:mm")}
                                         </TableCell>
                                         <TableCell>
-                                            {schedule.patient.name}
+                                            {schedule.patient.fullname}
                                         </TableCell>
                                         <TableCell>
                                             {schedule.patient.phone}
@@ -201,7 +206,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                             {schedule.description}
                                         </TableCell>
                                         <TableCell>
-                                            <IconButton color="primary" onClick={handleClickOpen}>
+                                            <IconButton color="primary" onClick={()=>{handleClickOpen(schedule.id,schedule.schedule_time)}}>
                                                 <AccessAlarmsIcon></AccessAlarmsIcon>
                                             </IconButton>
                                         </TableCell>
@@ -210,7 +215,7 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                                                 <AssignmentIcon></AssignmentIcon>
                                             </IconButton>
                                         </TableCell>
-                                        <TableCell onClick={handleOpenConfirm}>
+                                        <TableCell onClick={()=>handleOpenConfirm(schedule.id)}>
                                             <IconButton color="error">
                                                 <DeleteIcon></DeleteIcon>
                                             </IconButton>
@@ -223,15 +228,15 @@ export const ScheduleListResults = ({ schedules, ...rest }) => {
                 </PerfectScrollbar>
                 <TablePagination
                     component="div"
-                    count={schedules.length}
+                    count={ pager ? pager.total : 0}
                     onPageChange={handlePageChange}
                     onRowsPerPageChange={handleLimitChange}
-                    page={page}
+                    page={pager ? pager.current_page-1 : 0}
                     rowsPerPage={limit}
                     rowsPerPageOptions={[5, 10, 25]}
                 />
             </Card>
-            <ScheduleTimedDialogs open={open} onClose={handleClose} />
+            <ScheduleTimedDialogs open={open} scheduleTime={scheduleTime} onClose={handleClose} updateScheduleTime={handleScheduleTime}  />
             <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} patient={patient} />
             <CustomizedDialogs
                 onClose={handleCloseConfirm}
