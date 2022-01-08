@@ -16,7 +16,8 @@ import {
   IconButton
 } from '@mui/material';
 import DescriptionIcon from "@mui/icons-material/Description";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PrescriptionDialogs from './patient-prescription-dialog';
@@ -45,9 +46,11 @@ export const PatientListResults = ({ schedules, ...rest }) => {
   };
 
   const handleClickOpenPrescription = (id) => {
-    let patient = patients.filter(item => item.id == id);
-    setPatient(patient[0]);
     setOpen(true);
+    getPaient(id).then(data => {
+      setIsLoading(true);
+      setPatient({...data.data.data});
+    });
   };
 
   const handleCloseMedical = () => {
@@ -194,12 +197,12 @@ export const PatientListResults = ({ schedules, ...rest }) => {
                     </TableCell>
                     <TableCell align="center">
                       <IconButton onClick={() => handleClickOpenMedical(schedule.patient.id)}>
-                        <DescriptionIcon color="primary" />
+                        <AssignmentIndIcon color="primary" />
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
                       <IconButton onClick={() => handleClickOpenPrescription(schedule.patient.id)}>
-                        <AccountBoxIcon color="primary" />
+                        <ListAltIcon color="primary" />
                       </IconButton>
                     </TableCell>
                     {/* <TableCell align="center">

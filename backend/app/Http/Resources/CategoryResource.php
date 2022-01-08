@@ -20,6 +20,7 @@ class CategoryResource extends JsonResource
             'user_id' => $this->user_id,
             'code' => $this->code,
             'create_at' => $this->created_at,
+            'medicines' => $this->medicines
         ];
     }
 }

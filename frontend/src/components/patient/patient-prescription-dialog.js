@@ -20,10 +20,14 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import DoNotDisturbOnIcon from '@mui/icons-material/DoNotDisturbOn';
 import Stack from '@mui/material/Stack';
 import Autocomplete from '@mui/material/Autocomplete';
-import { medicines_category, medicines } from '../../__mocks__/medicines';
 import { Box } from '@mui/system';
 import { v4 as uuid } from 'uuid';
-
+import { getAge } from '../../utils/calculate-age-birthday';
+import { getAllCategory, getCategory } from '../../apis/category.api';
+import { getAllMedicines } from '../../apis/medicines.api';
+import { addPrescription } from '../../apis/prescription.api';
+import LoadingButton from '@mui/lab/LoadingButton';
+import SaveIcon from '@mui/icons-material/Save';
 
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -35,11 +39,12 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function PrescriptionDialogs(props) {
     const { open, patient, onClose, ...other } = props;
+    const [loading, setLoading] = useState(false);
     const [categoryIdSelect, setGroupIdSelect] = useState();
     const [medicinesIdSelect, setMedicinesIdSelect] = useState();
     const [medicinesSelelect, setMedicinesSelelect] = useState([]);
-    const [categories, setCategories] = useState(medicines_category);
-    const [mediciness, setMedicines] = useState(medicines);
+    const [categories, setCategories] = useState([]);
+    const [medicines, setMedicines] = useState([]);
     const [dataMedicines, setDataMedicines] = useState({
         'patient_id': patient.id,
         'medicines': [],
@@ -54,22 +59,32 @@ export default function PrescriptionDialogs(props) {
     });
 
     useEffect(() => {
+        dataMedicines.patient_id = patient.id;
+        setDataMedicines({ ...dataMedicines });
+        getAllCategory().then(result => {
+            setCategories([...result.data.data]);
+        });
 
-    }, []);
+        getAllMedicines().then(result => {
+            setMedicines([...result.data.data]);
+            console.log(result.data.data);
+        });
+    }, [patient]);
 
     const handleOnSelectCategory = (id) => {
         setGroupIdSelect(id);
-        let data = medicines.filter(item => item.category_id == id);
-        setMedicinesSelelect([...data]);
+        getCategory(id).then(result => {
+            setMedicinesSelelect([...result.data.data.medicines]);
+        });
     }
 
     const handleOnAddPrescription = () => {
         let medicines = {
             "name": "",
             "unit": "Viên",
-            "prescription_id": null,
+            "medicine_id": null,
             "quantity": 0,
-            "use": null
+            "use": ""
         }
 
         dataMedicines.medicines.push(medicines);
@@ -138,10 +153,10 @@ export default function PrescriptionDialogs(props) {
                 if (item.id == id) {
                     let medicines = {
                         "unit": item.unit,
-                        "prescription_id": item.id,
+                        "medicine_id": item.id,
                         "name": item.name,
                         "quantity": item.quantity,
-                        "use": item.use
+                        "use": item.description
                     }
                     dataMedicines.medicines.push(medicines);
                     setDataMedicines(dataMedicines);
@@ -157,13 +172,25 @@ export default function PrescriptionDialogs(props) {
     }
 
     const handleChangeMedicines = (event, values, index) => {
-        dataMedicines.medicines[index].prescription_id = values.id;
+        dataMedicines.medicines[index].medicine_id = values.id;
         dataMedicines.medicines[index].name = values.name;
         setDataMedicines({ ...dataMedicines });
     }
 
+    const renderMedicinSelect = (
+        medicinesSelelect.map((item) => (
+            <Button sx={{ marginBottom: '5px' }} variant={medicinesIdSelect == item.id ? "contained" : "outlined"} onClick={() => handleSelectMedicines(item.id)} size="small" fullWidth>{item.name}</Button>
+        ))
+    )
+
     const onSubmit = () => {
-        console.log(dataMedicines);
+        setLoading(true);
+        addPrescription(dataMedicines).then(result => {
+            if(result.data.status == 'success') {
+                setLoading(false);
+                onClose();
+            }
+        })
     }
 
     return (
@@ -174,7 +201,16 @@ export default function PrescriptionDialogs(props) {
             onClose={onClose}
             actions={
                 <>
-                    <Button variant="contained" onClick={onSubmit}>Lưu</Button>
+                    <LoadingButton
+                        color="secondary"
+                        onClick={onSubmit}
+                        loading={loading}
+                        loadingPosition="start"
+                        startIcon={<SaveIcon />}
+                        variant="contained"
+                    >
+                        Lưu
+                    </LoadingButton>
                     <Button variant="outlined" onClick={onClose}>Đóng</Button>
                 </>
             }
@@ -184,33 +220,29 @@ export default function PrescriptionDialogs(props) {
                     <Typography variant="p" component="p" mb={1}>
                         Danh mục
                     </Typography>
-                    {
-                        categories?.map((item) => (
-                            <Button onClick={() => handleOnSelectCategory(item.id)} variant={categoryIdSelect == item.id ? "contained" : "outlined"} size="small" style={{ marginRight: '5px', marginBottom: '5px' }}>
-                                {item.name}
-                            </Button>
-                        ))
-                    }
+                    <Box sx={{ maxHeight: '250px', overflow: 'auto' }}>
+                        {
+                            categories?.map((item) => (
+                                <Button onClick={() => handleOnSelectCategory(item.id)} variant={categoryIdSelect == item.id ? "contained" : "outlined"} size="small" style={{ marginRight: '5px', marginBottom: '5px' }}>
+                                    {item.name}
+                                </Button>
+                            ))
+                        }
+                    </Box>
                     <Typography variant="p" component="p" mb={1}>
                         Thuốc
                     </Typography>
-                    <Grid container spacing={1}>
-                        {
-                            medicinesSelelect?.map((item) => (
-                                <Grid item xs={12}>
-                                    <Button variant={medicinesIdSelect == item.id ? "contained" : "outlined"} onClick={() => handleSelectMedicines(item.id)} size="small" fullWidth>{item.name}</Button>
-                                </Grid>
-                            ))
-                        }
-                    </Grid>
+                    <Box sx={{ maxHeight: '250px', overflow: 'auto' }}>
+                        {medicinesSelelect.length == 0 ? 'Không có data' : renderMedicinSelect}
+                    </Box>
                 </Grid>
                 <Grid item xs={6}>
                     <Typography m={2} align="center" variant="h6" component="h6" style={{ color: "#1c84ee" }}>ĐƠN THUỐC</Typography>
                     <Table aria-label="simple table" size="small">
                         <TableBody>
                             <TableRow>
-                                <TableCell align="left">Họ tên	:{patient?.name}</TableCell>
-                                <TableCell align="left">Tuổi / Năm sinh	: {patient?.birthday}</TableCell>
+                                <TableCell align="left">Họ tên	:{patient.fullname}</TableCell>
+                                <TableCell align="left">Tuổi: {getAge(patient.birthday)}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell align="left">Điện thoại : {patient?.phone}</TableCell>
@@ -242,8 +274,8 @@ export default function PrescriptionDialogs(props) {
                                             fullWidth
                                             disableClearable
                                             id={'combo-box-demo' + index}
-                                            options={mediciness}
-                                            defaultValue={mediciness.find(element => element.id == item.prescription_id)}
+                                            options={medicines}
+                                            defaultValue={medicines.find(element => element.id == item.medicine_id)}
                                             getOptionLabel={(option) => option.name}
                                             onChange={(event, values) => handleChangeMedicines(event, values, index)}
                                             renderInput={(params) => <TextField {...params} variant="standard" label="Tên thuốc" fullWidth />}

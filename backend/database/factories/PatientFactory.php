@@ -20,7 +20,7 @@ class PatientFactory extends Factory
         return [
             //
             'pid' => sprintf('%04d',rand(1, 10)).$date,
-            'user_id' => User::factory(),
+            'user_id' => 1,
             'address' => $this->faker->address(),
             'phone' => $this->faker->phoneNumber(),
             'fullname' => $this->faker->name(),

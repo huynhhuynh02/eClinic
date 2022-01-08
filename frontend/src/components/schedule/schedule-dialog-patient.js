@@ -55,27 +55,7 @@ const evolves = [
     createEvolves('17/01/2019', 'Hết vêm khớp')
 ];
 
-const medicalHistorys = [
-    createMedicalHistorys('17/01/2019', '54385', 'Viêm khớp dạng thấp - Xơ Gan/ Viêm gan siêu vi B', '- Đo HA mỗi ngày - Tập thể dục - Hạn chế làm việc nặng', '17/01/2021'),
-    createMedicalHistorys('17/01/2019', '54385', 'Viêm khớp dạng thấp - Xơ Gan/ Viêm gan siêu vi B', '- Đo HA mỗi ngày - Tập thể dục - Hạn chế làm việc nặng', '17/01/2021'),
-    createMedicalHistorys('17/01/2019', '54385', 'Viêm khớp dạng thấp - Xơ Gan/ Viêm gan siêu vi B', '- Đo HA mỗi ngày - Tập thể dục - Hạn chế làm việc nặng', '17/01/2021')
-];
 
-const renderPrescriptionList = (
-        medicalHistorys.map((row) => (
-            <TableRow
-                key={row.name}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-                <TableCell align="left">{row.createDate}</TableCell>
-                <TableCell align="left">{row.preCode}</TableCell>
-                <TableCell align="left">{row.diagnose}</TableCell>
-                <TableCell align="left">{row.advice}</TableCell>
-                <TableCell align="left">{row.reExaminationDate}</TableCell>
-            </TableRow>
-        )
-    )
-)
 
 const rendervitalSigns = (
     vitalSigns.map((row) => (
@@ -96,6 +76,22 @@ const rendervitalSigns = (
 export default function MedicalRecordDialogs(props) {
     const { open, title, onClose, patient, isLoading, ...other } = props;
     const [value, setValue] = React.useState(new Date());
+
+    const renderPrescriptionList = (
+        patient.prescriptions?.map((row) => (
+                <TableRow
+                    key={row.id}
+                    sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                >
+                    <TableCell align="left">{row.created_at}</TableCell>
+                    <TableCell align="left">{row.id}</TableCell>
+                    <TableCell align="left">{row.diagnose}</TableCell>
+                    <TableCell align="left">{row.advice}</TableCell>
+                    <TableCell align="left">{row.reExaminationDate}</TableCell>
+                </TableRow>
+            )
+        )
+    )
 
     return (
         <CustomizedDialogs

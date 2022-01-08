@@ -10,19 +10,19 @@ class Prescription extends Model
     use HasFactory;
 
     protected $table = "tbl_prescriptions";
-    
-    public function user() 
-    {
-        return $this->hasOne(User::class,'user_id');
-    }
 
     public function patient() 
     {
-        return $this->hasOne(Patient::class,'patient_id');
+        return $this->belongsTo(Patient::class);
+    }
+
+    public function user() 
+    {
+        return $this->belongsTo(User::class);
     }
     
     public function prescription_details() 
     {
-        return $this->belongsTo(PrescriptionDetail::class);
+        return $this->hasMany(PrescriptionDetail::class);
     }
 }

@@ -18,7 +18,7 @@ class CategoryFactory extends Factory
         return [
             //
             'name' => $this->faker->bothify('Danh mục #### ????'),
-            'user_id' => User::factory(),
+            'user_id' => 1,
             'code' => Str::random(10)
         ];
 

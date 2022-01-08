@@ -14,7 +14,8 @@ import {
   TableCell,
   TableHead,
   TablePagination,
-  TableRow
+  TableRow,
+  Typography
 } from "@mui/material";
 import { format } from "date-fns";
 import PropTypes from "prop-types";
@@ -42,15 +43,14 @@ export default function PrescriptionListResults({ prescriptions, ...rest }) {
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Mã bệnh nhân</TableCell>
-                <TableCell>Tên bệnh nhân</TableCell>
+                <TableCell>Mã đơn thuốc</TableCell>
+                <TableCell>Bệnh nhân</TableCell>
                 <TableCell>Chuẩn đoán</TableCell>
                 <TableCell>Ngày tái khám</TableCell>
-                <TableCell>Người tạo</TableCell>
                 <TableCell>Ngày tạo</TableCell>
-                <TableCell align="center">Thông tin BN</TableCell>
+                <TableCell align="center">Xem</TableCell>
                 <TableCell align="center">In</TableCell>
-                <TableCell align="center">Xuất HĐ</TableCell>
+                <TableCell align="center">Lập HĐ</TableCell>
                 <TableCell align="center">Sửa</TableCell>
                 <TableCell align="center">Xoá</TableCell>
               </TableRow>
@@ -63,11 +63,13 @@ export default function PrescriptionListResults({ prescriptions, ...rest }) {
                   selected={selectedCustomerIds.indexOf(item.id) !== -1}
                 >
                   <TableCell>{item.id}</TableCell>
-                  <TableCell>{item.patient.name}</TableCell>
-                  <TableCell>{item.description}</TableCell>
+                  <TableCell>
+                    <Typography variant="subtitle1">{item.patient.fullname}</Typography>
+                    <Box>Mã BN: {item.patient.pid}</Box>
+                  </TableCell>
+                  <TableCell>{item.diagnose}</TableCell>
                   <TableCell>{item.reExaminationDate}</TableCell>
-                  <TableCell>{item.doctor.name}</TableCell>
-                  <TableCell>{format(item.createdAt, 'dd/MM/yyyy')}</TableCell>
+                  <TableCell>{item.create_at}</TableCell>
                   <TableCell align="center">
                     <IconButton href="#">
                       <DescriptionIcon color="primary" />

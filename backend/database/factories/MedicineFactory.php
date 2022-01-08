@@ -22,7 +22,7 @@ class MedicineFactory extends Factory
             'unit_id' => Unit::factory(),
             'cate_id' => Category::factory(),
             'name' => $this->faker->bothify('Thuốc ???? ####'),
-            'user_id' => User::factory(),
+            'user_id' => 1,
             'quantity' => rand(1,100),
             'expired_date' => new DateTime('now'),
             'description' => $this->faker->paragraph(),

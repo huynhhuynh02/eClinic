@@ -13,7 +13,7 @@ class PrescriptionDetail extends Model
 
     public function prescription() 
     {
-        return $this->hasOne(Prescription::class,'prescription_id');
+        return $this->belongsTo(Prescription::class,'prescription_id');
     }
 
 }
