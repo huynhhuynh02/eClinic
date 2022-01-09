@@ -99,7 +99,7 @@ class PrescriptionController extends Controller
      */
     public function edit($id)
     {
-        //
+        return new PrescriptionResource(Prescription::find($id));
     }
 
     /**

@@ -20,6 +20,7 @@ class PrescriptionResource extends JsonResource
             'patient' => $this->patient,
             'prescription_details' => $this->prescription_details,
             'diagnose' => $this->diagnose,
+            'remark' => $this->remark,
             'total_price' => $this->total_price,
             'create_at' => $this->created_at,
         ];

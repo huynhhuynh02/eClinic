@@ -15,10 +15,11 @@ class PatientController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
-        return new PatientCollection(Patient::all());
+        $perPager = $request["per_page"];
+        return new PatientCollection(Patient::all()->paginate($perPager)->appends(request()->query()));
     }
 
     /**

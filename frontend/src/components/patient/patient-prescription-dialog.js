@@ -46,7 +46,7 @@ export default function PrescriptionDialogs(props) {
     const [categories, setCategories] = useState([]);
     const [medicines, setMedicines] = useState([]);
     const [dataMedicines, setDataMedicines] = useState({
-        'patient_id': patient.id,
+        'patient_id': patient?.id,
         'medicines': [],
         'progression': null,
         'weight': null,
@@ -59,7 +59,7 @@ export default function PrescriptionDialogs(props) {
     });
 
     useEffect(() => {
-        dataMedicines.patient_id = patient.id;
+        dataMedicines.patient_id = patient?.id;
         setDataMedicines({ ...dataMedicines });
         getAllCategory().then(result => {
             setCategories([...result.data.data]);
@@ -241,8 +241,8 @@ export default function PrescriptionDialogs(props) {
                     <Table aria-label="simple table" size="small">
                         <TableBody>
                             <TableRow>
-                                <TableCell align="left">Họ tên	:{patient.fullname}</TableCell>
-                                <TableCell align="left">Tuổi: {getAge(patient.birthday)}</TableCell>
+                                <TableCell align="left">Họ tên	:{patient?.fullname}</TableCell>
+                                <TableCell align="left">Tuổi: {getAge(patient?.birthday)}</TableCell>
                             </TableRow>
                             <TableRow>
                                 <TableCell align="left">Điện thoại : {patient?.phone}</TableCell>

@@ -2,7 +2,6 @@ import Head from 'next/head';
 import { Box, Container } from '@mui/material';
 import { DashboardLayout } from '../components/dashboard-layout';
 import axios from 'axios';
-import { patients } from '../__mocks__/patients';
 import { useEffect, useState } from 'react';
 import { PrescriptionListToolbar } from 'src/components/prescription/prescription-list-toolbar';
 import PrescriptionListResults from 'src/components/prescription/prescription-list-results';

@@ -20,6 +20,7 @@ class CreateDealineConfigsTable extends Migration
             $table->time('open_time')->nullable();
             $table->time('close_time')->nullable();
             $table->boolean('full_day');
+            $table->boolean('is_default');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
         });

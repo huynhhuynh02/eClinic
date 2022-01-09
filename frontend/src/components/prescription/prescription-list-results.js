@@ -21,10 +21,15 @@ import { format } from "date-fns";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
+import PrescriptionDetailDialogs from "../prescription/prescription-dialog";
+import {getPrescription} from '../../apis/prescription.api';
 
 export default function PrescriptionListResults({ prescriptions, ...rest }) {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
+  const [prescription, setPrescription] = useState({});
+  const [openPrescription, setOpenPrescription] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(0);
 
   const handleLimitChange = (event) => {
@@ -34,8 +39,24 @@ export default function PrescriptionListResults({ prescriptions, ...rest }) {
   const handlePageChange = (event, newPage) => {
     setPage(newPage);
   };
+  
+  const handleClickOpenPrescription = (id) => {
+    setOpenPrescription(true);
+    getPrescription(id).then(data => {
+      setLoading(true);
+      setPrescription({ ...data.data.data });
+      console.log(data.data.data);
+    });
+    // let patient = patients.filter(item => item.id == id);
+    // setPatient(patient[0]);
+  };
+
+  const onClose = () => {
+    setOpenPrescription(false);
+  }
 
   return (
+    <>
     <Card {...rest}>
       {rest.header && <CardHeader title={rest.message_header} />}
       <PerfectScrollbar>
@@ -71,7 +92,7 @@ export default function PrescriptionListResults({ prescriptions, ...rest }) {
                   <TableCell>{item.reExaminationDate}</TableCell>
                   <TableCell>{item.create_at}</TableCell>
                   <TableCell align="center">
-                    <IconButton href="#">
+                    <IconButton onClick={() => handleClickOpenPrescription(item.id)}>
                       <DescriptionIcon color="primary" />
                     </IconButton>
                   </TableCell>
@@ -111,6 +132,8 @@ export default function PrescriptionListResults({ prescriptions, ...rest }) {
         rowsPerPageOptions={[5, 10, 25]}
       />
     </Card>
+    <PrescriptionDetailDialogs open={openPrescription} onClose={onClose} prescription = {prescription}/>
+    </>
   );
 }
 PrescriptionListResults.propTypes = {

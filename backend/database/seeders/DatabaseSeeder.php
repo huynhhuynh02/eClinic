@@ -17,7 +17,8 @@ class DatabaseSeeder extends Seeder
         \App\Models\Unit::factory(100)->create();
         \App\Models\Category::factory(100)->create();
         \App\Models\Medicine::factory(100)->create();
-        \App\Models\Patient::factory(100)->create();
-        \App\Models\Schedule::factory(100)->create();
+        // \App\Models\Patient::factory(100)->create();
+        // \App\Models\Schedule::factory(100)->create();
+        \App\Models\DealineConfig::factory(1)->create();
     }
 }
