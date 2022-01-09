@@ -1,0 +1,9 @@
+export const API_PATIENT_URL = '/api/patients';
+export const API_SCHEDULE_URL = '/api/schedules';
+export const API_CATEGORY_URL = '/api/categories';
+export const API_MEDICINE_URL = '/api/medicines';
+export const API_PRESCRIPTION_URL = '/api/prescriptions';
+export const API_PROVINCE = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/province';
+export const API_DISTRICT = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
+export const API_WARD = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';
+export const TOKEN_GHN = '20966d1a-70a0-11ec-bde8-6690e1946f41';

@@ -15,13 +15,6 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        for($i = 0; $i < 10; $i++ ){
-            DB::table('tbl_category_medicine')->insert([
-                'user_id' => '1',
-                'code' => 'code'.$i,
-                'name' => 'category'.$i,
-                'parent_id' => null,
-            ]);
-        }
+        
     }
 }

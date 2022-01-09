@@ -16,31 +16,41 @@ import {
   IconButton
 } from '@mui/material';
 import DescriptionIcon from "@mui/icons-material/Description";
-import AccountBoxIcon from "@mui/icons-material/AccountBox";
+import ListAltIcon from '@mui/icons-material/ListAlt';
+import AssignmentIndIcon from '@mui/icons-material/AssignmentInd';
 import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import DeleteIcon from "@mui/icons-material/Delete";
 import PrescriptionDialogs from './patient-prescription-dialog';
 import MedicalRecordDialogs from './../schedule/schedule-dialog-patient';
 import CustomizedDialogs from '../common/dialog';
+import { getAge } from '../../utils/calculate-age-birthday';
+import { getPaient } from '../../apis/patient.api';
 
-export const PatientListResults = ({ patients, ...rest }) => {
+export const PatientListResults = ({ schedules, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
   const [open, setOpen] = useState(false);
-  const [patient, setPatient] = useState("");
+  const [patient, setPatient] = useState({});
   const [openMedical, setOpenMedical] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClickOpenMedical = (id) => {
-    let patient = patients.filter(item => item.id == id);
-    setPatient(patient[0]);
     setOpenMedical(true);
+    getPaient(id).then(data => {
+      setIsLoading(true);
+      setPatient({...data.data.data});
+    });
+    // let patient = patients.filter(item => item.id == id);
+    // setPatient(patient[0]);
   };
 
   const handleClickOpenPrescription = (id) => {
-    let patient = patients.filter(item => item.id == id);
-    setPatient(patient[0]);
     setOpen(true);
+    getPaient(id).then(data => {
+      setIsLoading(true);
+      setPatient({...data.data.data});
+    });
   };
 
   const handleCloseMedical = () => {
@@ -145,11 +155,11 @@ export const PatientListResults = ({ patients, ...rest }) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {patients.slice(0, limit).map((patient) => (
+                {schedules.slice(0, limit).map((schedule) => (
                   <TableRow
                     hover
-                    key={patient.id}
-                    selected={selectedCustomerIds.indexOf(patient.id) !== -1}
+                    key={schedule.id}
+                    selected={selectedCustomerIds.indexOf(schedule.id) !== -1}
                   >
                     {/* <TableCell padding="checkbox">
                       <Checkbox
@@ -169,30 +179,30 @@ export const PatientListResults = ({ patients, ...rest }) => {
                           color="textPrimary"
                           variant="body1"
                         >
-                          {patient.id}
+                          {schedule.patient.pid}
                         </Typography>
                       </Box>
                     </TableCell>
                     <TableCell>
-                      {patient.name}
+                      {schedule.patient.fullname}
                     </TableCell>
                     <TableCell>
-                      {patient.address}
+                      {schedule.patient.address}
                     </TableCell>
                     <TableCell>
-                      {patient.birthday}
+                      {getAge(schedule.patient.birthday)}
                     </TableCell>
                     <TableCell>
-                      {patient.phone}
+                      {schedule.patient.phone}
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={() => handleClickOpenMedical(patient.id)}>
-                        <DescriptionIcon color="primary" />
+                      <IconButton onClick={() => handleClickOpenMedical(schedule.patient.id)}>
+                        <AssignmentIndIcon color="primary" />
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={() => handleClickOpenPrescription(patient.id)}>
-                        <AccountBoxIcon color="primary" />
+                      <IconButton onClick={() => handleClickOpenPrescription(schedule.patient.id)}>
+                        <ListAltIcon color="primary" />
                       </IconButton>
                     </TableCell>
                     {/* <TableCell align="center">
@@ -213,7 +223,7 @@ export const PatientListResults = ({ patients, ...rest }) => {
         </PerfectScrollbar>
         <TablePagination
           component="div"
-          count={patients.length}
+          count={schedules.length}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
           page={page}
@@ -221,12 +231,12 @@ export const PatientListResults = ({ patients, ...rest }) => {
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Card>
-      <PrescriptionDialogs open={open} onClose={handleOnClose} patient={patient} />
+      <PrescriptionDialogs open={open} isLoading={isLoading} onClose={handleOnClose} patient={patient} />
       <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} patient={patient} />
     </>
   );
 };
 
 PatientListResults.propTypes = {
-  patients: PropTypes.array.isRequired
+  schedules: PropTypes.array.isRequired
 };

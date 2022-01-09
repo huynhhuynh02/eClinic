@@ -14,11 +14,6 @@ class UnitSeeder extends Seeder
      */
     public function run()
     {
-        for($i = 0; $i < 5; $i++ ){
-            DB::table('tbl_units')->insert([
-                'name' => 'unit'.$i,
-                'parent_id' => null,
-            ]);
-        }
+        
     }
 }

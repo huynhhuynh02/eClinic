@@ -145,6 +145,9 @@ export const ScheduleListResults = ({ schedules, pager, handlePage, updateSchedu
                                         />
                                     </TableCell>
                                     <TableCell>
+                                        STT
+                                    </TableCell>
+                                    <TableCell>
                                         Ngày khám
                                     </TableCell>
                                     <TableCell>
@@ -174,7 +177,7 @@ export const ScheduleListResults = ({ schedules, pager, handlePage, updateSchedu
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {schedules.map((schedule) => (
+                                {schedules.map((schedule, index) => (
                                     <TableRow
                                         hover
                                         key={schedule.id}
@@ -186,6 +189,9 @@ export const ScheduleListResults = ({ schedules, pager, handlePage, updateSchedu
                                                 onChange={(event) => handleSelectOne(event, schedule.id)}
                                                 value="true"
                                             />
+                                        </TableCell>
+                                        <TableCell>
+                                            {index+1}
                                         </TableCell>
                                         <TableCell>
                                             {moment(schedule.schedule_time).format("DD-MM-YYYY")}

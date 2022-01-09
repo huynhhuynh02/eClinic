@@ -47,7 +47,7 @@ const items = [
     submenu: [
       {
         title: "Đơn thuốc",
-        href: "/patient",
+        href: "/prescription",
       },
       {
         title: "Hoá đơn",
