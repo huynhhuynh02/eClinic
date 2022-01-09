@@ -18,6 +18,12 @@ class CreateTblPrescriptionsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('patient_id');
             $table->string('diagnose')->nullable();
+            $table->string('reason')->nullable();
+            $table->string('height')->nullable();
+            $table->string('pressure')->nullable();
+            $table->string('pulse')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('progression')->nullable();
             $table->string('total_price')->nullable();
             $table->string('remark')->nullable();
             $table->timestamps();

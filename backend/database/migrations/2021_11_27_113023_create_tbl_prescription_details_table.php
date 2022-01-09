@@ -14,13 +14,15 @@ class CreateTblPrescriptionDetailsTable extends Migration
     public function up()
     {
         Schema::create('tbl_prescription_details', function (Blueprint $table) {
-            $table->unsignedBigInteger('medicines_id');
+            $table->id();
+            $table->unsignedBigInteger('medicine_id');
             $table->unsignedBigInteger('prescription_id');
             $table->integer('amount')->nullable();
-            $table->integer('remark')->nullable();
+            $table->string('unit')->nullable();
+            $table->string('use')->nullable();
             $table->timestamps();
             $table->softDeletes();
-            $table->foreign('medicines_id')->references('id')->on('tbl_medicines')->onDelete('cascade');
+            $table->foreign('medicine_id')->references('id')->on('tbl_medicines')->onDelete('cascade');
             $table->foreign('prescription_id')->references('id')->on('tbl_prescriptions')->onDelete('cascade');
         });
     }

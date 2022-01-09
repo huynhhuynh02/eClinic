@@ -1,70 +1,92 @@
-import { useEffect } from 'react';
-import NextLink from 'next/link';
-import { useRouter } from 'next/router';
-import PropTypes from 'prop-types';
-import { Box, Button, Divider, Drawer, Typography, useMediaQuery } from '@mui/material';
-import OpenInNewIcon from '@mui/icons-material/OpenInNew';
-import { ChartBar as ChartBarIcon } from '../icons/chart-bar';
-import { Cog as CogIcon } from '../icons/cog';
-import { Lock as LockIcon } from '../icons/lock';
-import { Selector as SelectorIcon } from '../icons/selector';
-import { ShoppingBag as ShoppingBagIcon } from '../icons/shopping-bag';
-import { User as UserIcon } from '../icons/user';
-import { UserAdd as UserAddIcon } from '../icons/user-add';
-import { Users as UsersIcon } from '../icons/users';
-import { XCircle as XCircleIcon } from '../icons/x-circle';
-import { Logo } from './logo';
-import { NavItem } from './nav-item';
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import BarChartIcon from "@mui/icons-material/BarChart";
+import SettingsIcon from "@mui/icons-material/Settings";
+import {
+  AppBar,
+  Box,
+  Button,
+  Container,
+  Drawer,
+  MenuItem,
+  MenuList,
+  useMediaQuery,
+} from "@mui/material";
+import NextLink from "next/link";
+import { useRouter } from "next/router";
+import PropTypes from "prop-types";
+import { useEffect } from "react";
+import { ChartBar as ChartBarIcon } from "../icons/chart-bar";
+import { Users as UsersIcon } from "../icons/users";
+import { NavItem } from "./nav-item";
 
 const items = [
   {
-    href: '/',
-    icon: (<ChartBarIcon fontSize="small" />),
-    title: 'Dashboard'
+    href: "/",
+    icon: <ChartBarIcon fontSize="small" />,
+    title: "Dashboard",
   },
   {
-    href: '/customers',
-    icon: (<UsersIcon fontSize="small" />),
-    title: 'Customers'
+    href: "/patient",
+    icon: <UsersIcon fontSize="small" />,
+    title: "Khám bệnh",
+    submenu: [
+      {
+        title: "Tạo lịch hẹn",
+        href: "/schedule",
+      },
+      {
+        title: "Danh sách khám",
+        href: "/patient",
+      },
+    ],
   },
   {
-    href: '/products',
-    icon: (<ShoppingBagIcon fontSize="small" />),
-    title: 'Products'
+    href: "/prescribe",
+    icon: <AssignmentIcon fontSize="small" />,
+    title: "Đơn thuốc",
+    submenu: [
+      {
+        title: "Đơn thuốc",
+        href: "/prescription",
+      },
+      {
+        title: "Hoá đơn",
+        href: "/prescribe",
+      },
+    ],
   },
   {
-    href: '/account',
-    icon: (<UserIcon fontSize="small" />),
-    title: 'Account'
+    href: "/statistical",
+    icon: <BarChartIcon fontSize="small" />,
+    title: "Thống kê",
   },
   {
-    href: '/settings',
-    icon: (<CogIcon fontSize="small" />),
-    title: 'Settings'
+    href: "/settings",
+    icon: <SettingsIcon fontSize="small" />,
+    title: "Cấu hình",
+    submenu: [
+      {
+        title: "Danh mục",
+        href: "/setting-medicine-category-group",
+      },
+      {
+        title: "Thuốc",
+        href: "/setting-medicine",
+      },
+      // {
+      //   title: "Từ viết tắt",
+      //   href: "/setting-acronym",
+      // },
+    ],
   },
-  {
-    href: '/login',
-    icon: (<LockIcon fontSize="small" />),
-    title: 'Login'
-  },
-  {
-    href: '/register',
-    icon: (<UserAddIcon fontSize="small" />),
-    title: 'Register'
-  },
-  {
-    href: '/404',
-    icon: (<XCircleIcon fontSize="small" />),
-    title: 'Error'
-  }
 ];
 
 export const DashboardSidebar = (props) => {
   const { open, onClose } = props;
   const router = useRouter();
-  const lgUp = useMediaQuery((theme) => theme.breakpoints.up('lg'), {
+  const lgUp = useMediaQuery((theme) => theme.breakpoints.up("lg"), {
     defaultMatches: true,
-    noSsr: false
+    noSsr: false,
   });
 
   useEffect(
@@ -85,153 +107,68 @@ export const DashboardSidebar = (props) => {
     <>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          height: '100%'
+          display: "flex",
+          flexDirection: "row",
+          width: "100%",
         }}
       >
-        <div>
-          <Box sx={{ p: 3 }}>
-            <NextLink
-              href="/"
-              passHref
-            >
-              <a>
-                <Logo
-                  sx={{
-                    height: 42,
-                    width: 42
-                  }}
-                />
-              </a>
-            </NextLink>
-          </Box>
-          <Box sx={{ px: 2 }}>
-            <Box
+        {items.map((item) => (
+          <NavItem key={item.title} icon={item.icon} href={item.href} title={item.title}>
+            <MenuList
               sx={{
-                alignItems: 'center',
-                backgroundColor: 'rgba(255, 255, 255, 0.04)',
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'space-between',
-                px: 3,
-                py: '11px',
-                borderRadius: 1
+                position: "absolute",
+                top: "100%",
+                left: 0,
+                backgroundColor: "background.paper",
+                display: "none",
+                minWidth: "100%",
               }}
+              className="tapa-nav-sub"
             >
-              <div>
-                <Typography
-                  color="inherit"
-                  variant="subtitle1"
-                >
-                  Acme Inc
-                </Typography>
-                <Typography
-                  color="neutral.400"
-                  variant="body2"
-                >
-                  Your tier
-                  {' '}
-                  : Premium
-                </Typography>
-              </div>
-              <SelectorIcon
-                sx={{
-                  color: 'neutral.500',
-                  width: 14,
-                  height: 14
-                }}
-              />
-            </Box>
-          </Box>
-        </div>
-        <Divider
-          sx={{
-            borderColor: '#2D3748',
-            my: 3
-          }}
-        />
-        <Box sx={{ flexGrow: 1 }}>
-          {items.map((item) => (
-            <NavItem
-              key={item.title}
-              icon={item.icon}
-              href={item.href}
-              title={item.title}
-            />
-          ))}
-        </Box>
-        <Divider sx={{ borderColor: '#2D3748' }} />
-        <Box
-          sx={{
-            px: 2,
-            py: 3
-          }}
-        >
-          <Typography
-            color="neutral.100"
-            variant="subtitle2"
-          >
-            Need more features?
-          </Typography>
-          <Typography
-            color="neutral.500"
-            variant="body2"
-          >
-            Check out our Pro solution template.
-          </Typography>
-          <Box
-            sx={{
-              display: 'flex',
-              mt: 2,
-              mx: 'auto',
-              width: '160px',
-              '& img': {
-                width: '100%'
-              }
-            }}
-          >
-            <img
-              alt="Go to pro"
-              src="/static/images/sidebar_pro.png"
-            />
-          </Box>
-          <NextLink
-            href="https://material-kit-pro-react.devias.io/"
-            passHref
-          >
-            <Button
-              color="secondary"
-              component="a"
-              endIcon={(<OpenInNewIcon />)}
-              fullWidth
-              sx={{ mt: 2 }}
-              variant="contained"
-            >
-              Pro Live Preview
-            </Button>
-          </NextLink>
-        </Box>
+              {item.submenu?.map((sub, index) => (
+                <MenuItem key={index}>
+                  <NextLink href={sub.href} passHref>
+                    <Button
+                      className="tapa-nav-item"
+                      component="a"
+                      startIcon={sub.icon}
+                      disableRipple
+                      sx={{
+                        borderRadius: 1,
+                        fontWeight: "fontWeightBold",
+                        justifyContent: "flex-start",
+                        px: 3,
+                        textAlign: "left",
+                        textTransform: "none",
+                        width: "100%",
+                        position: "relative",
+                        "&:hover": {
+                          backgroundColor: "rgba(255,255,255, 0.08)",
+                        },
+                      }}
+                    >
+                      <Box sx={{ flexGrow: 1 }}>{sub.title}</Box>
+                    </Button>
+                  </NextLink>
+                </MenuItem>
+              ))}
+            </MenuList>
+          </NavItem>
+        ))}
       </Box>
     </>
   );
 
   if (lgUp) {
     return (
-      <Drawer
-        anchor="left"
-        open
-        PaperProps={{
-          sx: {
-            backgroundColor: 'neutral.900',
-            color: '#FFFFFF',
-            width: 280
-          }
+      <AppBar
+        sx={{
+          top: 64,
+          backgroundColor: "#fff",
         }}
-        variant="permanent"
       >
-        {content}
-      </Drawer>
+        <Container>{content}</Container>
+      </AppBar>
     );
   }
 
@@ -242,10 +179,10 @@ export const DashboardSidebar = (props) => {
       open={open}
       PaperProps={{
         sx: {
-          backgroundColor: 'neutral.900',
-          color: '#FFFFFF',
-          width: 280
-        }
+          backgroundColor: "neutral.900",
+          color: "#FFFFFF",
+          width: 280,
+        },
       }}
       sx={{ zIndex: (theme) => theme.zIndex.appBar + 100 }}
       variant="temporary"
@@ -257,5 +194,5 @@ export const DashboardSidebar = (props) => {
 
 DashboardSidebar.propTypes = {
   onClose: PropTypes.func,
-  open: PropTypes.bool
+  open: PropTypes.bool,
 };

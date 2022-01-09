@@ -18,7 +18,7 @@ import {
 import { getInitials } from '../../utils/get-initials';
 
 export const CustomerListResults = ({ customers, ...rest }) => {
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
+  const [selectedPatientIds, setselectedPatientIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
 

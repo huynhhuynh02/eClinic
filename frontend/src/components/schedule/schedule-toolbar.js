@@ -2,101 +2,182 @@ import {
   Box,
   Button,
   Grid,
-  Container,
-  TextField, 
-  Typography
+  CardContent,
+  TextField,
+  Typography,
+  Select,
+  MenuItem,
+  Card
 } from '@mui/material';
-import { useState } from 'react';
-import AdapterDateFns from '@mui/lab/AdapterDateFns';
-import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import DatePicker from '@mui/lab/DatePicker';
 import InputLabel from '@mui/material/InputLabel';
 import FormControl from '@mui/material/FormControl';
-import NativeSelect from '@mui/material/NativeSelect';
+import AddIcon from '@mui/icons-material/Add';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import axios from 'axios';
+import moment from 'moment';
 
 export const ScheduleToolbar = (props) => {
-  const [valueDateFrom, setValueDateFrom] = useState(null);
-  const [valueDateTo, setValueDateTo] = useState(null);
-  const [valueTypeCustomer, setValueTypeCustomer] = useState(0);
-  const [valuePhone, setValuePhone] = useState(null);
-  function sendData () {
-    props.getDataFormSearch(valueDateFrom, valueDateTo, valueTypeCustomer, valuePhone);
-  }
+  const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
+  const formik = useFormik({
+    initialValues: {
+      fullname: '',
+      birthday: moment(new Date).format("YYYY-MM-DD"),
+      aliases: '',
+      sex: '0',
+      address:'',
+      phone: '',
+      job: '',
+    },
+    validationSchema: Yup.object({
+      fullname: Yup
+        .string()
+        .max(50)
+        .required('Họ tên là bắc buộc'),
+      birthday: Yup.date()
+        .required('Vui lòng chọn ngày sinh'),
+      sex: Yup
+        .string()
+        .required(
+        'Vui lòng chọn giới tính'
+      ),
+      phone: Yup
+        .string().matches(phoneRegExp, 'Phone number is not valid')
+        .max(10, 'Số điện thoại 10 ký tự')
+        .required('Vui lòng nhập số điện thoại')
+    }),
+    onSubmit: (values) => {
+      axios.post('/api/schedules', values).then(res=>{
+        if (res.status === 200) {
+          props.handlePage();
+        }else {
+          alert("Tạo lịch khám thất bại!");
+        }
+      })
+    }
+  });
+
   return (
-    <Box {...props}>
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          justifyContent: 'space-between',
-          flexWrap: 'wrap',
-          m: -1
-        }}
-      >
-        <Typography
-          sx={{ m: 1 }}
-          variant="h4"
+    <Card {...props}>
+      <CardContent>
+        <Box
+          sx={{
+            alignItems: 'center',
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            m: -1
+          }}
         >
-          Danh sách lịch hẹn
-        </Typography>
-      </Box>
-      <Box sx={{ mt: 3, mb: 5, bgcolor: 'white', py: 3, boxShadow: 3 }}>
-        <Container maxWidth="xl">
-          <Grid
-            container
-            spacing={4}
+          <Typography
+            sx={{ m: 1 }}
+            variant="h6"
           >
-            <Grid item sm={4}>
-              <Box sx={{ mb: 5 }}>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
+            Thông tin bệnh nhân
+          </Typography>
+        </Box>
+        <Box sx={{ mt: 3 }}>
+          <form onSubmit={(e)=>{
+            e.preventDefault();
+            formik.handleSubmit()}}
+            >
+            <Grid
+              container
+              spacing={3}
+            >
+              <Grid item sm={6}>
+                <Box sx={{ mb: 3 }}>
+                  <TextField
+                    name="fullname"
+                    error={Boolean(formik.touched.fullname && formik.errors.fullname)}
+                    helperText={formik.touched.fullname && formik.errors.fullname}
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values.fullname}
+                    fullWidth id="standard-basic" label="Họ tên *" variant="standard" />
+                </Box>
+                <Box sx={{ mb: 3 }}>
                   <DatePicker
-                    renderInput={(props) => <TextField sx={{ width: "100%" }} {...props} />}
-                    label="Từ ngày"
-                    value={valueDateFrom}
-                    onChange={(value) => setValueDateFrom(value)}
+                    error={Boolean(formik.touched.birthday && formik.errors.birthday)}
+                    helperText={formik.touched.birthday && formik.errors.birthday}
+                    onBlur={formik.handleBlur}
+                    onChange={(selectDate) => formik.setFieldValue("birthday", moment(selectDate).format("YYYY-MM-DD"))}
+                    name="birthday"
+                    label="Ngày sinh *"
+                    value={formik.values.birthday}
+                    renderInput={(params) => <TextField
+                    variant="standard" {...params} />}
                   />
-                </LocalizationProvider>
-              </Box>
-              <Box>
-                <LocalizationProvider dateAdapter={AdapterDateFns}>
-                  <DatePicker
-                    renderInput={(props) => <TextField sx={{ width: "100%" }} {...props} />}
-                    label="Đến ngày"
-                    value={valueDateTo}
-                    onChange={(value) => setValueDateTo(value)}
-                  />
-                </LocalizationProvider>
-              </Box>
-            </Grid>
-            <Grid item sm={ 5 }>
-              <Grid mb={ 5 }>
-                <FormControl fullWidth>
-                  <InputLabel variant="standard" htmlFor="uncontrolled-native">
-                    Nhóm bệnh nhân
-                  </InputLabel>
-                  <NativeSelect
-                    defaultValue={ valueTypeCustomer }
-                    inputProps={{
-                      name: 'age',
-                      id: 'uncontrolled-native',
-                    }}
-                    onChange={ (e) => setValueTypeCustomer(e.target.value) }
-                  >
-                    <option value={0}>Chọn nhóm bệnh nhân</option>
-                    <option value={10}>Ten</option>
-                    <option value={20}>Twenty</option>
-                    <option value={30}>Thirty</option>
-                  </NativeSelect>
-                </FormControl>
+                </Box>
+                <Box sx={{ mb: 3 }}>
+                  <TextField
+                    id="standard-basic"
+                    name="address"
+                    value={formik.values.address}
+                    onChange={formik.handleChange}
+                    fullWidth 
+                    label="Địa chỉ"
+                    variant="standard" />
+                </Box>
+                <Box sx={{ mb: 3 }}>
+                  <TextField
+                    id="standard-basic"
+                    name="job"
+                    value={formik.values.job}
+                    onChange={formik.handleChange}
+                    label="Nghề nghiệp"
+                    fullWidth
+                    variant="standard" />
+                </Box>
               </Grid>
-              <TextField fullWidth onChange={ (e) => setValuePhone(e.target.value) } value={ valuePhone } id="standard-basic" label="Nhập tên hoặc sđt" variant="standard" />
+              <Grid item sm={6}>
+                <Box sx={{ mb: 3 }}>
+                  <TextField
+                    id="standard-basic"
+                    name="aliases"
+                    value={formik.values.aliases}
+                    onChange={formik.handleChange}
+                    fullWidth
+                    label="Bí danh"
+                    variant="standard" />
+                </Box>
+                <Box sx={{ mb: 3 }}>
+                  <FormControl variant="standard" sx={{ minWidth: 120 }}>
+                    <InputLabel id="simple-select-year-label">Giới tính</InputLabel>
+                    <Select
+                      labelId="simple-select-sex-label"
+                      id="simple-select-sex"
+                      onChange={formik.handleChange}
+                      label="Giới tính"
+                      name='sex'
+                      value={formik.values.sex}
+                    >
+                      <MenuItem value="0">Nam</MenuItem>
+                      <MenuItem value="1">Nữ</MenuItem>
+                      <MenuItem value="2">Khác</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
+                <Box sx={{ mb: 3 }}>
+                  <TextField
+                    id="standard-basic" 
+                    name="phone"
+                    error={Boolean(formik.touched.phone && formik.errors.phone)}
+                    helperText={formik.touched.phone && formik.errors.phone}
+                    onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values.phone}
+                    fullWidth 
+                    label="Điện thoại *" 
+                    variant="standard" />
+                </Box>
+              </Grid>
             </Grid>
-            <Grid item sm={3} sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-              <Button onClick={ sendData } variant="contained">Tìm kiếm</Button>
-            </Grid>
-          </Grid>
-        </Container> 
-      </Box>
-    </Box>
+            <Button variant="contained" type="submit" startIcon={<AddIcon />}>Thêm</Button>
+          </form>
+        </Box>
+      </CardContent>
+    </Card>
   );
 }

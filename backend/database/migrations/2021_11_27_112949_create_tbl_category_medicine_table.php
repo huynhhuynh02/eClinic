@@ -15,10 +15,13 @@ class CreateTblCategoryMedicineTable extends Migration
     {
         Schema::create('tbl_category_medicine', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->string('code');
             $table->string('name');
-            $table->integer('parent_id');
+            $table->integer('parent_id')->nullable();
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
