@@ -15,17 +15,18 @@ class CreateTblPatientsTable extends Migration
     {
         Schema::create('tbl_patients', function (Blueprint $table) {
             $table->id();
-            $table->string('pid', 18); // pid là mã bênh nhân được quy đình mã phòng khám + datetime, 00120220103080000
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('patient_group_id');
             $table->string('address')->nullable();
             $table->string('phone')->nullable();
             $table->string('fullname')->nullable();
             $table->string('sex')->nullable();
-            $table->date('birthday')->nullable();
+            $table->timestamp('birthday')->nullable();
             $table->string('remark')->nullable();
             $table->timestamps();
             $table->softDeletes();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('patient_group_id')->references('id')->on('tbl_patient_group')->onDelete('cascade');
         });
     }
 

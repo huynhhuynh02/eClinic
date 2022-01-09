@@ -1,10 +1,8 @@
-import Head from "next/head";
-import { Box, Container, Grid } from "@mui/material";
-import { DashboardLayout } from "../components/dashboard-layout";
-import { Budget } from "../components/dashboard/budget";
-import { TotalCustomers } from "../components/dashboard/total-customers";
-import { TotalProfit } from "../components/dashboard/total-profit";
-import { ExaminationSchedule } from "../components/dashboard/examination-schedule";
+import Head from 'next/head';
+import { Box, Container } from '@mui/material';
+import { ExaminationSchedule } from "../../components/dashboard/examination-schedule";
+import { ScheduleToolbar } from '../../components/schedule/schedule-toolbar';
+import { DashboardLayout } from '../../components/dashboard-layout';
 import { v4 as uuid } from "uuid";
 
 const customers = [
@@ -94,48 +92,38 @@ const customers = [
   },
 ];
 
-const Dashboard = () => (
-  <>
-    <Head>
-      <title>Dashboard | Material Kit</title>
-    </Head>
-    <Box
-      component="main"
-      sx={{
-        flexGrow: 1,
-        py: 8,
-      }}
-    >
-      <Container maxWidth={false}>
-        <Grid container spacing={3}>
-          <Grid item lg={4} sm={6} xl={3} xs={12}>
-            <TotalCustomers />
-          </Grid>
-          <Grid item lg={4} sm={6} xl={3} xs={12}>
-            <Budget />
-          </Grid>
-          <Grid item lg={4} sm={6} xl={3} xs={12}>
-            <TotalProfit sx={{ height: "100%" }} />
-          </Grid>
-        </Grid>
-
-        <Grid
-          item
-          lg={12}
-          md={12}
-          xl={12}
-          xs={12}
-          sx={{
-            py: 8,
-          }}
-        >
-          <ExaminationSchedule header={ true } message_header={ 'Cần khám hôm nay' } customers={ customers }/>
-        </Grid>
-      </Container>
-    </Box>
-  </>
+const Schedule = () => {
+  function getDataFormSearch (dateFrom, dateTo, typeCustomer, Phone) {
+    console.log(dateFrom + dateTo + typeCustomer + Phone);
+  }
+  return (
+    <>
+      <Head>
+        <title>
+          Schedule
+        </title>
+      </Head>
+      <Box
+        component="main"
+        sx={{
+          flexGrow: 1,
+          py: 8
+        }}
+      >
+        <Container maxWidth={false}>
+          <ScheduleToolbar getDataFormSearch={ getDataFormSearch }/>
+          <Box sx={{ mt: 3 }}>
+            <ExaminationSchedule header={ false } customers={ customers }/>
+          </Box>
+        </Container>
+      </Box>
+    </>
+  );
+}
+Schedule.getLayout = (page) => (
+  <DashboardLayout>
+    {page}
+  </DashboardLayout>
 );
 
-Dashboard.getLayout = (page) => <DashboardLayout>{page}</DashboardLayout>;
-
-export default Dashboard;
+export default Schedule;
