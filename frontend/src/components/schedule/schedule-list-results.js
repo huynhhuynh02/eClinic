@@ -31,7 +31,7 @@ const Alert = React.forwardRef(function Alert(props, ref) {
         {...props} />;
 });
 
-export const ScheduleListResults = ({ schedules, pager, handlePage, updateScheduleTime, deleteSchedule, ...rest, }) => {
+export const ScheduleListResults = ({ schedules, pager, handlePage, updateScheduleTime, deleteSchedule, ...rest }) => {
     const [selectedScheduleIds, setSelectedScheduleIds] = useState([]);
     const [limit, setLimit] = useState(10);
     const [open, setOpen] = useState(false);
