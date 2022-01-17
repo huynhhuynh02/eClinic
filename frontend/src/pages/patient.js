@@ -4,17 +4,8 @@ import { PatientListResults } from '../components/patient/patient-list-results';
 import { PatientListToolbar } from '../components/patient/patient-toolbar';
 import { DashboardLayout } from '../components/dashboard-layout';
 import axios from 'axios';
-import { patients } from '../__mocks__/patients';
+import schedulesService from '../apis/schedules.api';
 import { useEffect, useState } from 'react';
-
-const fetchData = async () => {
-  try {
-    return await axios.get('/api/schedules');
-  } catch (error) {
-    console.error(error);
-  }
-}
-
 
 
 const Patients = () => {
@@ -23,10 +14,10 @@ const Patients = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetchData().then(data => {
+    schedulesService.getSchedules().then(res => {
       setIsLoading(true);
-      setSchedules(data.data.data);
-    });
+      setSchedules(res.data);
+    })
   },[])
 
   return (
