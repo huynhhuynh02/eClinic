@@ -179,7 +179,7 @@ export default function PrescriptionDialogs(props) {
 
     const renderMedicinSelect = (
         medicinesSelelect.map((item) => (
-            <Button sx={{ marginBottom: '5px' }} variant={medicinesIdSelect == item.id ? "contained" : "outlined"} onClick={() => handleSelectMedicines(item.id)} size="small" fullWidth>{item.name}</Button>
+            <Button key={item.id} sx={{ marginBottom: '5px' }} variant={medicinesIdSelect == item.id ? "contained" : "outlined"} onClick={() => handleSelectMedicines(item.id)} size="small" fullWidth>{item.name}</Button>
         ))
     )
 
@@ -223,7 +223,7 @@ export default function PrescriptionDialogs(props) {
                     <Box sx={{ maxHeight: '250px', overflow: 'auto' }}>
                         {
                             categories?.map((item) => (
-                                <Button onClick={() => handleOnSelectCategory(item.id)} variant={categoryIdSelect == item.id ? "contained" : "outlined"} size="small" style={{ marginRight: '5px', marginBottom: '5px' }}>
+                                <Button key={item.id} onClick={() => handleOnSelectCategory(item.id)} variant={categoryIdSelect == item.id ? "contained" : "outlined"} size="small" style={{ marginRight: '5px', marginBottom: '5px' }}>
                                     {item.name}
                                 </Button>
                             ))
