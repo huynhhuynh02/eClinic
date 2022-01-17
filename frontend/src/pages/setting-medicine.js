@@ -4,6 +4,9 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { SettingMedicineListResults } from "src/components/settings/medicine/medicine-list-results";
 import { DashboardLayout } from "../components/dashboard-layout";
+import { getAllMedicines } from '../apis/medicines.api';
+import { getAllCategory } from '../apis/category.api';
+import { getAllUnit } from '../apis/unit.api';
 
 const MedicineSetting = () => {
   const [error, setError] = useState(null);
@@ -14,14 +17,14 @@ const MedicineSetting = () => {
   useEffect(() => {
     const fetchData =  () => {
       try {
-        axios.get('/api/categories').then(response => {
+        getAllCategory().then(response => {
           if (response.data.responsive.status === 'success') {
             setCategories([...response.data.data]);
           } else {
             setError(response.data.message);
           }
         });
-        axios.get('/api/units').then(response => {
+        getAllUnit().then(response => {
           if (response.data.responsive.status === 'success') {
 
             setUnits([...response.data.data]);
@@ -30,7 +33,7 @@ const MedicineSetting = () => {
           }
         });
 
-        axios.get('/api/medicines').then(response => {
+        getAllMedicines().then(response => {
           if (response.data.responsive.status === 'success') {
             setMedicines([...response.data.data]);
           } else {

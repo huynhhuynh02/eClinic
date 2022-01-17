@@ -10,6 +10,7 @@ import '../styles/App.css';
 import { theme } from '../theme';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import Login from './login';
+import { API_END_POINT } from '../utils/constants';
 
 
 axios.defaults.baseURL = 'http://127.0.0.1:8000';
@@ -38,7 +39,7 @@ const App = (props) => {
 
   useEffect(() => {
     const fetchUser = async () => {
-    await axios.get('/api/profile').then(
+    await axios.get(`${API_END_POINT}/api/profile`).then(
         res => {
           setIsLogin(true);
           setUser(res.data.profile);

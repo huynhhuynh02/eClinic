@@ -19,6 +19,7 @@ import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import CustomizedDialogs from "src/components/common/dialog";
+import {addCategory,updateCategory, deleteCategory} from '../../../apis/category.api';
 
 const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
   const [listCategory, setListCategory] = useState([]);
@@ -51,7 +52,7 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
         inputCode.trim().length === 0 ? generateCodeFromInputName(inputName) : inputCode.trim(),
       name: inputName.trim(),
     };
-    axios.post('/api/categories', input).then(res => {
+    addCategory(input).then(res => {
       if (res.data.status === 'success') {
 
         setListCategory([
@@ -74,9 +75,8 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
   };
 
   const onClickSaveEditBtn = (id) => {
-    axios.put('/api/categories/'+id, editItem).then(res => {
+    updateCategory(id, editItem).then(res => {
       if (res.data.status === 'success') {
-
         let index = listCategory.findIndex((el) => el.id === editItem.id);
         listCategory[index] = res.data.category;
         setListCategory(listCategory);
@@ -101,7 +101,7 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
 
   const handleDeleteItem = () => {
     setShowConfirmDelete(false);
-    axios.delete('/api/categories/'+deleteItemId).then(res => {
+    deleteCategory(deleteItemId).then(res => {
       if (res.data.status === 'success') {
 
         setListCategory(listCategory.filter((e) => e.id !== deleteItemId));

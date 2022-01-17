@@ -15,8 +15,8 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import axios from "axios";
 import { useState } from "react";
+import { addMedicines } from '../../../apis/medicines.api';
 
 export const SettingMedicineToolbar = ({categories, units, ...props}) => {
   
@@ -70,17 +70,14 @@ export const SettingMedicineToolbar = ({categories, units, ...props}) => {
       description:description,
       composition:composition,
     }
-    console.log(input)
-    axios.post('/api/medicines', input).then(res => {
+    addMedicines(input).then(res => {
       if (res.data.status === 'success') {
-
         setName("");
         setExpiredDate(null);
         setDescription("");
         setCategoryId("");
         setUnitId("");
         setComposition("");
-
         handleShowToast("Thêm thành công!",res.data.status);
       } else {
         handleShowToast("Thêm không thành công",res.data.status);

@@ -1,9 +1,9 @@
 import axios from "axios";
-import { API_PRESCRIPTION_URL } from '../utils/constants';
+import { API_END_POINT, API_PRESCRIPTION_URL } from '../utils/constants';
 
 export const getPrescription = async (id) => {
     try {
-        return await axios.get(`${API_PRESCRIPTION_URL}/${id}/edit`);
+        return await axios.get(`${API_END_POINT}/${API_PRESCRIPTION_URL}/${id}/edit`);
         
     } catch (error) {
         console.error(error);
@@ -12,7 +12,7 @@ export const getPrescription = async (id) => {
 
 export const getAllPrescription = async () => {
     try {
-        return await axios.get(`${API_PRESCRIPTION_URL}`);
+        return await axios.get(`${API_END_POINT}/${API_PRESCRIPTION_URL}`);
         
     } catch (error) {
         console.error(error);
@@ -21,7 +21,7 @@ export const getAllPrescription = async () => {
 
 export const addPrescription = async (data) => {
     try {
-        return await axios.post(`${API_PRESCRIPTION_URL}`,data);
+        return await axios.post(`${API_END_POINT}/${API_PRESCRIPTION_URL}`,data);
     } catch (error) {
         console.error(error);
     }

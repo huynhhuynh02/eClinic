@@ -17,6 +17,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import moment from 'moment';
+import schedulesService from '../../apis/schedules.api';
 
 export const ScheduleToolbar = (props) => {
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
@@ -48,7 +49,7 @@ export const ScheduleToolbar = (props) => {
         .required('Vui lòng nhập số điện thoại')
     }),
     onSubmit: (values) => {
-      axios.post('/api/schedules', values).then(res=>{
+      schedulesService.addSchedules(values).then(res=>{
         if (res.status === 200) {
           props.handlePage();
         }else {

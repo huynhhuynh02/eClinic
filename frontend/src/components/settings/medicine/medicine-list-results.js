@@ -30,6 +30,7 @@ import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import CustomizedDialogs from "src/components/common/dialog";
+import { addMedicines, updateMedicines, deleteMedicines } from '../../../apis/medicines.api';
 
 export const SettingMedicineListResults = ({ medicines,categories, units, ...rest }) => {
 //Add item properties
@@ -107,7 +108,8 @@ export const SettingMedicineListResults = ({ medicines,categories, units, ...res
       description:description,
       composition:composition,
     }
-    axios.post('/api/medicines', input).then(res => {
+    console.log(input);
+    addMedicines(input).then(res => {
       if (res.data.status === 'success') {
         setListMedicines([...listMedicines, res.data.medicine]);
         setName("");
@@ -241,10 +243,10 @@ export const SettingMedicineListResults = ({ medicines,categories, units, ...res
       description: editDescription,
       composition: editComposition,
     }
+    console.log(res.data.medicine)
 
-    await axios.put('/api/medicines/' + editItem.id, input).then(res => {
+    updateMedicines(editItem.id, input).then(res => {
       if (res.data.status === 'success') {
-console.log(res.data.medicine)
         let index = listMedicines.findIndex((el) => el.id === editItem.id);
         listMedicines[index] = res.data.medicine;
         setListMedicines(listMedicines);
@@ -260,9 +262,8 @@ console.log(res.data.medicine)
 //Function delete item
   const handleDeleteItem = () => {
     setShowConfirmDelete(false);
-    axios.delete('/api/medicines/'+ deleteItemId).then(res => {
+    deleteMedicines(deleteItemId).then(res => {
       if (res.data.status === 'success') {
-
         setListMedicines(listMedicines.filter((e) => e.id !== deleteItemId));
         handleShowToast("Xoá thành công!",res.data.status);
         setDeleteItemId('');
