@@ -7,6 +7,8 @@ use App\Http\Resources\PatientCollection;
 use App\Http\Resources\PatientResource;
 use App\Models\Patient;
 use Illuminate\Http\Request;
+use DateTime;
+use App\Service\PatientService;
 
 class PatientController extends Controller
 {
@@ -87,5 +89,28 @@ class PatientController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * get total Patient in week
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getDataPatients(Request $request)
+    {
+        try {
+            $preService = new PatientService();
+            $type = $request["type"];
+            $responeData = null;
+            if($type == "week") {
+                $responeData = $preService->getWeekData();
+            }
+            return response()->json([
+                'data' => $responeData,
+                'message' => 'get data success !'
+            ], 200);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
