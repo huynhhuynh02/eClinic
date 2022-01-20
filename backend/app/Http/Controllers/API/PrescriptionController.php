@@ -8,6 +8,7 @@ use App\Models\PrescriptionDetail;
 use App\Http\Resources\PrescriptionCollection;
 use App\Http\Resources\PrescriptionResource;
 use Illuminate\Http\Request;
+use App\Service\PrescriptionService;
 
 class PrescriptionController extends Controller
 {
@@ -123,5 +124,28 @@ class PrescriptionController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /**
+     * get total Prescription in week
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function getDataPrescription(Request $request)
+    {
+        try {
+            $preService = new PrescriptionService();
+            $type = $request["type"];
+            $responeData = null;
+            if($type =="week") {
+                $responeData = $preService->getWeekData();
+            } 
+            return response()->json([
+                'data' => $responeData,
+                'message' => 'get data success !'
+            ], 200);
+        } catch (\Throwable $th) {
+            throw $th;
+        }
     }
 }
