@@ -55,8 +55,7 @@ const deleteSchedules = async (id) => {
 
 export const addSchedules = async (formData) => {
   try {
-      return await axios.post(`${API_END_POINT}/${API_SCHEDULE_URL}`, formData);
-      
+    return await axios.post(`${API_END_POINT}/${API_SCHEDULE_URL}`, formData);
   } catch (error) {
       console.error(error);
   }

@@ -17,6 +17,9 @@ use Illuminate\Support\Facades\Route;
 Route::post('register', 'API\AuthController@register');
 
 Route::post('login', 'API\AuthController@login')->name('login');
+Route::resource('cities', 'API\CityController');
+Route::resource('district', 'API\DistrictController');
+Route::resource('ward', 'API\WardController');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // API route for logout user

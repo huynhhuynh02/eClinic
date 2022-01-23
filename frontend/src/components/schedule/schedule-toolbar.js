@@ -15,11 +15,18 @@ import FormControl from '@mui/material/FormControl';
 import AddIcon from '@mui/icons-material/Add';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import axios from 'axios';
 import moment from 'moment';
 import schedulesService from '../../apis/schedules.api';
+import { useEffect, useState } from 'react';
+import { getCity, getDisTrict, getWard } from 'src/apis/province.api';
 
 export const ScheduleToolbar = (props) => {
+  const [cities,setCities] = useState([]);
+  const [cityCode,setCityCode] = useState('');
+  const [district,setDistrict] = useState([]);
+  const [districtCode,setDistrictCode] = useState('');
+  const [ward,setWard] = useState([]);
+  const [wardCode,setWardCode] = useState('');
   const phoneRegExp = /^((\\+[1-9]{1,4}[ \\-]*)|(\\([0-9]{2,3}\\)[ \\-]*)|([0-9]{2,4})[ \\-]*)*?[0-9]{3,4}?[ \\-]*[0-9]{3,4}?$/;
   const formik = useFormik({
     initialValues: {
@@ -49,6 +56,9 @@ export const ScheduleToolbar = (props) => {
         .required('Vui lòng nhập số điện thoại')
     }),
     onSubmit: (values) => {
+      values['city_code'] = cityCode;
+      values['district_code'] = districtCode;
+      values['ward_code'] = wardCode;
       schedulesService.addSchedules(values).then(res=>{
         if (res.status === 200) {
           props.handlePage();
@@ -58,6 +68,52 @@ export const ScheduleToolbar = (props) => {
       })
     }
   });
+
+  useEffect(()=> {
+    const fetchData =  () => {
+      try {
+        getCity().then(response => {
+          if(response.status == 200 && response.data) {
+            setCities(response.data.city)
+          }
+        });
+      } catch (e) {
+        setError(e);
+      }
+    };
+    fetchData();
+  },[])
+
+  const handleChangeAddress= (e, type) => {
+      try {
+        switch (type) {
+          case 'city':
+            setCityCode(e.target.value);
+            getDisTrict(e.target.value).then(response => {
+              if(response.status == 200 && response.data) {
+                setDistrict(response.data.districts);
+                setWardCode([])
+              }
+            });
+            break;
+          case 'district':
+            setDistrictCode(e.target.value);
+            getWard(e.target.value).then(response => {
+              if(response.status == 200 && response.data) {
+                setWard(response.data.wards)
+              }
+            });
+            break;
+          case 'ward':
+            setWardCode(e.target.value);
+            break;
+          default:
+            break;
+        }
+      } catch (e) {
+        setError(e);
+      }
+  }
 
   return (
     <Card {...props}>
@@ -173,6 +229,59 @@ export const ScheduleToolbar = (props) => {
                     label="Điện thoại *" 
                     variant="standard" />
                 </Box>
+                <Grid container spacing={3}>
+                  <Grid item sm={6} md={4}>
+                    <FormControl variant="standard" sx={{ minWidth: 140 }}>
+                      <InputLabel id="simple-select-year-label">Thành phố/Tỉnh</InputLabel>
+                      <Select
+                        labelId="simple-select-city-label"
+                        id="simple-select-city"
+                        onChange={(e)=>handleChangeAddress(e,'city')}
+                        label="Thành Phố/Tỉnh"
+                        name='city'
+                        value={cityCode}
+                      >
+                        {
+                          cities ? cities.map((data)=><MenuItem value={data.code}>{data.name}</MenuItem> ) : ""
+                        }
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={6}  md={4}>
+                    <FormControl variant="standard" sx={{ minWidth: 120 }}>
+                      <InputLabel id="simple-select-district-label" >Quận/Huyện</InputLabel>
+                      <Select
+                        labelId="simple-select-district-label"
+                        id="simple-select-district"
+                        onChange={(e)=>handleChangeAddress(e,'district')}
+                        label="Quận/Huyện"
+                        name='district'
+                        value={districtCode}
+                      >
+                        {
+                          district ? district.map((data)=><MenuItem value={data.code}>{data.name}</MenuItem> ) : ""
+                        }
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                  <Grid item sm={4}>
+                    <FormControl variant="standard" sx={{ minWidth: 120 }}>
+                      <InputLabel id="simple-select-ward-label">Phường/Xã</InputLabel>
+                      <Select
+                        labelId="simple-select-ward-label"
+                        id="simple-select-ward"
+                        onChange={(e)=>handleChangeAddress(e,'ward')}
+                        label="Phường/Xã"
+                        name='ward'
+                        value={wardCode}
+                      >
+                        {
+                          ward ? ward.map((data)=><MenuItem value={data.code}>{data.name}</MenuItem> ) : ""
+                        }
+                      </Select>
+                    </FormControl>
+                  </Grid>
+                </Grid>
               </Grid>
             </Grid>
             <Button variant="contained" type="submit" startIcon={<AddIcon />}>Thêm</Button>

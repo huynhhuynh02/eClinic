@@ -30,4 +30,18 @@ class Patient extends Model
         return $this->hasMany(Prescription::class);
     }
 
+    public function city()
+    {
+        return $this->hasOne(City::class);
+    }
+
+    public function districts()
+    {
+        return $this->hasOne(District::class);
+    }
+
+    public function ward()
+    {
+        return $this->hasOne(Ward::class);
+    }
 }
