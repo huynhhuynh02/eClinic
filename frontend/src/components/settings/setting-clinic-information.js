@@ -118,7 +118,7 @@ export const SettingClinicInformationToolbar = (props) => {
                     value={formik.values.phone_number}
                     fullWidth 
                     id="standard-basic" 
-                    label="Điện thoại" 
+                    label="Số điện thoại" 
                     required 
                     variant="standard" />
                 </Box>

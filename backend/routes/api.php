@@ -18,6 +18,8 @@ Route::post('register', 'API\AuthController@register');
 
 Route::post('login', 'API\AuthController@login')->name('login');
 
+// Route::post('create_clinic','API\ClinicController@create')->name('create');
+// Route::get('clinics', 'API\ClinicController@index');
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // API route for logout user
     Route::get('profile', 'API\AuthController@profile');
@@ -30,5 +32,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::resource('medicines','API\MedicineController');
     Route::resource('units','API\UnitController');
     Route::resource('clinics','API\ClinicController');
-    Route::resource('clinic_info','API\ClinicController@info');
+    // Route::resource('clinics/get_info','API\ClinicController@get_info');
+	
+    // Route::resource('clinic_info','API\ClinicController@info');
 });

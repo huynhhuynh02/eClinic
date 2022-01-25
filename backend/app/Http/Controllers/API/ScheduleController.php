@@ -4,11 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Schedule;
-use App\Models\Patient;
-use App\Http\Resources\ScheduleCollection;
-use App\Http\Resources\ScheduleResource;
-use App\Http\Requests\StoreScheduleRequest;
 use DateTime;
 use Illuminate\Support\Facades\Validator;
 class ScheduleController extends Controller
