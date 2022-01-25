@@ -1,19 +1,25 @@
 import axios from "axios";
-import { API_PROVINCE, API_DISTRICT, API_WARD , TOKEN_GHN} from '../utils/constants';
+import { API_CITY, API_DISTRICT, API_END_POINT, API_WARD } from '../utils/constants';
 
-export const getProvince = async () => {
+export const getCity = async () => {
     try {
-        return await axios.get(`${API_PROVINCE}`, { 'headers': {'Token':TOKEN_GHN , 'Content-Type': 'application/json'}});
-        
+        return await axios.get(`${API_END_POINT}/${API_CITY}`);
     } catch (error) {
         console.error(error);
     }
 }
 
-export const getDisTrict = async (province_id) => {
+export const getDisTrict = async (city_code) => {
     try {
-        return await axios.get(`${API_DISTRICT}`,{ 'headers': {'Token':TOKEN_GHN , 'Content-Type': 'application/json'}});
-        
+        return await axios.get(`${API_END_POINT}/${API_DISTRICT}`, {params: {city_code: city_code}});
+    } catch (error) {
+        console.error(error);
+    }
+}
+
+export const getWard = async (district_code) => {
+    try {
+        return await axios.get(`${API_END_POINT}/${API_WARD}`,{params: {district_code: district_code}});
     } catch (error) {
         console.error(error);
     }
