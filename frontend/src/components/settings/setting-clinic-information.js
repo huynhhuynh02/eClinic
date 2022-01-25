@@ -28,17 +28,28 @@ import { display } from '@mui/system';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 
+import { updateClinic } from '../../apis/clinics.api';
 
 export const SettingClinicInformationToolbar = (props) => {
-  // const [valueClinicName, setClinicName] = useState(null);
-  // const [valueClinicPhoneNumber, setClinicPhoneNumber] = useState(null);
-  // const [valueClinicEmail, setClinicEmail] = useState(null);
-  // const [valueClinicAddress, setClinicAddress] = useState(null);
+  const [name, setClinicName] = useState(null);
+  const [phone_number, setClinicPhoneNumber] = useState(null);
+  const [email, setClinicEmail] = useState(null);
+  const [address, setClinicAddress] = useState(null);
+  // const [toast, setToast] = useState({
+    // status: "success",
+    // message: "Success!",
+  // });
 
   // const handleChangeSex = (event) => {
   //   setSex(event.target.value);
   // };
-
+const handleShowToast = ( message, status) => {
+    console.log( message, status); return; // Sua sau
+	toast.message = message;
+    toast.status = status;
+    setToast(toast);
+    setShowToast(true);
+  };
   const Input = styled('input')({
     display: 'none',
   });
@@ -67,8 +78,30 @@ export const SettingClinicInformationToolbar = (props) => {
         .max(500)
         .required('Vui lòng nhập địa chỉ liên lạc')
     }),
+    onSubmit: (values) => {
+      console.clear();
+	  console.log(values);
+	  let _default = {
+		address: "",
+		email: "",
+		name: "",
+		phone_number: ""
+	  }
+	  updateClinic(values).then(res => {
+		  if (res.data.status === 'success') {
+			setClinicName("");
+			setClinicPhoneNumber(null);
+			setClinicEmail("");
+			setClinicAddress("");
+			handleShowToast("Cập nhật thông tin thành công!",res.data.status);
+		  } else {
+			handleShowToast("Cập nhật thông tin không thành công",res.data.status);
+		  }
+		})
+	  return false;
+    },
     handleSubmit: (values) => {
-      console.log(values);
+      console.log('submit', values);
     },
   });
 
@@ -92,7 +125,11 @@ export const SettingClinicInformationToolbar = (props) => {
           </Typography>
         </Box>
         <Box sx={{ mt: 3 }}>
-          <form onSubmit={formik.handleSubmit}>
+          <form /* onSubmit={(e)=>{
+            e.preventDefault();
+			console.log( 'ssss');
+            formik.handleSubmitx()}} /* */
+			{...props}>
             <Grid
               container
               spacing={3}
