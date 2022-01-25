@@ -5,15 +5,16 @@ import { CssBaseline } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import axios from 'axios';
 import Head from 'next/head';
+import Login from './login';
+import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import '../styles/App.css';
 import { theme } from '../theme';
 import { createEmotionCache } from '../utils/create-emotion-cache';
-import Login from './login';
 import { API_END_POINT } from '../utils/constants';
+import userService from '../apis/auth.api';
 
-
-axios.defaults.baseURL = 'http://127.0.0.1:8000';
+axios.defaults.baseURL = API_END_POINT;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.post['Accept'] = 'application/json';
 
@@ -37,22 +38,28 @@ const App = (props) => {
 
   const [user, setUser] = useState(null);
 
+  const router = useRouter();
+
   useEffect(() => {
-    const fetchUser = async () => {
-    await axios.get(`${API_END_POINT}/api/profile`).then(
-        res => {
-          setIsLogin(true);
-          setUser(res.data.profile);
-          setIsLoading(false);
-        }
-      ).catch(
-        () => {
-          setIsLogin(false);
-          setIsLoading(false);
-        }
-      );
+    // check if not exits token
+    if (localStorage.getItem('auth_token') !== null && localStorage.getItem('user_name') !== null) {
+        userService.getUserProfile().then(
+          res => {
+            setIsLogin(true);
+            setUser(res.data.profile);
+            setIsLoading(false);
+          }
+        ).catch(
+          () => {
+            setIsLogin(false);
+            setIsLoading(false);
+          }
+        );
+    } else {
+      setIsLogin(false);
+      setIsLoading(false);
     }
-      fetchUser();
+    
   },[]);
 
   if (isLoading)
@@ -73,7 +80,7 @@ const App = (props) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          { !isLogin ? <Login /> : getLayout(<Component {...pageProps} />) }
+          { !isLogin ? <Login/> :  getLayout(<Component {...pageProps} />) }
         </ThemeProvider>
       </LocalizationProvider>
     </CacheProvider>

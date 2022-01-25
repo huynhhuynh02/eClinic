@@ -9,7 +9,7 @@ import { Bell as BellIcon } from '../icons/bell';
 import { UserCircle as UserCircleIcon } from '../icons/user-circle';
 import { Users as UsersIcon } from '../icons/users';
 import { useRouter } from 'next/router';
-import axios from 'axios';
+import userService from '../apis/auth.api';
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.primany,
@@ -23,7 +23,7 @@ export const DashboardNavbar = (props) => {
   const logout = (e) => {
     e.preventDefault();
 
-    axios.post('/api/logout').then(res => {
+    userService.logout().then(res => {
       if (res.status === 200) {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user_name');

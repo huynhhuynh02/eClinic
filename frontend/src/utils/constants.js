@@ -1,4 +1,4 @@
-export const API_END_POINT = 'http://his-api.tapavn.com'; //http://localhost:8000;
+export const API_END_POINT = 'http://localhost:8000'; //'http://his-api.tapavn.com';
 export const API_PATIENT_URL = 'api/patients';
 export const API_UNIT_URL = 'api/units';
 export const API_SCHEDULE_URL = 'api/schedules';
@@ -9,3 +9,6 @@ export const API_PROVINCE = 'https://online-gateway.ghn.vn/shiip/public-api/mast
 export const API_DISTRICT = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/district';
 export const API_WARD = 'https://online-gateway.ghn.vn/shiip/public-api/master-data/ward';
 export const TOKEN_GHN = '20966d1a-70a0-11ec-bde8-6690e1946f41';
+export const API_LOGIN_URL = 'api/login';
+export const API_LOGOUT_URL = 'api/logout';
+export const API_PROFILE_URL = 'api/profile';

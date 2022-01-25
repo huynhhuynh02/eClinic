@@ -3,9 +3,8 @@ import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/material';
-import axios from 'axios';
 import { useState } from 'react';
-import { API_END_POINT } from '../utils/constants';
+import userService from '../apis/auth.api';
 
 const Login = () => {
   const [errorLogin, setErrorLogin] = useState(null);
@@ -30,20 +29,17 @@ const Login = () => {
           'Password is required')
     }),
     onSubmit: (values) => {
-      axios.get(`${API_END_POINT}/sanctum/csrf-cookie`).then(response => {
-        axios.post(`${API_END_POINT}/api/login`, values).then(res => {
-          if (res.data.status === true) {
-            localStorage.setItem('auth_token', res.data.access_token);
-            localStorage.setItem('user_name', res.data.user.name);
-            router.push('/');
-          } else {
-            setErrorLogin(res.data.message);
-          }
-        })
-      });
+      userService.login(values).then(res => {
+        if (res.data.status === true) {
+          localStorage.setItem('auth_token', res.data.access_token);
+          localStorage.setItem('user_name', res.data.user.name);
+          router.push('/');
+        } else {
+          setErrorLogin(res.data.message);
+        }
+      })
     }
   });
-
   return (
     <>
       <Head>
