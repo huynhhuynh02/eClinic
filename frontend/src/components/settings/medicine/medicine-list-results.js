@@ -97,7 +97,7 @@ export const SettingMedicineListResults = ({ medicines,categories, units, pager,
     setQuantity(event.target.value);
   };
 
-   const handleAddButton = async () => {
+   const handleAddButton =  () => {
     let input = {
       name: name.trim(),
       unit_id:unitId,
@@ -107,26 +107,21 @@ export const SettingMedicineListResults = ({ medicines,categories, units, pager,
       description:description,
       composition:composition,
     }
-    console.log(input);
-     let result = await addMedicines(input);
-     console.log(result)
-    //  .then(res => {
-    // console.log(res);
-    //   if (res.data.status === 'success') {
-    //     setListMedicines([...listMedicines, res.data.medicine]);
-    //     setName("");
-    //     setExpiredDate(null);
-    //     setDescription("");
-    //     setCategoryId("");
-    //     setUnitId("");
-    //     setComposition("");
-
-    //     console.log(res.data.medicine)
-    //     handleShowToast("Thêm thành công!",res.data.status);
-    //   } else {
-    //     handleShowToast("Thêm không thành công",res.data.status);
-    //   }
-    // })
+    addMedicines(input).then(res => {
+    console.log(res);
+      if (res.data.status === 'success') {
+        setListMedicines([...listMedicines, res.data.medicine]);
+        setName("");
+        setExpiredDate(null);
+        setDescription("");
+        setCategoryId("");
+        setUnitId("");
+        setComposition("");
+        handleShowToast("Thêm thành công!",res.data.status);
+      } else {
+        handleShowToast("Thêm không thành công",res.data.status);
+      }
+    })
   }
 
 //Function toast
