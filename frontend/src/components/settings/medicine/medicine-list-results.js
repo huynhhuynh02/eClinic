@@ -25,14 +25,13 @@ import {
   TextField,
   Typography
 } from "@mui/material";
-import axios from "axios";
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import CustomizedDialogs from "src/components/common/dialog";
-import { addMedicines, updateMedicines, deleteMedicines } from '../../../apis/medicines.api';
+import { addMedicines, deleteMedicines, updateMedicines } from '../../../apis/medicines.api';
 
-export const SettingMedicineListResults = ({ medicines,categories, units, ...rest }) => {
+export const SettingMedicineListResults = ({ medicines,categories, units, pager, handlePage, ...rest }) => {
 //Add item properties
   const [expiredDate, setExpiredDate] = useState(null);
   const [name, setName] = useState("");
@@ -53,7 +52,7 @@ export const SettingMedicineListResults = ({ medicines,categories, units, ...res
   const [listMedicines, setListMedicines] = useState(medicines);
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
+
 
 //Edit item properties
   const [editItem, setEditItem] = useState({});
@@ -98,7 +97,7 @@ export const SettingMedicineListResults = ({ medicines,categories, units, ...res
     setQuantity(event.target.value);
   };
 
-  const handleAddButton = () => {
+   const handleAddButton = async () => {
     let input = {
       name: name.trim(),
       unit_id:unitId,
@@ -109,22 +108,25 @@ export const SettingMedicineListResults = ({ medicines,categories, units, ...res
       composition:composition,
     }
     console.log(input);
-    addMedicines(input).then(res => {
-      if (res.data.status === 'success') {
-        setListMedicines([...listMedicines, res.data.medicine]);
-        setName("");
-        setExpiredDate(null);
-        setDescription("");
-        setCategoryId("");
-        setUnitId("");
-        setComposition("");
+     let result = await addMedicines(input);
+     console.log(result)
+    //  .then(res => {
+    // console.log(res);
+    //   if (res.data.status === 'success') {
+    //     setListMedicines([...listMedicines, res.data.medicine]);
+    //     setName("");
+    //     setExpiredDate(null);
+    //     setDescription("");
+    //     setCategoryId("");
+    //     setUnitId("");
+    //     setComposition("");
 
-        console.log(res.data.medicine)
-        handleShowToast("Thêm thành công!",res.data.status);
-      } else {
-        handleShowToast("Thêm không thành công",res.data.status);
-      }
-    })
+    //     console.log(res.data.medicine)
+    //     handleShowToast("Thêm thành công!",res.data.status);
+    //   } else {
+    //     handleShowToast("Thêm không thành công",res.data.status);
+    //   }
+    // })
   }
 
 //Function toast
@@ -179,10 +181,11 @@ export const SettingMedicineListResults = ({ medicines,categories, units, ...res
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
+    handlePage(event.target.value,0);
   };
 
   const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+    handlePage(limit,newPage);
   };
 
 //Function edit item
@@ -530,10 +533,10 @@ sm={6}>
         </PerfectScrollbar>
         <TablePagination
           component="div"
-          count={medicines.length}
+          count={pager ? pager.total : 0}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
-          page={page}
+          page={pager ? pager.current_page-1 : 0}
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25]}
         />
@@ -624,7 +627,11 @@ fullWidth>
                   id="simple-select-category"
                   value={editCategoryId}
                   onChange={handleEditChangeCategoryId}
-                  label="Danh mục thuốc*"
+                    label="Danh mục thuốc*"
+
+                    MenuProps={{
+                      classes: { paper:  { maxHeight: 300 } } 
+                    }}
                 >
                   {categories?.map((cate) => (
                     <MenuItem key={cate.id}

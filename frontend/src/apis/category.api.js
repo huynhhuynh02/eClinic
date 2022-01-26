@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_END_POINT,API_CATEGORY_URL } from '../utils/constants';
+import { API_CATEGORY_URL, API_END_POINT } from '../utils/constants';
 
 export const getCategory = async (id) => {
     try {
@@ -10,9 +10,16 @@ export const getCategory = async (id) => {
     }
 }
 
-export const getAllCategory = async () => {
+export const getAllCategory = async (perPage = 10, pagerIndex = 1) => {
+    const params = {
+        per_page: perPage,
+        page: pagerIndex,
+    }
     try {
-        return await axios.get(`${API_END_POINT}/${API_CATEGORY_URL}`);
+        return await axios.get(`${API_END_POINT}/${API_CATEGORY_URL}`, { params: params }).then(response => {
+            console.log(response.data)
+            return response
+        });
         
     } catch (error) {
         console.error(error);

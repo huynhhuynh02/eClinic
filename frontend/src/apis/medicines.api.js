@@ -1,5 +1,5 @@
 import axios from "axios";
-import {API_END_POINT, API_MEDICINE_URL } from '../utils/constants';
+import { API_END_POINT, API_MEDICINE_URL } from '../utils/constants';
 
 export const getMedicine = async (id) => {
     try {
@@ -10,9 +10,13 @@ export const getMedicine = async (id) => {
     }
 }
 
-export const getAllMedicines = async () => {
+export const getAllMedicines = async (perPage = 10, pagerIndex = 1) => {
+    const params = {
+        per_page: perPage,
+        page: pagerIndex,
+    }
     try {
-        return await axios.get(`${API_END_POINT}/${API_MEDICINE_URL}`);
+        return await axios.get(`${API_END_POINT}/${API_MEDICINE_URL}`, params);
         
     } catch (error) {
         console.error(error);
@@ -21,7 +25,7 @@ export const getAllMedicines = async () => {
 
 export const addMedicines = async (formData) => {
     try {
-        return await axios.post(`${API_END_POINT}/${API_MEDICINE_URL}`);
+        return await axios.post(`${API_END_POINT}/${API_MEDICINE_URL}`,formData);
         
     } catch (error) {
         console.error(error);

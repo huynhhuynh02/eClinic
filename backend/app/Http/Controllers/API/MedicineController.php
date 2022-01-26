@@ -16,13 +16,14 @@ class MedicineController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //todo:
         $user = auth()->user();
+        $perPager = $request["per_page"];
 
         $id = $user->id;
-        $medicines = Medicine::where('user_id', $id)->get();
+        $medicines = Medicine::where('user_id', $id)->orderBy('created_at')->paginate($perPager)->appends(request()->query());
         return new MedicineCollection($medicines);
     }
 
@@ -35,6 +36,7 @@ class MedicineController extends Controller
      */
     public function store(Request $request)
     {
+        print($request);
         try{
             $user_id = auth()->id(); 
 
@@ -55,7 +57,7 @@ class MedicineController extends Controller
                 'status'=>'success'
             ],201);
         }catch (\Exception $e){
-            
+            print($e);
             return response()->json([
                 'message' => $e, 
                 'status'=>'error'
