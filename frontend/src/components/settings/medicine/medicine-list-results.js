@@ -528,7 +528,7 @@ sm={6}>
         </PerfectScrollbar>
         <TablePagination
           component="div"
-          count={pager ? pager.total : 0}
+          count={pager ? pager.total : listMedicines.length}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
           page={pager ? pager.current_page-1 : 0}

@@ -301,7 +301,7 @@ onClick={() => handleOpenConfirmDeleteItem(item.id)} />
         </PerfectScrollbar>
         <TablePagination
           component="div"
-          count={pager ? pager.total : 0}
+          count={pager ? pager.total : listCategory.length}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
           page={pager ? pager.current_page-1 : 0}
