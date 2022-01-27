@@ -26,7 +26,6 @@ const Prescriptions = () => {
     getAllPrescription().then(result => {
       setIsLoading(true);
       setPrescriptions([...result.data.data]);
-      console.log(result.data.data);
       setPrescriptionsMeta(result.data.meta);
     });
   },[])

@@ -41,19 +41,18 @@ export default function PrescriptionListResults({ pager, handlePage, prescriptio
     handlePage(limit, newPage);
   };
 
-
   const handleClickOpenPrescription = (id) => {
-    setOpenPrescription(true);
     getPrescription(id).then(data => {
       setPrescription(data.data.data);
       setLoading(true);
     });
+    setOpenPrescription(true);
     // let patient = patients.filter(item => item.id == id);
-    // setPatient(patient[0]);
   };
 
   const onClose = () => {
     setOpenPrescription(false);
+    setPrescription({});
   }
 
   return (

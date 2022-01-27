@@ -17,6 +17,7 @@ import Stack from '@mui/material/Stack';
 import CustomizedDialogs from '../common/dialog';
 import { Box } from '@mui/material/Box';
 import { getAge } from '../../utils/calculate-age-birthday';
+import { makeStyles } from '@mui/styles';
 
 const Item = styled(Paper)(({ theme }) => ({
     ...theme.typography.body2,
@@ -40,7 +41,7 @@ const Item = styled(Paper)(({ theme }) => ({
 
 export default function PrescriptionDetailDialogs(props) {
     const { open, title, onClose, prescription, isLoading, ...other } = props;
-
+    const classes = useStyles();
     return (
         <CustomizedDialogs
             title="Đơn thuốc"
@@ -61,52 +62,57 @@ export default function PrescriptionDetailDialogs(props) {
                 {
                     isLoading ? 'Loading ....' :
                         <>
-                            <Table aria-label="simple table" size="small">
-                                <TableBody>
-                                    <TableRow>
-                                        <TableCell align="left">Họ tên	:</TableCell>
-                                        <TableCell align="left">{prescription.patient?.fullname}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="left">Tuổi:</TableCell>
-                                        <TableCell align="left">{getAge(prescription.patient?.birthday)}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="left">Giới tính :</TableCell>
-                                        <TableCell align="left">{prescription.patient?.sex}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="left">Điện thoại :</TableCell>
-                                        <TableCell align="left">{prescription.patient?.phone}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="left">Địa chỉ	:</TableCell>
-                                        <TableCell align="left">{prescription.patient?.address}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="left">Nghề nghiệp	:</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="left">Lý do khám:</TableCell>
-                                        <TableCell align="left">{prescription.remark}</TableCell>
-                                    </TableRow>
-                                    <TableRow>
-                                        <TableCell align="left">Chẩn đoán:</TableCell>
-                                        <TableCell align="left">{prescription.diagnose}</TableCell>
-                                    </TableRow>
-                                </TableBody>
-                            </Table>
                             {
-                                prescription.prescription_details?.map((item, index) => (
-                                    <Stack direction="row" spacing={2}>
-                                        <Box>
-                                            {index+1}
-                                        </Box>
-                                        <Box>
-                                            {index+1}
-                                        </Box>
-                                    </Stack>
-                                ))
+                                prescription ? 
+                                    <Table aria-label="simple table" size="small">
+                                        <TableBody>
+                                            <TableRow>
+                                                <TableCell align="left">Họ tên	:</TableCell>
+                                                <TableCell align="left">{prescription.patient?.fullname}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell align="left">Tuổi:</TableCell>
+                                                <TableCell align="left">{getAge(prescription.patient?.birthday)}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell align="left">Giới tính :</TableCell>
+                                                <TableCell align="left">{prescription.patient?.sex}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell align="left">Điện thoại :</TableCell>
+                                                <TableCell align="left">{prescription.patient?.phone}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell align="left">Địa chỉ	:</TableCell>
+                                                <TableCell align="left">{prescription.patient?.address}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell align="left">Nghề nghiệp	:</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell align="left">Lý do khám:</TableCell>
+                                                <TableCell align="left">{prescription.remark}</TableCell>
+                                            </TableRow>
+                                            <TableRow>
+                                                <TableCell align="left">Chẩn đoán:</TableCell>
+                                                <TableCell align="left">{prescription.diagnose}</TableCell>
+                                            </TableRow>
+                                        </TableBody>
+                                    </Table>:null
+                            }
+                            {
+                                prescription && prescription.prescription_details ? prescription.prescription_details?.map((item, index) => (
+                                    <div className={`${classes.prescription_details}`}>
+                                        <div className={classes.details_name}>
+                                            <p className={classes.details_index}>{index + 1}.</p>
+                                            <div>
+                                                <p>{item.medicine_id}</p>
+                                                <p>{item.use}</p>
+                                            </div>
+                                        </div>
+                                        <p>{item.amount}{item.unit}</p>
+                                    </div>
+                                )):null
                             }
                         </>
                 }
@@ -121,3 +127,17 @@ PrescriptionDetailDialogs.propTypes = {
     onClose: PropTypes.func.isRequired,
     prescription: PropTypes.object.isRequired
 };
+
+const useStyles = makeStyles({
+    prescription_details: {
+        display: "flex",
+        justifyContent: "space-between",
+        margin: 16
+    },
+    details_name: {
+        display: "flex",
+    },
+    details_index: {
+        width: 30
+    }
+});
