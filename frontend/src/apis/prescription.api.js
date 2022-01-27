@@ -30,3 +30,16 @@ export const addPrescription = async (data) => {
         console.error(error);
     }
 }
+
+export const fillterPrescription = async (data) => {
+    const params = {
+        from_date: data.from_date,
+        to_date: data.to_date,
+        keywork: data.keywork
+    }
+    try {
+        return await axios.get(`${API_END_POINT}/${API_PRESCRIPTION_URL}`,{params: params});
+    } catch (error) {
+        console.error(error);
+    }
+}
