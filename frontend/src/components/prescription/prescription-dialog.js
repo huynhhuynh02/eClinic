@@ -13,6 +13,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Grid from '@mui/material/Grid';
 import Paper from '@mui/material/Paper';
+import Stack from '@mui/material/Stack';
 import CustomizedDialogs from '../common/dialog';
 import { Box } from '@mui/material/Box';
 import { getAge } from '../../utils/calculate-age-birthday';
@@ -95,7 +96,7 @@ export default function PrescriptionDetailDialogs(props) {
                                     </TableRow>
                                 </TableBody>
                             </Table>
-                            {/* {
+                            {
                                 prescription.prescription_details?.map((item, index) => (
                                     <Stack direction="row" spacing={2}>
                                         <Box>
@@ -106,7 +107,7 @@ export default function PrescriptionDetailDialogs(props) {
                                         </Box>
                                     </Stack>
                                 ))
-                            } */}
+                            }
                         </>
                 }
             </>

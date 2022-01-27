@@ -26,30 +26,31 @@ import CustomizedDialogs from '../common/dialog';
 import { getAge } from '../../utils/calculate-age-birthday';
 import { getPaient } from '../../apis/patient.api';
 
-export const PatientListResults = ({ schedules, ...rest }) => {
+export const PatientListResults = ({ schedules, pager, handlePage, onReload, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
   const [open, setOpen] = useState(false);
   const [patient, setPatient] = useState({});
   const [openMedical, setOpenMedical] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [scheduleId, setScheduleId] = useState();
 
   const handleClickOpenMedical = (id) => {
     setOpenMedical(true);
     getPaient(id).then(data => {
       setIsLoading(true);
-      setPatient({...data.data.data});
+      setPatient({ ...data.data.data });
     });
     // let patient = patients.filter(item => item.id == id);
     // setPatient(patient[0]);
   };
 
-  const handleClickOpenPrescription = (id) => {
+  const handleClickOpenPrescription = (patientId, scheduleId) => {
     setOpen(true);
-    getPaient(id).then(data => {
+    setScheduleId(scheduleId);
+    getPaient(patientId).then(data => {
       setIsLoading(true);
-      setPatient({...data.data.data});
+      setPatient({ ...data.data.data });
     });
   };
 
@@ -91,11 +92,13 @@ export const PatientListResults = ({ schedules, ...rest }) => {
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
+    handlePage(event.target.value, 0);
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+  const handlePageChange = (e, newPage) => {
+    handlePage(limit, newPage);
   };
+
 
   const handleOnClose = () => {
     setOpen(false);
@@ -103,6 +106,10 @@ export const PatientListResults = ({ schedules, ...rest }) => {
 
   const handleOnOpen = () => {
     setOpen(true);
+  }
+
+  const onReloadPage = () => {
+    onReload();
   }
 
 
@@ -201,7 +208,7 @@ export const PatientListResults = ({ schedules, ...rest }) => {
                       </IconButton>
                     </TableCell>
                     <TableCell align="center">
-                      <IconButton onClick={() => handleClickOpenPrescription(schedule.patient.id)}>
+                      <IconButton onClick={() => handleClickOpenPrescription(schedule.patient.id, schedule.id)}>
                         <ListAltIcon color="primary" />
                       </IconButton>
                     </TableCell>
@@ -223,16 +230,24 @@ export const PatientListResults = ({ schedules, ...rest }) => {
         </PerfectScrollbar>
         <TablePagination
           component="div"
-          count={schedules.length}
+          count={pager ? pager.total : 0}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
-          page={page}
+          page={pager ? pager.current_page - 1 : 0}
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25]}
         />
       </Card>
-      <PrescriptionDialogs open={open} isLoading={isLoading} onClose={handleOnClose} patient={patient} />
-      <MedicalRecordDialogs open={openMedical} onClose={handleCloseMedical} patient={patient} />
+      <PrescriptionDialogs
+        onReloadPage={onReloadPage}
+        open={open} scheduleId={scheduleId}
+        isLoading={isLoading}
+        onClose={handleOnClose}
+        patient={patient} />
+      <MedicalRecordDialogs
+        open={openMedical}
+        onClose={handleCloseMedical}
+        patient={patient} />
     </>
   );
 };

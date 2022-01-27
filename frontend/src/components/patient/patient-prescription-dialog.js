@@ -38,14 +38,16 @@ const Item = styled(Paper)(({ theme }) => ({
 }));
 
 export default function PrescriptionDialogs(props) {
-    const { open, patient, onClose, ...other } = props;
+    const { open, patient, onReloadPage, scheduleId, onClose, ...other } = props;
     const [loading, setLoading] = useState(false);
     const [categoryIdSelect, setGroupIdSelect] = useState();
     const [medicinesIdSelect, setMedicinesIdSelect] = useState();
     const [medicinesSelelect, setMedicinesSelelect] = useState([]);
     const [categories, setCategories] = useState([]);
     const [medicines, setMedicines] = useState([]);
+    const [schedule, setSchedule] = useState([]);
     const [dataMedicines, setDataMedicines] = useState({
+        'schedule_id':schedule,
         'patient_id': patient?.id,
         'medicines': [],
         'progression': null,
@@ -60,6 +62,7 @@ export default function PrescriptionDialogs(props) {
 
     useEffect(() => {
         dataMedicines.patient_id = patient?.id;
+        dataMedicines.schedule_id = scheduleId;
         setDataMedicines({ ...dataMedicines });
         getAllCategory().then(result => {
             setCategories([...result.data.data]);
@@ -179,7 +182,12 @@ export default function PrescriptionDialogs(props) {
 
     const renderMedicinSelect = (
         medicinesSelelect.map((item) => (
-            <Button key={item.id} sx={{ marginBottom: '5px' }} variant={medicinesIdSelect == item.id ? "contained" : "outlined"} onClick={() => handleSelectMedicines(item.id)} size="small" fullWidth>{item.name}</Button>
+            <Button key={item.id} sx={{ marginBottom: '5px' }} 
+                variant={medicinesIdSelect == item.id ? "contained" : "outlined"} 
+                onClick={() => handleSelectMedicines(item.id)} 
+                size="small" 
+                fullWidth>{item.name}
+            </Button>
         ))
     )
 
@@ -188,7 +196,9 @@ export default function PrescriptionDialogs(props) {
         addPrescription(dataMedicines).then(result => {
             if(result.data.status == 'success') {
                 setLoading(false);
+                onReloadPage();
                 onClose();
+                
             }
         })
     }
@@ -367,12 +377,19 @@ export default function PrescriptionDialogs(props) {
                         }}>
                             <Typography>Chiều cao(cm):</Typography>
                         </Box>
-                        <TextField id="standard-basic" onChange={handlChangeHeight} value={dataMedicines.height} variant="standard" />
+                        <TextField id="standard-basic" 
+                            onChange={handlChangeHeight} 
+                            value={dataMedicines.height} 
+                            variant="standard" />
                     </Stack>
                     <Typography variant="p" component="p" mb={1} mt={3}>
                         Tiến triễn bệnh
                     </Typography>
-                    <TextField fullWidth value={dataMedicines.progression} id="standard-basic" onChange={handlChangeProgression} multiline="true" variant="standard" />
+                    <TextField fullWidth 
+                        value={dataMedicines.progression} 
+                        id="standard-basic" 
+                        onChange={handlChangeProgression} 
+                        multiline="true" variant="standard" />
                 </Grid>
             </Grid>
         </CustomizedDialogs>
