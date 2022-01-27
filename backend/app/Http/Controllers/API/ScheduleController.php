@@ -24,7 +24,7 @@ class ScheduleController extends Controller
     {
         $perPager = $request["per_page"];
         $today = date_format(new DateTime('now'), 'Y-m-d');
-        $pagination =  new ScheduleCollection(Schedule::whereDate('schedule_time', '=', $today)->orderBy('schedule_time')->paginate($perPager)->appends(request()->query()));
+        $pagination =  new ScheduleCollection(Schedule::whereDate('schedule_time', '=', $today)->where('status', 0)->orderBy('schedule_time')->paginate($perPager)->appends(request()->query()));
         return $pagination;
     }
 
@@ -73,7 +73,7 @@ class ScheduleController extends Controller
             $schedule->patient_id = $patient->id;
             $schedule->description = $request->remark;
             $schedule->schedule_time = $start_time;
-            $schedule->status = 1;
+            $schedule->status = 0;
             $schedule->type = 1;
             $schedule->save();
         } else {
@@ -95,7 +95,7 @@ class ScheduleController extends Controller
                 $schedule->patient_id = $patient->id;
                 $schedule->description = $request->remark;
                 $schedule->schedule_time = $start_time;
-                $schedule->status = 1;
+                $schedule->status = 0;
                 $schedule->type = 1;
                 $schedule->save();
             }

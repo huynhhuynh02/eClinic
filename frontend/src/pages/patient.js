@@ -12,6 +12,23 @@ const Patients = () => {
 
   const [schedules, setSchedules] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [schedulesMeta, setSchedulesMeta] = useState();
+
+  const onReload = () => {
+    schedulesService.getSchedules().then(res => {
+      setIsLoading(true);
+      setSchedules(res.data);
+      setSchedulesMeta(res.meta);
+    })
+  }
+
+  const handlePage = async (perPage, page) => {
+    schedulesService.getSchedules(perPage, page + 1).then(res => {
+      setIsLoading(true);
+      setSchedules(res.data);
+      setSchedulesMeta(res.meta);
+    })
+  }
 
   useEffect(() => {
     schedulesService.getSchedules().then(res => {
@@ -37,7 +54,11 @@ const Patients = () => {
         <Container>
           <PatientListToolbar />
           <Box sx={{ mt: 3 }}>
-            {isLoading ? <PatientListResults schedules={schedules} /> : 'Loading ...' }
+            {isLoading ? <PatientListResults 
+              pager={schedulesMeta}
+              handlePage={handlePage} 
+              onReload={onReload} 
+              schedules={schedules} /> : 'Loading ...' }
           </Box>
         </Container>
       </Box>

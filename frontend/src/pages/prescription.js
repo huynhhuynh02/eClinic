@@ -11,12 +11,23 @@ import {getAllPrescription} from '../apis/prescription.api';
 const Prescriptions = () => {
 
   const [prescriptions, setPrescriptions] = useState([]);
+  const [prescriptionsMeta, setPrescriptionsMeta] = useState();
   const [isLoading, setIsLoading] = useState(false);
+
+  const handlePage = async (perPage, page) => {
+    getAllPrescription(perPage, page + 1).then(result => {
+      setIsLoading(true);
+      setPrescriptions([...result.data.data]);
+      setPrescriptionsMeta(result.data.meta);
+    });
+  }
 
   useEffect(() => {
     getAllPrescription().then(result => {
       setIsLoading(true);
       setPrescriptions([...result.data.data]);
+      console.log(result.data.data);
+      setPrescriptionsMeta(result.data.meta);
     });
   },[])
 
@@ -37,7 +48,11 @@ const Prescriptions = () => {
         <Container>
           <PrescriptionListToolbar />
           <Box sx={{ mt: 3 }}>
-            {isLoading ? <PrescriptionListResults prescriptions={prescriptions} /> : 'Loading ...' }
+            {isLoading ? <PrescriptionListResults
+              prescriptions={prescriptions}
+              pager={prescriptionsMeta}
+              handlePage={handlePage} 
+            /> : 'Loading ...' }
           </Box>
         </Container>
       </Box>

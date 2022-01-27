@@ -22,9 +22,9 @@ import PropTypes from "prop-types";
 import { useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PrescriptionDetailDialogs from "../prescription/prescription-dialog";
-import {getPrescription} from '../../apis/prescription.api';
+import { getPrescription } from '../../apis/prescription.api';
 
-export default function PrescriptionListResults({ prescriptions, ...rest }) {
+export default function PrescriptionListResults({ pager, handlePage, prescriptions, ...rest }) {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [prescription, setPrescription] = useState({});
@@ -34,18 +34,19 @@ export default function PrescriptionListResults({ prescriptions, ...rest }) {
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
+    handlePage(event.target.value, 0);
   };
 
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+  const handlePageChange = (e, newPage) => {
+    handlePage(limit, newPage);
   };
-  
+
+
   const handleClickOpenPrescription = (id) => {
     setOpenPrescription(true);
     getPrescription(id).then(data => {
+      setPrescription(data.data.data);
       setLoading(true);
-      setPrescription({ ...data.data.data });
-      console.log(data.data.data);
     });
     // let patient = patients.filter(item => item.id == id);
     // setPatient(patient[0]);
@@ -57,82 +58,82 @@ export default function PrescriptionListResults({ prescriptions, ...rest }) {
 
   return (
     <>
-    <Card {...rest}>
-      {rest.header && <CardHeader title={rest.message_header} />}
-      <PerfectScrollbar>
-        <Box sx={{ minWidth: 1050 }}>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <TableCell>Mã đơn thuốc</TableCell>
-                <TableCell>Bệnh nhân</TableCell>
-                <TableCell>Chuẩn đoán</TableCell>
-                <TableCell>Ngày tái khám</TableCell>
-                <TableCell>Ngày tạo</TableCell>
-                <TableCell align="center">Xem</TableCell>
-                <TableCell align="center">In</TableCell>
-                <TableCell align="center">Lập HĐ</TableCell>
-                <TableCell align="center">Sửa</TableCell>
-                <TableCell align="center">Xoá</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {prescriptions.map((item) => (
-                <TableRow
-                  hover
-                  key={item.id}
-                  selected={selectedCustomerIds.indexOf(item.id) !== -1}
-                >
-                  <TableCell>{item.id}</TableCell>
-                  <TableCell>
-                    <Typography variant="subtitle1">{item.patient.fullname}</Typography>
-                    <Box>Mã BN: {item.patient.pid}</Box>
-                  </TableCell>
-                  <TableCell>{item.diagnose}</TableCell>
-                  <TableCell>{item.reExaminationDate}</TableCell>
-                  <TableCell>{item.create_at}</TableCell>
-                  <TableCell align="center">
-                    <IconButton onClick={() => handleClickOpenPrescription(item.id)}>
-                      <DescriptionIcon color="primary" />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton href="#">
-                      <PrintIcon color="primary" />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton href="#">
-                      <ExitToApp color="primary" />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton href="#">
-                      <EditIcon color="warning" />
-                    </IconButton>
-                  </TableCell>
-                  <TableCell align="center">
-                    <IconButton href="#">
-                      <DeleteIcon color="error" />
-                    </IconButton>
-                  </TableCell>
+      <Card {...rest}>
+        {rest.header && <CardHeader title={rest.message_header} />}
+        <PerfectScrollbar>
+          <Box sx={{ minWidth: 1050 }}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>Mã đơn thuốc</TableCell>
+                  <TableCell>Bệnh nhân</TableCell>
+                  <TableCell>Chuẩn đoán</TableCell>
+                  <TableCell>Ngày tái khám</TableCell>
+                  <TableCell>Ngày tạo</TableCell>
+                  <TableCell align="center">Xem</TableCell>
+                  <TableCell align="center">In</TableCell>
+                  <TableCell align="center">Lập HĐ</TableCell>
+                  <TableCell align="center">Sửa</TableCell>
+                  <TableCell align="center">Xoá</TableCell>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </Box>
-      </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={prescriptions.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
-    </Card>
-    <PrescriptionDetailDialogs open={openPrescription} onClose={onClose} prescription = {prescription}/>
+              </TableHead>
+              <TableBody>
+                {prescriptions.map((item) => (
+                  <TableRow
+                    hover
+                    key={item.id}
+                    selected={selectedCustomerIds.indexOf(item.id) !== -1}
+                  >
+                    <TableCell>{item.id}</TableCell>
+                    <TableCell>
+                      <Typography variant="subtitle1">{item.patient.fullname}</Typography>
+                      <Box>Mã BN: {item.patient.pid}</Box>
+                    </TableCell>
+                    <TableCell>{item.diagnose}</TableCell>
+                    <TableCell>{item.reExaminationDate}</TableCell>
+                    <TableCell>{item.create_at}</TableCell>
+                    <TableCell align="center">
+                      <IconButton onClick={() => handleClickOpenPrescription(item.id)}>
+                        <DescriptionIcon color="primary" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton href="#">
+                        <PrintIcon color="primary" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton href="#">
+                        <ExitToApp color="primary" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton href="#">
+                        <EditIcon color="warning" />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell align="center">
+                      <IconButton href="#">
+                        <DeleteIcon color="error" />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Box>
+        </PerfectScrollbar>
+        <TablePagination
+          component="div"
+          count={pager ? pager.total : 0}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleLimitChange}
+          page={pager ? pager.current_page - 1 : 0}
+          rowsPerPage={limit}
+          rowsPerPageOptions={[5, 10, 25]}
+        />
+      </Card>
+      <PrescriptionDetailDialogs open={openPrescription} onClose={onClose} prescription={prescription} />
     </>
   );
 }

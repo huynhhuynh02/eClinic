@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Prescription;
 use App\Models\PrescriptionDetail;
+use App\Models\Schedule;
 use App\Http\Resources\PrescriptionCollection;
 use App\Http\Resources\PrescriptionResource;
 use Illuminate\Http\Request;
@@ -17,12 +18,12 @@ class PrescriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
         $user_id = auth()->id();
-
-        return new PrescriptionCollection(Prescription::all());
+        $perPager = $request["per_page"];
+        return new PrescriptionCollection(Prescription::paginate($perPager)->appends(request()->query()));
     }
 
     /**
@@ -45,6 +46,11 @@ class PrescriptionController extends Controller
     {
         //
         try {
+            $schedule = Schedule::findOrFail($request->schedule_id);
+            if($schedule) {
+                $schedule->status = 1;
+                $schedule->save();
+            }
             $prescription = new Prescription;
             $prescription->user_id = auth()->id();
             $prescription->patient_id = $request->patient_id;
