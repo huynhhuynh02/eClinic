@@ -242,7 +242,7 @@ export const ScheduleToolbar = (props) => {
                         value={cityCode}
                       >
                         {
-                          cities ? cities.map((data)=><MenuItem value={data.code}>{data.name}</MenuItem> ) : ""
+                          cities ? cities.map((data)=><MenuItem key={data.code} value={data.code}>{data.name}</MenuItem> ) : ""
                         }
                       </Select>
                     </FormControl>
@@ -259,7 +259,7 @@ export const ScheduleToolbar = (props) => {
                         value={districtCode}
                       >
                         {
-                          district ? district.map((data)=><MenuItem value={data.code}>{data.name}</MenuItem> ) : ""
+                          district ? district.map((data)=><MenuItem key={data.code} value={data.code}>{data.name}</MenuItem> ) : ""
                         }
                       </Select>
                     </FormControl>
@@ -276,7 +276,7 @@ export const ScheduleToolbar = (props) => {
                         value={wardCode}
                       >
                         {
-                          ward ? ward.map((data)=><MenuItem value={data.code}>{data.name}</MenuItem> ) : ""
+                          ward ? ward.map((data)=><MenuItem key={data.code} value={data.code}>{data.name}</MenuItem> ) : ""
                         }
                       </Select>
                     </FormControl>
