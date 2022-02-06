@@ -102,7 +102,7 @@ export default function PrescriptionDetailDialogs(props) {
                             }
                             {
                                 prescription && prescription.prescription_details ? prescription.prescription_details?.map((item, index) => (
-                                    <div className={`${classes.prescription_details}`}>
+                                    <div className={`${classes.prescription_details}`} key={index}>
                                         <div className={classes.details_name}>
                                             <p className={classes.details_index}>{index + 1}.</p>
                                             <div>
