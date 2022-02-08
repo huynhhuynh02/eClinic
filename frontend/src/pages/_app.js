@@ -11,16 +11,17 @@ import { theme } from '../theme';
 import { createEmotionCache } from '../utils/create-emotion-cache';
 import Login from './login';
 import { API_END_POINT } from '../utils/constants';
+import authService from '../apis/auth.api';
 
 
-axios.defaults.baseURL = 'http://127.0.0.1:8000';
+axios.defaults.baseURL = API_END_POINT;
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 axios.defaults.headers.post['Accept'] = 'application/json';
 
 axios.defaults.withCredentials = true;
-axios.interceptors.request.use(function (config){
+axios.interceptors.request.use(function (config) {
   const token = localStorage.getItem('auth_token');
-  config.headers.Authorization = token ? `Bearer ${ token }` : '';
+  config.headers.Authorization = token ? `Bearer ${token}` : '';
   return config;
 })
 
@@ -38,8 +39,8 @@ const App = (props) => {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
-    const fetchUser = async () => {
-    await axios.get(`${API_END_POINT}/api/profile`).then(
+    if (localStorage.getItem("auth_token") !== null) {
+      authService.getProfile().then(
         res => {
           setIsLogin(true);
           setUser(res.data.profile);
@@ -51,19 +52,23 @@ const App = (props) => {
           setIsLoading(false);
         }
       );
+    } else {
+      setIsLoading(false);
     }
-      fetchUser();
-  },[]);
+  }, []);
 
-  if (isLoading)
-  {
-    return <></>  
+  const onLogin = () => {
+    setIsLogin(true);
   }
+  if (isLoading) {
+    return <></>
+  }
+
   return (
     <CacheProvider value={emotionCache}>
       <Head>
         <title>
-          Material Kit Pro
+          Tapa Health
         </title>
         <meta
           name="viewport"
@@ -73,7 +78,7 @@ const App = (props) => {
       <LocalizationProvider dateAdapter={AdapterDateFns}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          { !isLogin ? <Login /> : getLayout(<Component {...pageProps} />) }
+          {!isLogin ? <Login onLogin={onLogin} /> : getLayout(<Component {...pageProps} />)}
         </ThemeProvider>
       </LocalizationProvider>
     </CacheProvider>

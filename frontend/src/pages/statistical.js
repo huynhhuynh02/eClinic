@@ -1,9 +1,10 @@
 import Head from 'next/head';
-import { Box, Container, FormControl, Grid, InputLabel, MenuItem, Select, TextField} from '@mui/material';
+import { Box, Container, FormControl, Grid, InputLabel, MenuItem, Select, TextField } from '@mui/material';
 import { DashboardLayout } from 'src/components/dashboard-layout';
-import { TotalCustomers } from 'src/components/dashboard/total-customers';
-import { TotalProfit } from 'src/components/dashboard/total-profit';
-import { Budget } from 'src/components/dashboard/budget';
+import { TotalPrescriptions } from "../components/dashboard/total-prescription";
+import { TotalPatients } from '../components/dashboard/total-patient'
+import { TotalReceipts } from "../components/dashboard/total-receipt";
+import { TotalProfit } from "../components/dashboard/total-profit";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -53,24 +54,24 @@ function Statistical() {
   }, [typePrescription]);
 
   const fetDataPrescription = (dataRes) => {
-    if(dataRes.data) {
+    if (dataRes.data) {
       setDatePrescription(dataRes.data.date);
       setDataPrescription(dataRes.data.data);
     }
   }
   const fetDataPatient = (dataRes) => {
-    if(dataRes.data) {
+    if (dataRes.data) {
       setDatePatient(dataRes.data.date);
       setDataPatient(dataRes.data.data);
     }
   }
-  const labels = datePatient?datePatient:[];
+  const labels = datePatient ? datePatient : [];
   const dataPatientChar = {
     labels,
     datasets: [
       {
         label: 'Bệnh nhân',
-        data: dataPatient?dataPatient.map((data) => data): 0,
+        data: dataPatient ? dataPatient.map((data) => data) : 0,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1
@@ -96,13 +97,13 @@ function Statistical() {
     }
   };
 
-  const labelsPrescription = datePrescription?datePrescription:[];
+  const labelsPrescription = datePrescription ? datePrescription : [];
   const dataPrescriptionChar = {
     labels: labelsPrescription,
     datasets: [
       {
         label: 'Đơn Thuốc',
-        data: dataPrescription?dataPrescription.map((data) => data): 0,
+        data: dataPrescription ? dataPrescription.map((data) => data) : 0,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1,
@@ -145,13 +146,13 @@ function Statistical() {
         <Container>
           <Grid container spacing={3}>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <TotalCustomers />
+              <TotalPatients />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <Budget />
+              <TotalPrescriptions />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
-              <TotalProfit sx={{ height: "100%" }} />
+              <TotalReceipts sx={{ height: "100%" }} />
             </Grid>
             <Grid item lg={3} sm={6} xl={3} xs={12}>
               <TotalProfit sx={{ height: "100%" }} />
@@ -160,7 +161,7 @@ function Statistical() {
           <Grid container marginTop={2} spacing={2}>
             <Grid item md={6} xs={12}>
               <h3>Bệnh Nhân</h3>
-              <Box marginTop={2}> 
+              <Box marginTop={2}>
                 <FormControl>
                   <InputLabel id="demo-simple-select-label">Theo</InputLabel>
                   <Select
@@ -168,7 +169,7 @@ function Statistical() {
                     id="demo-simple-select"
                     value={typePatient}
                     label="Age"
-                    onChange={(e)=>{setTypePatient(e.target.value)}}
+                    onChange={(e) => { setTypePatient(e.target.value) }}
                   >
                     <MenuItem value="week">Tuần</MenuItem>
                     <MenuItem value="month">Tháng</MenuItem>
@@ -181,18 +182,18 @@ function Statistical() {
             </Grid>
             <Grid item md={6} xs={12}>
               <h3>Đơn Thuốc</h3>
-              <Box  marginTop={2}> 
+              <Box marginTop={2}>
                 <FormControl>
                   <InputLabel id="demo-simple-select-label">Theo</InputLabel>
-                    <Select
-                      labelId="demo-simple-select-label"
-                      id="demo-simple-select"
-                      value={typePrescription}
-                      label="Age"
-                      onChange={(e)=>{setTypePrescription(e.target.value)}}
-                    >
-                      <MenuItem value="week">Tuần</MenuItem>
-                      <MenuItem value="month">Tháng</MenuItem>
+                  <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={typePrescription}
+                    label="Age"
+                    onChange={(e) => { setTypePrescription(e.target.value) }}
+                  >
+                    <MenuItem value="week">Tuần</MenuItem>
+                    <MenuItem value="month">Tháng</MenuItem>
                   </Select>
                 </FormControl>
                 <Line

@@ -1,8 +1,9 @@
 import Head from "next/head";
 import { Box, Container, Grid } from "@mui/material";
 import { DashboardLayout } from "../components/dashboard-layout";
-import { Budget } from "../components/dashboard/budget";
-import { TotalCustomers } from "../components/dashboard/total-customers";
+import { TotalPrescriptions } from "../components/dashboard/total-prescription";
+import { TotalPatients } from "../components/dashboard/total-patient";
+import { TotalReceipts } from "../components/dashboard/total-receipt";
 import { TotalProfit } from "../components/dashboard/total-profit";
 import { ExaminationSchedule } from "../components/dashboard/examination-schedule";
 import { v4 as uuid } from "uuid";
@@ -97,7 +98,7 @@ const customers = [
 const Dashboard = () => (
   <>
     <Head>
-      <title>Dashboard | Material Kit</title>
+      <title>Tapa Health - Dashboard</title>
     </Head>
     <Box
       component="main"
@@ -109,13 +110,13 @@ const Dashboard = () => (
       <Container>
         <Grid container spacing={3}>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
-            <TotalCustomers />
+            <TotalPatients />
           </Grid>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
-            <Budget />
+            <TotalPrescriptions />
           </Grid>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
-            <TotalProfit sx={{ height: "100%" }} />
+            <TotalReceipts sx={{ height: "100%" }} />
           </Grid>
           <Grid item lg={3} sm={6} xl={3} xs={12}>
             <TotalProfit sx={{ height: "100%" }} />
