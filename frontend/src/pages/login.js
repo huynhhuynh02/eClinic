@@ -1,4 +1,5 @@
 import Head from 'next/head';
+import PropTypes from 'prop-types';
 import { useRouter } from 'next/router';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -6,8 +7,11 @@ import { Box, Button, Container, Grid, Link, TextField, Typography } from '@mui/
 import axios from 'axios';
 import { useState } from 'react';
 import { API_END_POINT } from '../utils/constants';
+import authService from '../apis/auth.api';
 
-const Login = () => {
+const Login = (props) => {
+  const {onLogin, ...other} = props;
+  
   const [errorLogin, setErrorLogin] = useState(null);
   const router = useRouter();
   const formik = useFormik({
@@ -19,22 +23,25 @@ const Login = () => {
       email: Yup
         .string()
         .email(
-          'Must be a valid email')
+          'Định dạng email không hợp lệ')
         .max(255)
         .required(
-          'Email is required'),
+          'Email là trường bắt buộc'),
       password: Yup
         .string()
         .max(255)
         .required(
-          'Password is required')
+          'Mật khẩu là trường bắt buộc')
     }),
     onSubmit: (values) => {
       axios.get(`${API_END_POINT}/sanctum/csrf-cookie`).then(response => {
-        axios.post(`${API_END_POINT}/api/login`, values).then(res => {
+        authService.login(values).then(res => {
           if (res.data.status === true) {
             localStorage.setItem('auth_token', res.data.access_token);
             localStorage.setItem('user_name', res.data.user.name);
+            if(onLogin) {
+              onLogin();
+            }
             router.push('/');
           } else {
             setErrorLogin(res.data.message);
@@ -47,7 +54,7 @@ const Login = () => {
   return (
     <>
       <Head>
-        <title>Login | EClinic</title>
+        <title>Tapa Health Phòng Khám</title>
       </Head>
       <Box
         component="main"
@@ -71,14 +78,18 @@ const Login = () => {
                 color="textPrimary"
                 variant="h4"
               >
-                Sign in
-              </Typography>
-              <Typography
-                align="center"
-                color="textSecondary"
-                variant="body1"
-              >
-                Đăng nhập bằng email
+                <Typography
+                variant="h3"
+                component="span" 
+                sx={{
+                  color: '#0F75E0'
+                }}>Tapa</Typography>
+                <Typography
+                variant="h3"
+                component="span" 
+                sx={{
+                  color: '#72CB14'
+                }}>Health</Typography>
               </Typography>
             </Box>
             <TextField
@@ -116,7 +127,7 @@ const Login = () => {
                 type="submit"
                 variant="contained"
               >
-                Sign In Now
+                Đăng Nhập
               </Button>
             </Box>
           </form>
@@ -127,3 +138,7 @@ const Login = () => {
 };
 
 export default Login;
+
+Login.propTypes = {
+  onLogin: PropTypes.func.isRequired,
+}

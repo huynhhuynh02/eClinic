@@ -10,6 +10,7 @@ import { UserCircle as UserCircleIcon } from '../icons/user-circle';
 import { Users as UsersIcon } from '../icons/users';
 import { useRouter } from 'next/router';
 import axios from 'axios';
+import authService from '../apis/auth.api';
 
 const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
   backgroundColor: theme.palette.background.primany,
@@ -23,7 +24,7 @@ export const DashboardNavbar = (props) => {
   const logout = (e) => {
     e.preventDefault();
 
-    axios.post('/api/logout').then(res => {
+    authService.logout().then(res => {
       if (res.status === 200) {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('user_name');
@@ -31,7 +32,7 @@ export const DashboardNavbar = (props) => {
       }
     },
     errors => {
-
+      
     })
   }
 
@@ -110,7 +111,7 @@ export const DashboardNavbar = (props) => {
             >
               <UserCircleIcon fontSize="small" />
             </Avatar>
-            <Button variant="text text-white" onClick={ logout }>Logout</Button>
+            <Button variant="text text-white" onClick={ logout }>Đăng xuất</Button>
           </Toolbar>
         </Container>
       </DashboardNavbarRoot>
