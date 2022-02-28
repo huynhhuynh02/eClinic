@@ -8,7 +8,7 @@ use App\Http\Resources\CategoryResource;
 use Illuminate\Http\Request;
 use App\Models\Category;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+
 
 class CategoryController extends Controller
 {
@@ -17,10 +17,11 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $id = auth()->id(); 
-        $categories = Category::where('user_id',$id)->get();
+        $perPager = $request["per_page"];
+        $categories = Category::where('user_id',$id)->orderBy('created_at')->paginate($perPager)->appends(request()->query());
 
         return new CategoryCollection($categories);
     }

@@ -15,13 +15,12 @@ import {
 } from "@mui/material";
 import Alert from '@mui/material/Alert';
 import { Box } from "@mui/system";
-import axios from "axios";
 import React, { useCallback, useEffect, useState } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import CustomizedDialogs from "src/components/common/dialog";
-import {addCategory,updateCategory, deleteCategory} from '../../../apis/category.api';
+import { addCategory, deleteCategory, updateCategory } from '../../../apis/category.api';
 
-const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
+const MedicalCategoryGroup = ({ medicineCategories, pager, handlePage, ...rest }) => {
   const [listCategory, setListCategory] = useState([]);
   const [editItem, setEditItem] = useState({});
   const [inputCode, setInputCode] = useState("");
@@ -115,10 +114,11 @@ const MedicalCategoryGroup = ({ medicineCategories, ...rest }) => {
 
   const handleLimitChange = (event) => {
     setLimit(event.target.value);
-  };
+    handlePage(event.target.value,0);
+};
 
   const handlePageChange = (event, newPage) => {
-    setPage(newPage);
+    handlePage(limit,newPage);
   };
   const handleShowToast = useCallback( ( message, status) => {
     toast.message = message;
@@ -301,10 +301,10 @@ onClick={() => handleOpenConfirmDeleteItem(item.id)} />
         </PerfectScrollbar>
         <TablePagination
           component="div"
-          count={listCategory.length}
+          count={pager ? pager.total : listCategory.length}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleLimitChange}
-          page={page}
+          page={pager ? pager.current_page-1 : 0}
           rowsPerPage={limit}
           rowsPerPageOptions={[5, 10, 25]}
         />
